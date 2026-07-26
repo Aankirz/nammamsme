@@ -14,7 +14,8 @@ interface ReturnRowProps {
 }
 
 const GROUND: Record<ReturnStanding, string> = {
-  overdue: "bg-stamp-tint py-4 hover:shadow-[inset_0_0_0_1px_var(--stamp-rule)]",
+  overdue:
+    "bg-stamp-tint py-4 hover:shadow-[inset_0_0_0_1px_var(--stamp-rule)] active:shadow-[inset_0_0_0_2px_var(--stamp-rule)]",
   due: "py-3 hover:bg-paper-raised active:bg-rule",
   unread: "py-3 hover:bg-paper-raised active:bg-rule",
   filed: "py-2.5 hover:bg-paper-raised active:bg-rule",

@@ -355,3 +355,16 @@ Records: 14 invoices, ₹18,00,000 ITC claimed; 11 matched (₹14,00,000); 3 unm
 **The invariant carries over:** where a code has several lawful rates depending on sale value, the check **refuses to assert** rather than accusing a supplier of billing wrongly. Same rule as the notice pipeline, applied to a new domain.
 **Why it matters:** everything else in the seed is invented. This is real government data, and it is what lets the product predict a notice from a wrong rate on a purchase bill months before the notice exists.
 **Status:** Library and tests done. Not yet surfaced in the UI.
+
+### D-52 — A tool-calling agent whose tools cannot lie
+**Decision:** `POST /api/ask` runs a Sarvam tool-calling loop (verified: `finish_reason: tool_calls`, correct arguments, ~830 ms per round) over five functions: `list_obligations`, `get_document`, `check_invoice_rate`, `build_reply_evidence`, `filing_status`.
+**Why this is more than a chat box:** every tool is a function that already refuses. `checkRate` returns "ambiguous" or "unknown" rather than guessing; `assembleEvidence` filters by `doc_date`; `build_reply_evidence` returns the blocker reasons instead of a draft when a notice is refused. The model is told it knows nothing except what the tools return and may not state a figure that did not come from one.
+**Result, observed:** asked whether a supplier billing HSN 0402 at 5% was wrong, it answered *"we cannot say the 5% charge is wrong without knowing those details"*. The refusal invariant propagated from the function into the agent's speech, unprompted. That is the property worth demonstrating: an agent that cannot hallucinate about money because the only route to a number is a gated function.
+**Trace is returned** with every answer so the UI can show which tools ran.
+**Status:** Working. No UI surface yet.
+
+### D-53 — The agent had no idea what day it was
+**Finding:** asked "what do I owe in the next month", it answered about September 2025 and reported nothing due. It was reasoning about "next month" against an invented present.
+**Fix:** today's date is injected into the system prompt with an instruction to compute every relative date against it.
+**Why recorded:** the tools returned correct absolute dates throughout. The model had every figure it needed and still produced a wrong answer, because the question was relative and the anchor was missing. Nothing in the tool layer could have caught this.
+**Status:** Fixed and verified: four obligations, correct amounts, correct dates.

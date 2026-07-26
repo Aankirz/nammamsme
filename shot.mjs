@@ -1,0 +1,12 @@
+import { chromium } from "playwright";
+const out = process.argv[2];
+const b = await chromium.launch();
+const p = await b.newPage({ viewport: { width: 1440, height: 1000 } });
+await p.goto("http://localhost:3000/", { waitUntil: "networkidle" });
+await p.waitForTimeout(600);
+await p.screenshot({ path: `${out}/returns-inbox.png` });
+await p.goto("http://localhost:3000/doc/doc_return_3b_2025_q1", { waitUntil: "networkidle" });
+await p.waitForTimeout(600);
+await p.screenshot({ path: `${out}/reconciliation.png`, fullPage: true });
+console.log("captured");
+await b.close();
