@@ -22,6 +22,7 @@ interface DetailBodyProps {
   plainWords: ReactNode;
   ladder: ReactNode;
   checks: ReactNode;
+  form: ReactNode;
   ask: ReactNode;
   facts: readonly Fact[];
   source: DocumentSource | null;
@@ -78,31 +79,16 @@ function toDraft(payload: unknown): ReplyDraft | null {
 }
 
 function AdvicePanel() {
-  const [sent, setSent] = useState(false);
-
   return (
     <Blueprint as="section" className="p-[var(--space-6)]">
       <Kicker as="h2" className="mb-[var(--space-4)]">
         What you can do with this
       </Kicker>
 
-      <p className="text-[12.5px] opacity-70 [text-wrap:pretty]">
-        Nothing is filed against a document of this kind. The figures above are read
-        off the page so your CA can act on them.
-      </p>
-
-      <button
-        type="button"
-        onClick={() => setSent(true)}
-        className="btn btn-primary btn-block mt-[var(--space-6)]"
-      >
-        Send to my CA
-      </button>
-
-      <p aria-live="polite" className="mt-2 text-center text-[11.5px] opacity-50">
-        {sent
-          ? "Noted. Sending to your CA is the next thing being built."
-          : "The document and both machine reads go with it."}
+      <p className="mb-0 text-[12.5px] leading-[1.5] opacity-70 [text-wrap:pretty]">
+        Nothing is filed against a document of this kind, and there is no government
+        form to write out for it. The figures above are read off the page and traced
+        back to it, which is as far as this goes.
       </p>
     </Blueprint>
   );
@@ -114,6 +100,7 @@ export function DetailBody({
   plainWords,
   ladder,
   checks,
+  form,
   ask,
   facts,
   source,
@@ -233,6 +220,7 @@ export function DetailBody({
             <EvidenceTable load={load} draft={draft} rates={rates} />
           )}
 
+          {form}
           {ask}
         </div>
 

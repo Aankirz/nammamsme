@@ -85,3 +85,16 @@
 - `CapturePlaceholder` carries both design screens: the dashed blueprint drop zone and, while working, the two-up processing view with a preview plate and the measured hop log.
 - `ui/{Money,SpeakButton,buttons}.ts(x)` moved onto the system: condensed display numerals, a Lucide speaker at stroke 1.5 in a `.btn .btn-icon .btn-ghost`, and `.btn`/`.btn-primary`/`.btn-secondary` in place of the old hand-rolled classes. `ui/Kicker.tsx` reads the inbox's `KICKER` token so the two cannot drift.
 - `components/lib/money.ts` gained `inRupees`, which rewrites `Rs 4,00,000` in seeded and model-written prose to the glyph on the way to the screen.
+
+## 2026-07-26 — Inbox: rank the answer, translate the jargon, cut the noise
+
+- `app/page.tsx` now renders four things in order of what the owner needs: one loud answer, three quiet figures, a three-column table, one line of session counts. The old H1 is gone; the answer is the H1.
+- Added `components/inbox/FirstAction.tsx` and `components/inbox/first.ts`. `firstAction` ranks deterministically — a late GST return outranks everything (it compounds daily and blocks every filing behind it), then whatever falls due soonest, then the oldest receivable. The plate is the only framed element on the page and carries the only display-size type.
+- Added `components/inbox/forms.ts`: `GSTR-3B` reads as "GST return", `GSTR-1` as "sales list", `GSTR-9` as "yearly GST return", with the form code demoted to a quiet second label. `feePerDay` derives the ₹50 daily fee from the seeded late fee rather than hard-coding it.
+- Replaced `HeadlineRow` with `Standing.tsx`: the same three figures at 21px instead of 54px, no frames, no speaker buttons, whitespace instead of rules.
+- Deleted `ReturnsPlate.tsx`. Three identical overdue cards collapse into one statement in the plate plus a quiet tail line that still links every late return and the next one due.
+- Deleted `Scoreboard.tsx` in favour of `SessionNote.tsx`, one 11px sentence at the foot of the page.
+- `DocumentTable.tsx` dropped to three columns — what to do, how much, by when. "Other party" is gone (the action line carries the name), the status column is gone with it, and "Seeded" with it. Type is a small uppercase mark on the action line; blocked rows carry one stamp-red word. Row sub-lines removed.
+- `rows.ts`: `actionTitle` speaks plainly ("Answer the tax demand", "Renew your food licence"), `kindMark` replaces `kindLabel`, `isBlocked` replaces the status tag map, and `actionDetail`/`STATUS_LABEL`/`STATUS_TAG` are gone.
+- MSMED section 15 now reads "The law lets you charge interest on this." Show cause notices, DRC-06, outward supplies and Rule 59(6) no longer appear on the inbox.
+- `styles.ts`: `FIGURE`/`SCORE` replaced by `LEAD`, `SECOND_FIGURE`, `QUIET_FIGURE`, `BODY`, `MARK` — four ranks of type instead of one shouted size.

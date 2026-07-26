@@ -63,17 +63,6 @@ export const SECTION_BAR: CSSProperties = {
   marginBottom: "var(--space-3)",
 };
 
-export const CELL: CSSProperties = {
-  padding: "var(--space-6)",
-};
-
-export const DIVIDER = "1px solid var(--color-divider)";
-
-export const TAG_SMALL: CSSProperties = {
-  fontSize: "10px",
-  letterSpacing: "0.08em",
-};
-
 export const MARK: CSSProperties = {
   fontSize: "10px",
   letterSpacing: "0.14em",

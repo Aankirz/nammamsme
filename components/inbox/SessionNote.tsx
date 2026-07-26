@@ -23,7 +23,7 @@ interface SessionNoteProps {
 
 export function SessionNote({ counts }: SessionNoteProps) {
   return (
-    <p style={{ ...ASIDE, marginTop: "var(--space-8)" }}>
+    <p style={{ ...ASIDE, marginTop: "calc(var(--space-8) * 1.4)" }}>
       This session: {counts.processed} read, {counts.filed} filed, {counts.refused} refused
       for want of evidence, {counts.wrong} wrong. Counted live, not a claim.
     </p>

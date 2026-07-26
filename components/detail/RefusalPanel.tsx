@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import type { TracedBlocker } from "@/components/lib/blockers";
 import type { BlockKey } from "@/components/lib/source";
 import { Kicker } from "@/components/ui/Kicker";
@@ -37,8 +36,6 @@ export function RefusalPanel({
   fileLabel,
   reason,
 }: RefusalPanelProps) {
-  const [sent, setSent] = useState(false);
-
   return (
     <section
       aria-labelledby="refusal-heading"
@@ -123,15 +120,7 @@ export function RefusalPanel({
           </ul>
 
           <div className="mt-[var(--space-6)] flex flex-wrap items-center gap-[var(--space-3)]">
-            <button
-              type="button"
-              onClick={() => setSent(true)}
-              className="btn btn-primary"
-            >
-              Send to my CA
-            </button>
-
-            <Link href="/doc/new" className="btn" style={REVERSED}>
+            <Link href="/doc/new" className="btn btn-primary">
               Add the missing page
             </Link>
 
@@ -148,13 +137,11 @@ export function RefusalPanel({
             </button>
           </div>
 
-          <p id={REASON_ID} className="mt-[var(--space-3)] text-[11.5px] opacity-75">
+          <p
+            id={REASON_ID}
+            className="mt-[var(--space-3)] mb-0 text-[11.5px] opacity-75"
+          >
             {reason}
-          </p>
-
-          <p aria-live="polite" className="mt-[var(--space-4)] text-[12.5px] opacity-75">
-            {sent &&
-              "Noted. Sending to your CA is the next thing being built. Nothing left this machine."}
           </p>
         </div>
       </div>

@@ -1,3 +1,4 @@
+import type { FilledForm as Filled } from "@/lib/forms";
 import type { DocumentRow } from "@/components/lib/documents";
 import type { RateIndex } from "@/components/lib/rate";
 import { blockedReason, traceBlockers } from "@/components/lib/blockers";
@@ -12,12 +13,14 @@ import { ChecksPanel } from "./ChecksPanel";
 import { ConsequenceLadder } from "./ConsequenceLadder";
 import { DetailBody } from "./DetailBody";
 import { DocumentHeader } from "./DocumentHeader";
+import { FilledForm } from "./FilledForm";
 import { PlainWords } from "./PlainWords";
 
 interface DocumentDetailProps {
   row: DocumentRow;
   now: Date;
   rates: RateIndex;
+  filled: Filled | null;
 }
 
 const FOOTNOTE =
@@ -36,7 +39,7 @@ function pageLabelFor(row: DocumentRow): string {
   return `Digitised page · ${count} ${count === 1 ? "page" : "pages"}`;
 }
 
-export function DocumentDetail({ row, now, rates }: DocumentDetailProps) {
+export function DocumentDetail({ row, now, rates, filled }: DocumentDetailProps) {
   const blockers = traceBlockers(row);
   const canFile = row.doc_type === "gst_notice";
 
@@ -60,6 +63,7 @@ export function DocumentDetail({ row, now, rates }: DocumentDetailProps) {
         />
       }
       checks={row.source ? <ChecksPanel row={row} /> : null}
+      form={filled ? <FilledForm filled={filled} /> : null}
       ask={<AskPanel row={row} />}
       facts={buildFacts(row, now)}
       source={row.source}

@@ -5,6 +5,7 @@ import {
   inTheFile,
   sortByDeadline,
 } from "@/components/lib/documents";
+import { fillForm } from "@/lib/forms";
 import { indexRates } from "@/components/lib/rate-index";
 import { CapturePlaceholder } from "@/components/detail/CapturePlaceholder";
 import { DocumentDetail } from "@/components/detail/DocumentDetail";
@@ -40,6 +41,7 @@ export default async function DocPage({ params }: DocPageProps) {
   const isReturn = row?.doc_type === "gst_return";
   const ledTo = row?.return?.led_to ?? null;
   const notice = isReturn && ledTo ? findDocument(rows, ledTo) : null;
+  const filled = row ? await fillForm(row.id) : null;
 
   return (
     <Shell now={now}>
@@ -51,9 +53,9 @@ export default async function DocPage({ params }: DocPageProps) {
         </p>
 
         {row && isReturn ? (
-          <ReturnDetail row={row} notice={notice} now={now} />
+          <ReturnDetail row={row} notice={notice} now={now} filled={filled} />
         ) : row ? (
-          <DocumentDetail row={row} now={now} rates={rates} />
+          <DocumentDetail row={row} now={now} rates={rates} filled={filled} />
         ) : (
           <DocumentMissing />
         )}

@@ -55,7 +55,7 @@ export function Standing({ rows, now }: StandingProps) {
       style={{
         gridTemplateColumns: "repeat(auto-fit, minmax(15rem, 1fr))",
         gap: "var(--space-6)",
-        marginBottom: "var(--space-8)",
+        marginBottom: "calc(var(--space-8) * 1.6)",
       }}
     >
       <Figure

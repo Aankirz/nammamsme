@@ -1,3 +1,4 @@
+import type { FilledForm as Filled } from "@/lib/forms";
 import type { ReturnDetail as Detail } from "@/lib/types";
 import type { DocumentRow } from "@/components/lib/documents";
 import { parseConsequence } from "@/components/lib/consequence";
@@ -13,16 +14,20 @@ import { Blueprint } from "@/components/inbox/Blueprint";
 import { Kicker } from "@/components/ui/Kicker";
 import { AskPanel } from "./AskPanel";
 import { ConsequenceLadder } from "./ConsequenceLadder";
+import { FilledForm } from "./FilledForm";
 import { PlainWords } from "./PlainWords";
 import { ReconciliationPanel } from "./ReconciliationPanel";
 import { ReturnFacts } from "./ReturnFacts";
-import { ReturnFilePanel } from "./ReturnFilePanel";
 
 interface ReturnDetailProps {
   row: DocumentRow;
   notice: DocumentRow | null;
   now: Date;
+  filled: Filled | null;
 }
+
+const FILED_LEDE =
+  "This return is already filed. Below is every value it was filed on, written out so you can check it against the portal line by line.";
 
 function paragraphsOf(text: string): string[] {
   return text
@@ -87,8 +92,9 @@ function Blocking({ blocks }: { blocks: readonly string[] }) {
   );
 }
 
-export function ReturnDetail({ row, notice, now }: ReturnDetailProps) {
+export function ReturnDetail({ row, notice, now, filled }: ReturnDetailProps) {
   const detail = row.return;
+  const isFiled = detail?.state === "filed";
   const status = returnStatus(row, now);
   const reconciliation = reconciliationFor(detail);
   const steps = detail && detail.state !== "filed" ? parseConsequence(row.consequence) : [];
@@ -125,6 +131,10 @@ export function ReturnDetail({ row, notice, now }: ReturnDetailProps) {
         />
 
         <ConsequenceLadder steps={steps} headingId="return-consequence-heading" />
+
+        {filled && (
+          <FilledForm filled={filled} lede={isFiled ? FILED_LEDE : undefined} />
+        )}
 
         <AskPanel row={row} />
       </div>

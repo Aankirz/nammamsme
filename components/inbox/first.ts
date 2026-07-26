@@ -31,6 +31,13 @@ function inWords(count: number): string {
   return COUNT_WORD[count] ?? String(count);
 }
 
+function sentence(text: string): string {
+  const trimmed = text.trim();
+  const closed = trimmed.endsWith(".") ? trimmed : `${trimmed}.`;
+
+  return closed.charAt(0).toUpperCase() + closed.slice(1);
+}
+
 export function lateReturns(rows: readonly DocumentRow[], now: Date): DocumentRow[] {
   return rows
     .filter((row) => returnStatus(row, now).standing === "overdue")
@@ -94,9 +101,8 @@ function returnAction(row: DocumentRow, late: readonly DocumentRow[]): FirstActi
       ? `${inWords(behind)} later ${behind === 1 ? "return is" : "returns are"} stuck behind it`
       : "";
   const permits = blocksEwayBills(row) ? "you cannot make e-way bills for goods going out" : "";
-  const because =
-    [stuck, permits].filter(Boolean).join(", and ") ||
-    "The fee runs until the day it is filed.";
+  const joined = [stuck, permits].filter(Boolean).join(", and ");
+  const because = joined === "" ? "The fee runs until the day it is filed." : sentence(joined);
 
   const name = returnName(row.return);
 
@@ -108,7 +114,7 @@ function returnAction(row: DocumentRow, late: readonly DocumentRow[]): FirstActi
     late: true,
     amount: fees > 0 ? fees : null,
     amountNote: `${spread}, ${growth}`,
-    because: because.endsWith(".") ? because : `${because}.`,
+    because,
     cta: `Open the ${name}`,
     speech: [
       `File your ${name}.`,

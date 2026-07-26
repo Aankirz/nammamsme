@@ -27,7 +27,7 @@ export function FirstAction({ rows, now }: FirstActionProps) {
 
   if (action === null) {
     return (
-      <section style={{ marginBottom: "var(--space-8)" }}>
+      <section style={{ marginBottom: "calc(var(--space-8) * 1.6)" }}>
         <div style={{ ...KICKER, marginBottom: "10px" }}>Today</div>
         <h1 style={LEAD}>Nothing is due</h1>
         <p style={{ ...BODY, opacity: 0.6, margin: "10px 0 0" }}>
@@ -41,8 +41,8 @@ export function FirstAction({ rows, now }: FirstActionProps) {
   const next = nextReturn(rows, now);
 
   return (
-    <section aria-labelledby="first-action" style={{ marginBottom: "var(--space-8)" }}>
-      <Blueprint style={{ padding: "var(--space-6) var(--space-6) var(--space-5)" }}>
+    <section aria-labelledby="first-action" style={{ marginBottom: "calc(var(--space-8) * 1.6)" }}>
+      <Blueprint style={{ padding: "var(--space-8) var(--space-6)" }}>
         <div className="flex items-center" style={{ gap: "8px", marginBottom: "var(--space-4)" }}>
           <span style={{ ...KICKER, color: "var(--color-accent-700)", opacity: 1 }}>
             Do this first
@@ -51,8 +51,8 @@ export function FirstAction({ rows, now }: FirstActionProps) {
         </div>
 
         <div
-          className="flex flex-wrap items-end justify-between"
-          style={{ gap: "var(--space-5)" }}
+          className="flex flex-wrap items-baseline justify-between"
+          style={{ gap: "var(--space-4) var(--space-6)" }}
         >
           <div style={{ minWidth: "min(100%, 22ch)", flex: "1 1 24rem" }}>
             <h1 id="first-action" style={LEAD}>
@@ -73,7 +73,7 @@ export function FirstAction({ rows, now }: FirstActionProps) {
           )}
         </div>
 
-        <p style={{ ...BODY, margin: "var(--space-5) 0 0", maxWidth: "68ch" }}>
+        <p style={{ ...BODY, margin: "var(--space-8) 0 0", maxWidth: "68ch" }}>
           <strong
             style={{
               fontWeight: 600,
@@ -87,7 +87,7 @@ export function FirstAction({ rows, now }: FirstActionProps) {
 
         <div
           className="flex flex-wrap items-center"
-          style={{ gap: "var(--space-4)", marginTop: "var(--space-5)" }}
+          style={{ gap: "var(--space-4) var(--space-6)", marginTop: "var(--space-6)" }}
         >
           <Link href={`/doc/${encodeURIComponent(action.row.id)}`} className="btn btn-primary">
             {action.cta}

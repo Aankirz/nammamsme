@@ -28,8 +28,10 @@ export function DocumentTable({ rows, now }: DocumentTableProps) {
         <thead>
           <tr>
             <th>What to do</th>
-            <th style={{ width: "20%", textAlign: "right" }}>How much</th>
-            <th style={{ width: "28%" }}>By when</th>
+            <th style={{ width: "18%", textAlign: "right", paddingRight: "var(--space-6)" }}>
+              How much
+            </th>
+            <th style={{ width: "30%" }}>By when</th>
           </tr>
         </thead>
         <tbody>
@@ -69,7 +71,14 @@ export function DocumentTable({ rows, now }: DocumentTableProps) {
                     ) : null}
                   </td>
 
-                  <td style={{ ...NUMERIC, textAlign: "right", fontWeight: 600 }}>
+                  <td
+                    style={{
+                      ...NUMERIC,
+                      textAlign: "right",
+                      fontWeight: 600,
+                      paddingRight: "var(--space-6)",
+                    }}
+                  >
                     {hasAmount(row.amount) ? (
                       formatRupees(row.amount)
                     ) : (

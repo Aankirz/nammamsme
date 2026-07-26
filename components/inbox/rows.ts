@@ -3,9 +3,8 @@ import { shortName } from "@/components/lib/copy";
 import { urgencyFor } from "@/components/lib/urgency";
 import { returnName } from "./forms";
 
-const LICENCE_WORD: Record<string, string> = {
-  FSSAI: "food licence",
-};
+/** Regulators, in the words the owner uses for the paper they issue. */
+const LICENCE_WORD: readonly [RegExp, string][] = [[/food safety|fssai/i, "food licence"]];
 
 export function kindMark(row: DocumentRow): string {
   if (row.doc_type === "gst_notice") return "Tax notice";
@@ -16,7 +15,7 @@ export function kindMark(row: DocumentRow): string {
 }
 
 function licenceWord(counterparty: string): string {
-  return LICENCE_WORD[shortName(counterparty)] ?? "licence";
+  return LICENCE_WORD.find(([pattern]) => pattern.test(counterparty))?.[1] ?? "licence";
 }
 
 export function actionTitle(row: DocumentRow): string {
