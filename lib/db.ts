@@ -525,7 +525,15 @@ const globalStore = globalThis as typeof globalThis & {
   __nammamsmeStore?: DocumentStore;
 };
 
-export const db: DocumentStore = (globalStore.__nammamsmeStore ??= createMemoryStore());
+function createStore(): DocumentStore {
+  const url = process.env.DATABASE_URL;
+  if (!url) return createMemoryStore();
+
+  const { createPgStore } = require("./pg-store") as typeof import("./pg-store");
+  return createPgStore(url, SEED);
+}
+
+export const db: DocumentStore = (globalStore.__nammamsmeStore ??= createStore());
 
 export function sortByDeadlineAsc(rows: readonly StoredRow[]): StoredRow[] {
   return [...rows].sort((a, b) => {
