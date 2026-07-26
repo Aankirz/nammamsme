@@ -301,3 +301,57 @@ Records: 14 invoices, ₹18,00,000 ITC claimed; 11 matched (₹14,00,000); 3 unm
 **Fix:** the refused notice becomes a genuinely different demand, period Oct-Dec 2024, Rs 2,04,800, with source blocks rewritten to match its own figures so the facsimile cannot contradict the row.
 **Worth recording:** every arithmetic gate passed throughout. The bug was in what the numbers *meant* across rows, which no unit test was positioned to catch and which one look at the rendered page made obvious.
 **Status:** In progress.
+
+---
+
+## 2026-07-26 — GST filing section
+
+### D-43 — GST returns are obligations, not a separate subsystem
+**Decision:** periodic GST returns (GSTR-1 due the 11th, GSTR-3B due the 20th) become rows with `doc_type: "gst_return"` and a nested `ReturnDetail`, carried in the same table and the same rail as everything else.
+**Why:** a return has a number, a date and a consequence, which is the definition the whole product is built on. Modelling it as a separate module would contradict D-01 and reintroduce the ERP shape we rejected.
+**Status:** Locked.
+
+### D-44 — The section exists to show cause, not to add a calendar
+**Decision:** the load-bearing element is the GSTR-3B reconciliation: `itc_claimed` 18,00,000 against `itc_available` 14,00,000, and the `led_to` link opening the DRC-01 that gap produced.
+**Why:** a filing calendar on its own is a commodity; every accounting package has one. The defensible claim is that the notice was foreseeable from a return filed months earlier, and that the product can point at the exact figure that caused it. Cause to consequence in one click.
+**Constrains:** filed returns must recede visually. The design job is that one row on fire is unmistakable among seven that are fine.
+**Status:** Locked.
+
+### D-45 — Return consequences use real statutory arithmetic
+**Decision:** late fee Rs 50/day (Rs 20 nil), capped at Rs 5,000 per return; interest 18% p.a. on tax paid late; Rule 59(6) blocking the next GSTR-1 after an unfiled GSTR-3B; e-way bill generation blocked after two consecutive unfiled periods, claimed only when the seed genuinely contains two.
+**Why:** the consequence ladder is the product's persuasive core and a judge may know these numbers. Inventing them would be worse than omitting them. Generator gates enforce that every stated fee equals days late times rate, or the cap.
+**Status:** Locked.
+
+### D-46 — Classifier keywords must not collide with notice text
+**Finding:** the hero notice contains "GSTR-3B" and "GSTR-2B", so keying `gst_return` on those strings would classify demand notices as returns.
+**Decision:** `gst_return` keys on acknowledgement language ("acknowledgement", "return filed", "filing successful", "filed on") and `gst_notice` stays first in priority so it wins ties.
+**Status:** Locked.
+
+### D-47 — No comments in source
+**Decision:** source files carry no comments. Names and structure carry meaning; rationale lives in this log.
+**Why:** user preference, stated twice. The decision log already holds every explanation the comments were duplicating, and duplicated rationale drifts.
+**Status:** Locked.
+
+### D-48 — A return's `amount` is its tax only while unfiled
+**Decision:** `amount` carries `tax_payable` only when a GSTR-3B is outstanding. Null on every filed return and on every GSTR-1, which carries no tax. `deadline` is the due date while outstanding and goes null on filing. `doc_date` carries the statutory due date always, so the calendar keeps every date it needs.
+**Why:** a filed GSTR-3B was paid when it was filed; you cannot file one otherwise. Its tax is history, exactly like the 14 evidence invoices. Counting it in a forward 30-day exposure would be false, and would be D-42 again in a new costume: the Apr-Jun 2025 return's Rs 3,84,000 sits in the same period the hero notice demands Rs 5,12,000 for.
+**Result:** exposure moves from Rs 7,16,800 across 3 documents to **Rs 9,23,300 across 7**, adding only the two genuinely unpaid GSTR-3Bs. A gate asserts no return carrying an amount starts on or before 2025-06-30.
+**Enforced twice, independently:** the data excludes them and the UI's `isAlreadyCounted` guard excludes them.
+**Status:** Locked.
+
+### D-49 — The e-way bill claim is data-gated in both directions
+**Decision:** the two-consecutive-unfiled-periods e-way bill block is stated because May and June 2026 GSTR-3B genuinely are consecutive and unfiled. The seed refuses to emit if that stops being true, and also refuses if it becomes true and goes unstated.
+**Why:** D-45 requires statutory claims to be real. A one-directional gate would let the claim quietly become false after a date change. Both overdue rows name each other, so neither over-claims alone.
+**Status:** Locked.
+
+### D-50 — Bulbul TTS wired; the speaker button was dead
+**Decision:** `POST /api/speak` calls `textToSpeech.convert` and returns base64 WAV. Measured at 874 ms.
+**Why:** the button rendered, was keyboard reachable, and did nothing. A dead control is worse than an absent one. It adds no rubric points, since only one Sarvam capability is scored, but a visibly broken affordance costs credibility.
+**Status:** Integrated.
+
+### D-51 — The CBIC rate schedule is the only real dataset in the project
+**Decision:** `Goods.csv` and `Services.csv` compiled to 1,035 HSN codes, 865 carrying a single rate and 170 genuinely ambiguous. `checkRate` returns match, mismatch, ambiguous or unknown.
+**Data problems found and handled:** the rate column mixes fractions (0.18) and whole percents (18), producing 1800% if scaled naively; multi-code cells concatenate into nonsense like `6165016505` unless split; two-digit chapter codes collide, so `6006` matched a chapter row describing vegetable products. Minimum code length is now four digits, and anything shorter is not matched at all.
+**The invariant carries over:** where a code has several lawful rates depending on sale value, the check **refuses to assert** rather than accusing a supplier of billing wrongly. Same rule as the notice pipeline, applied to a new domain.
+**Why it matters:** everything else in the seed is invented. This is real government data, and it is what lets the product predict a notice from a wrong rate on a purchase bill months before the notice exists.
+**Status:** Library and tests done. Not yet surfaced in the UI.

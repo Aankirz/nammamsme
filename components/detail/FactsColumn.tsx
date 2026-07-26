@@ -7,6 +7,7 @@ import { TONE_TEXT_CLASSES } from "@/components/lib/urgency";
 import { Money } from "@/components/ui/Money";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { SpeakButton } from "@/components/ui/SpeakButton";
+import { ConsequenceLadder } from "./ConsequenceLadder";
 
 interface FactsColumnProps {
   facts: readonly Fact[];
@@ -89,39 +90,6 @@ function FactRow({
   );
 }
 
-function Consequence({ steps }: { steps: readonly ConsequenceStep[] }) {
-  if (steps.length === 0) return null;
-
-  return (
-    <section aria-labelledby="consequence-heading" className="mt-10">
-      <SectionHeading>
-        <span id="consequence-heading">What happens if you ignore this</span>
-      </SectionHeading>
-
-      <ol className="mt-1">
-        {steps.map((step, index) => (
-          <li key={index} className="flex gap-3 border-b border-rule py-3">
-            <span
-              aria-hidden="true"
-              className="numerals mt-px w-4 shrink-0 font-mono text-xs text-ink-faint"
-            >
-              {index + 1}
-            </span>
-            <span className="min-w-0 flex-1">
-              {step.when && (
-                <span className="numerals mr-2 font-mono text-sm font-semibold text-stamp">
-                  {step.when}
-                </span>
-              )}
-              <span className="text-base text-ink">{step.text}</span>
-            </span>
-          </li>
-        ))}
-      </ol>
-    </section>
-  );
-}
-
 /**
  * What the paper says, in the owner's words, with every figure tied back to
  * the page beside it.
@@ -169,7 +137,7 @@ export function FactsColumn({
         </div>
       </section>
 
-      <Consequence steps={consequence} />
+      <ConsequenceLadder steps={consequence} headingId="consequence-heading" />
     </div>
   );
 }

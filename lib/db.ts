@@ -1,10 +1,3 @@
-// In-memory document store, seeded from data/seed.json.
-//
-// Storage decision: D-07 locks Supabase, but the credentials are not available yet.
-// Everything below sits behind `DocumentStore`, whose methods are all async, so a
-// Supabase-backed implementation can replace `createMemoryStore` without any caller
-// changing. Callers must never reach past this interface.
-
 import seedJson from "@/data/seed.json";
 import type {
   Blocker,
@@ -12,21 +5,13 @@ import type {
   Direction,
   DocType,
   ObligationRow,
+  ReturnDetail,
+  ReturnForm,
+  ReturnState,
   RowRole,
   Status,
 } from "@/lib/types";
 
-// ---------- Seed-only metadata (D-08 keeps ObligationRow at ten columns) ----------
-
-/**
- * Per-invoice figures that evidence assembly (D-14) needs but that do not belong
- * in the shared ten-column schema. Present on the 14 purchase invoices only.
- *
- * `unmatched` is the seeded label for the three invoices the department cannot see
- * in GSTR-2B. D-05: *which* three is seeded; the ₹4,00,000 gap itself is derived.
- * The same figures also appear in the row's Hindi `obligation` text, so a consumer
- * that prefers to parse prose is not blocked on this field.
- */
 export interface SeedEvidence {
   invoice_ref: string;
   taxable: number;
@@ -35,7 +20,6 @@ export interface SeedEvidence {
   unmatched: boolean;
 }
 
-/** Notice-stated figures, on the hero GST notice row only. Mirrors VerifiedFields. */
 export interface SeedNotice {
   section: string;
   tax: number;
@@ -49,40 +33,33 @@ export interface SeedNotice {
   period_end: string;
 }
 
-/** One OCR block, flattened from Sarvam's Digitise output. Coordinates are page pixels. */
 export interface SeedSourceBlock {
   page: number;
   block: number;
   text: string;
-  /** [x1, y1, x2, y2] in page pixels, so the UI can crop or highlight the region. */
   bbox: [number, number, number, number];
 }
 
-/**
- * The document behind a row, enough to draw a facsimile with highlightable
- * regions. Present on the two GST notices, which are the only rows whose figures
- * a user will want to trace back to the page (PRODUCT.md principle 3).
- */
 export interface SeedSource {
   pageWidth: number;
   pageHeight: number;
   blocks: SeedSourceBlock[];
 }
 
-/**
- * What the store actually holds. Assignable to `ObligationRow` everywhere, so
- * consumers that only know the shared contract keep working unchanged.
- */
 export type StoredRow = ObligationRow & {
   evidence?: SeedEvidence;
   notice?: SeedNotice;
   source?: SeedSource;
+  return?: ReturnDetail;
 };
 
-// ---------- Runtime validation of the seed ----------
-
 const ROLES: readonly RowRole[] = ["obligation", "evidence"];
-const DOC_TYPES: readonly DocType[] = ["gst_notice", "supplier_invoice", "licence"];
+const DOC_TYPES: readonly DocType[] = [
+  "gst_notice",
+  "supplier_invoice",
+  "licence",
+  "gst_return",
+];
 const DIRECTIONS: readonly Direction[] = ["owing", "owed"];
 const STATUSES: readonly Status[] = ["seeded", "extracted", "refused", "filed"];
 const BLOCKER_KINDS: readonly BlockerKind[] = [
@@ -90,7 +67,20 @@ const BLOCKER_KINDS: readonly BlockerKind[] = [
   "missing_annexure",
   "missing_field",
 ];
+const RETURN_FORMS: readonly ReturnForm[] = ["GSTR-1", "GSTR-3B", "GSTR-9"];
+const RETURN_STATES: readonly ReturnState[] = ["filed", "due", "overdue"];
 const BBOX_LENGTH = 4;
+
+const SEED_REFERENCE_DATE = "2026-07-26";
+const LATE_FEE_PER_DAY = 50;
+const NIL_LATE_FEE_PER_DAY = 20;
+const LATE_FEE_CAP = 5000;
+const GSTR1_DUE_DAY = 11;
+const GSTR3B_DUE_DAY = 20;
+const MS_PER_DAY = 86_400_000;
+const MONTHS_PER_YEAR = 12;
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+const EWAY_BILL = /e-way bill/i;
 
 function fail(index: number, message: string): never {
   throw new Error(`data/seed.json row ${index}: ${message}`);
@@ -98,6 +88,42 @@ function fail(index: number, message: string): never {
 
 function isPositiveInteger(value: unknown): boolean {
   return Number.isInteger(value) && (value as number) > 0;
+}
+
+function isIsoDate(value: unknown): value is string {
+  return typeof value === "string" && ISO_DATE.test(value);
+}
+
+function dayNumber(iso: string): number {
+  return Math.round(Date.parse(`${iso}T00:00:00Z`) / MS_PER_DAY);
+}
+
+function daysBetween(from: string, to: string): number {
+  return dayNumber(to) - dayNumber(from);
+}
+
+function monthNumber(iso: string): number {
+  return Number(iso.slice(0, 4)) * MONTHS_PER_YEAR + Number(iso.slice(5, 7));
+}
+
+function dueDateFor(form: ReturnForm, periodEnd: string): string {
+  const year = Number(periodEnd.slice(0, 4));
+  const month = Number(periodEnd.slice(5, 7));
+  const nextYear = month === MONTHS_PER_YEAR ? year + 1 : year;
+  const nextMonth = month === MONTHS_PER_YEAR ? 1 : month + 1;
+  const day = form === "GSTR-1" ? GSTR1_DUE_DAY : GSTR3B_DUE_DAY;
+
+  return `${nextYear}-${String(nextMonth).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
+function lateFeeRateFor(detail: ReturnDetail): number {
+  const isNilReturn = detail.form === "GSTR-3B" && detail.tax_payable === 0;
+  return isNilReturn ? NIL_LATE_FEE_PER_DAY : LATE_FEE_PER_DAY;
+}
+
+function expectedLateFee(detail: ReturnDetail): number {
+  const accrued = Math.max(detail.days_late, 0) * lateFeeRateFor(detail);
+  return Math.min(accrued, LATE_FEE_CAP);
 }
 
 function validateSourceRef(index: number, where: string, raw: unknown): void {
@@ -114,11 +140,6 @@ function validateSourceRef(index: number, where: string, raw: unknown): void {
   }
 }
 
-/**
- * A blocker is the one thing standing between the user and a filed reply (D-12),
- * so a malformed one is worse than none: the UI would disable the button without
- * being able to say why.
- */
 function validateBlockers(index: number, raw: unknown): void {
   if (!Array.isArray(raw)) fail(index, "blockers must be an array");
 
@@ -138,7 +159,6 @@ function validateBlockers(index: number, raw: unknown): void {
   });
 }
 
-/** Bounding boxes that fall outside the page draw highlights nobody can see. */
 function validateSourceBlock(index: number, source: SeedSource, raw: unknown): void {
   const block = raw as Partial<SeedSourceBlock>;
   const where = `source.blocks[${String(block.block)}]`;
@@ -148,7 +168,6 @@ function validateSourceBlock(index: number, source: SeedSource, raw: unknown): v
   if (typeof block.text !== "string" || block.text.trim() === "") {
     fail(index, `${where}.text is empty`);
   }
-  // A source block without a box cannot be highlighted, so here bbox is required.
   if (block.bbox === undefined) fail(index, `${where}.bbox is required`);
   validateSourceRef(index, where, block);
 
@@ -173,7 +192,6 @@ function validateSource(index: number, raw: unknown): void {
   }
 }
 
-/** The notice's own arithmetic. D-11 tolerates this on a live document; a seed has no excuse. */
 function validateNotice(index: number, notice: SeedNotice, amount: number | null): void {
   if (notice.tax + notice.interest + notice.penalty !== notice.total) {
     fail(index, "notice: tax + interest + penalty does not equal total");
@@ -193,13 +211,95 @@ function validateEvidence(index: number, evidence: SeedEvidence, amount: number 
   }
 }
 
-/**
- * The ITC story has to tie out ACROSS rows, not merely within each one. The 14
- * purchase invoices are the defence assembled against the notice (D-14), so their
- * GST must sum to exactly what the notice says was claimed, and the invoices the
- * department cannot see must sum to exactly the gap it is demanding. A seed that
- * fails this renders a reply that argues against itself.
- */
+function validateReturnShape(index: number, detail: ReturnDetail): void {
+  if (!RETURN_FORMS.includes(detail.form)) fail(index, `return: bad form ${String(detail.form)}`);
+  if (!RETURN_STATES.includes(detail.state)) fail(index, `return: bad state ${String(detail.state)}`);
+  if (!isIsoDate(detail.period_start)) fail(index, "return.period_start must be an ISO date");
+  if (!isIsoDate(detail.period_end)) fail(index, "return.period_end must be an ISO date");
+  if (detail.period_start >= detail.period_end) fail(index, "return: period_start is not before period_end");
+  if (typeof detail.period_label !== "string" || detail.period_label.trim() === "") {
+    fail(index, "return.period_label is empty");
+  }
+  if (!Number.isInteger(detail.days_late)) fail(index, "return.days_late must be an integer");
+  if (!Array.isArray(detail.blocks)) fail(index, "return.blocks must be an array");
+  if (!detail.blocks.every((entry) => typeof entry === "string" && entry.trim() !== "")) {
+    fail(index, "return: a block must say what it stops, in words");
+  }
+}
+
+function validateReturnState(index: number, detail: ReturnDetail, row: Record<string, unknown>): void {
+  const dueDate = dueDateFor(detail.form, detail.period_end);
+  const isFiled = detail.state === "filed";
+
+  if (row.doc_date !== dueDate) {
+    fail(index, `return: doc_date must be the statutory due date ${dueDate}`);
+  }
+
+  if (isFiled) {
+    if (!isIsoDate(detail.filed_on)) fail(index, "return: a filed return needs filed_on");
+    if (typeof detail.arn !== "string" || detail.arn.trim() === "") {
+      fail(index, "return: a filed return needs an ARN");
+    }
+    if (row.deadline !== null) fail(index, "return: a filed return has nothing left to do, so deadline must be null");
+    if (row.amount !== null) fail(index, "return: a filed return was paid when it was filed, so amount must be null");
+    if (detail.blocks.length !== 0) fail(index, "return: a filed return blocks nothing");
+    if (detail.days_late > 0) fail(index, "return: state is filed but days_late is positive");
+  } else {
+    if (detail.filed_on !== null) fail(index, "return: an unfiled return cannot carry filed_on");
+    if (detail.arn !== null) fail(index, "return: an unfiled return cannot carry an ARN");
+    if (row.deadline !== dueDate) fail(index, `return: an unfiled return's deadline must be ${dueDate}`);
+    if (row.amount !== detail.tax_payable) {
+      fail(index, "return: an unfiled return's amount must be its unpaid tax");
+    }
+    if (detail.itc_claimed !== null) fail(index, "return: an unfiled return has claimed no credit");
+  }
+
+  const referenceDay = detail.filed_on ?? SEED_REFERENCE_DATE;
+  if (detail.days_late !== daysBetween(dueDate, referenceDay)) {
+    fail(index, `return: days_late must be ${daysBetween(dueDate, referenceDay)} against ${dueDate}`);
+  }
+  if (detail.state === "overdue" && detail.days_late <= 0) {
+    fail(index, "return: state is overdue but the due date has not passed");
+  }
+  if (detail.state === "due" && detail.days_late > 0) {
+    fail(index, "return: state is due but the due date has passed");
+  }
+}
+
+function validateReturnArithmetic(index: number, detail: ReturnDetail, consequence: string): void {
+  const expected = expectedLateFee(detail);
+
+  if (detail.late_fee !== expected) {
+    fail(
+      index,
+      `return: late_fee is ${String(detail.late_fee)}, expected ${expected} at Rs ${lateFeeRateFor(detail)} a day capped at Rs ${LATE_FEE_CAP}`,
+    );
+  }
+  if (detail.form === "GSTR-1") {
+    if (detail.tax_payable !== null) fail(index, "return: no tax is paid with a GSTR-1");
+    if (detail.itc_claimed !== null || detail.itc_available !== null) {
+      fail(index, "return: a GSTR-1 carries no input tax credit figures");
+    }
+  }
+  if (detail.state !== "overdue") return;
+
+  if (detail.tax_payable !== null && !consequence.includes("18 percent a year")) {
+    fail(index, "return: an overdue return carrying tax must say interest is running at 18 percent a year");
+  }
+  if (detail.late_fee >= LATE_FEE_CAP && !consequence.includes("capped")) {
+    fail(index, "return: the late fee has hit the cap and the ladder does not say so");
+  }
+  if (detail.form === "GSTR-3B" && !detail.blocks.some((entry) => entry.includes("GSTR-1"))) {
+    fail(index, "return: an unfiled GSTR-3B blocks the next GSTR-1 and must say so");
+  }
+}
+
+function validateReturn(index: number, detail: ReturnDetail, row: Record<string, unknown>): void {
+  validateReturnShape(index, detail);
+  validateReturnState(index, detail, row);
+  validateReturnArithmetic(index, detail, row.consequence as string);
+}
+
 function validateItcReconciliation(rows: readonly StoredRow[]): void {
   const withNotice = rows.filter((row) => row.notice !== undefined);
   if (withNotice.length !== 1) {
@@ -224,11 +324,57 @@ function validateItcReconciliation(rows: readonly StoredRow[]): void {
   }
 }
 
-/**
- * The JSON import widens string literals to `string`, so the union members are not
- * checked at compile time. Check them at load instead — a bad seed fails loudly at
- * first access rather than silently rendering a broken inbox on stage.
- */
+function validateReturnLedger(rows: readonly StoredRow[]): void {
+  const returns = rows.flatMap((row) => (row.return ? [{ row, detail: row.return }] : []));
+  if (returns.length === 0) return;
+
+  const notice = rows.find((row) => row.notice !== undefined)?.notice as SeedNotice;
+  const causal = returns.filter((entry) => entry.detail.led_to !== null);
+
+  if (causal.length !== 1) {
+    throw new Error(`data/seed.json: expected exactly one return to have produced a notice, found ${causal.length}`);
+  }
+
+  const { detail } = causal[0];
+  if (!rows.some((row) => row.id === detail.led_to)) {
+    throw new Error(`data/seed.json: return led_to ${String(detail.led_to)}, which is not a row in this seed`);
+  }
+  if (detail.form !== "GSTR-3B" || detail.state !== "filed") {
+    throw new Error("data/seed.json: only a filed GSTR-3B can have produced an ITC mismatch notice");
+  }
+
+  const links: readonly [string, unknown, unknown][] = [
+    ["itc_claimed vs notice claimed_itc", detail.itc_claimed, notice.claimed_itc],
+    ["itc_available vs notice matched_itc", detail.itc_available, notice.matched_itc],
+    ["period_start vs notice period_start", detail.period_start, notice.period_start],
+    ["period_end vs notice period_end", detail.period_end, notice.period_end],
+  ];
+
+  for (const [label, actual, expected] of links) {
+    if (actual !== expected) {
+      throw new Error(`data/seed.json: causal return ${label}, got ${String(actual)}, expected ${String(expected)}`);
+    }
+  }
+
+  const unfiledMonths = returns
+    .filter((entry) => entry.detail.form === "GSTR-3B" && entry.detail.state !== "filed")
+    .map((entry) => monthNumber(entry.detail.period_start))
+    .sort((a, b) => a - b);
+  const hasConsecutiveUnfiled = unfiledMonths.some(
+    (month, position) => position > 0 && month - unfiledMonths[position - 1] === 1,
+  );
+  const claimsEwayBill = returns.some((entry) =>
+    EWAY_BILL.test([entry.row.obligation, entry.row.consequence, ...entry.detail.blocks].join("\n")),
+  );
+
+  if (claimsEwayBill && !hasConsecutiveUnfiled) {
+    throw new Error("data/seed.json: an e-way bill block is claimed without two consecutive unfiled GSTR-3B periods");
+  }
+  if (hasConsecutiveUnfiled && !claimsEwayBill) {
+    throw new Error("data/seed.json: two consecutive GSTR-3B periods are unfiled and the e-way bill block is not stated");
+  }
+}
+
 function validateSeed(raw: unknown): StoredRow[] {
   if (!Array.isArray(raw)) throw new Error("data/seed.json must be an array");
 
@@ -257,35 +403,36 @@ function validateSeed(raw: unknown): StoredRow[] {
     if (row.evidence !== undefined) {
       validateEvidence(index, row.evidence as SeedEvidence, row.amount as number | null);
     }
+    if (row.return !== undefined) {
+      validateReturn(index, row.return as ReturnDetail, row);
+    }
+    if ((row.doc_type === "gst_return") !== (row.return !== undefined)) {
+      fail(index, "a gst_return row must carry a return object, and only a gst_return row may");
+    }
 
     return row as unknown as StoredRow;
   });
 
   validateItcReconciliation(rows);
+  validateReturnLedger(rows);
   return rows;
 }
 
 const SEED: readonly StoredRow[] = validateSeed(seedJson);
 
-/** Deep copy so callers can never mutate the pristine seed or each other's rows. */
 function clone<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T;
 }
-
-// ---------- Store interface ----------
 
 export interface DocumentStore {
   listDocuments(): Promise<StoredRow[]>;
   getDocument(id: string): Promise<StoredRow | null>;
   insertDocument(row: StoredRow): Promise<StoredRow>;
-  /** Returns the updated row, or null when `id` is unknown. */
   updateDocument(id: string, patch: Partial<StoredRow>): Promise<StoredRow | null>;
-  /** Clears the store, reseeds from data/seed.json, returns the row count. */
   reset(): Promise<number>;
 }
 
 function createMemoryStore(): DocumentStore {
-  // Insertion-ordered. Sorting is the caller's concern (see sortByDeadlineAsc).
   let rows: StoredRow[] = clone(SEED as StoredRow[]);
 
   return {
@@ -308,7 +455,6 @@ function createMemoryStore(): DocumentStore {
       const index = rows.findIndex((row) => row.id === id);
       if (index === -1) return null;
 
-      // Immutable update: new row object, new array. Never mutate in place.
       const updated: StoredRow = { ...rows[index], ...clone(patch), id };
       rows = [...rows.slice(0, index), updated, ...rows.slice(index + 1)];
       return clone(updated);
@@ -321,20 +467,12 @@ function createMemoryStore(): DocumentStore {
   };
 }
 
-// ---------- Singleton ----------
-
-// Next.js dev hot-reloads modules; without this the store resets on every edit and
-// a filed ARN vanishes mid-demo. Serverless cold starts still reset it — acceptable
-// for the hackathon, and the reason the interface above exists.
 const globalStore = globalThis as typeof globalThis & {
   __nammamsmeStore?: DocumentStore;
 };
 
 export const db: DocumentStore = (globalStore.__nammamsmeStore ??= createMemoryStore());
 
-// ---------- Shared helpers ----------
-
-/** Deadline ascending, rows with no deadline last. Stable within each group. */
 export function sortByDeadlineAsc(rows: readonly StoredRow[]): StoredRow[] {
   return [...rows].sort((a, b) => {
     if (a.deadline === b.deadline) return 0;

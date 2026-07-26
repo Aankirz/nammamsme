@@ -1,8 +1,10 @@
 import Link from "next/link";
 import type { DocumentRow } from "@/components/lib/documents";
 import { computeExposure } from "@/components/lib/exposure";
+import { groupRows, lateReturnCount } from "@/components/lib/returns";
 import { ExposurePanel } from "./ExposurePanel";
 import { RailRow } from "./RailRow";
+import { ReturnRow } from "./ReturnRow";
 
 interface RailProps {
   rows: readonly DocumentRow[];
@@ -10,15 +12,10 @@ interface RailProps {
   selectedId?: string;
 }
 
-/**
- * The persistent left rail. Selection lives here and survives navigation, so
- * the owner never loses his place in the file.
- *
- * Below 1024px this becomes a top list. That is the only responsive
- * concession, and it is structural: nothing about the type changes.
- */
 export function Rail({ rows, now, selectedId }: RailProps) {
   const exposure = computeExposure(rows, now);
+  const { obligations, returns } = groupRows(rows, now);
+  const late = lateReturnCount(returns, now);
 
   return (
     <div className="border-b border-rule bg-paper-sunk lg:sticky lg:top-[var(--identity-height)] lg:h-[calc(100dvh-var(--identity-height))] lg:overflow-y-auto lg:border-b-0 lg:border-r">
@@ -27,10 +24,15 @@ export function Rail({ rows, now, selectedId }: RailProps) {
       <nav aria-label="Obligations" className="pb-6 pt-6">
         <h2 className="eyebrow px-6 pb-3">Obligations</h2>
 
-        {rows.length > 0 ? (
+        {obligations.length > 0 ? (
           <ul>
-            {rows.map((row) => (
-              <RailRow key={row.id} row={row} now={now} current={row.id === selectedId} />
+            {obligations.map((row) => (
+              <RailRow
+                key={row.id}
+                row={row}
+                now={now}
+                current={row.id === selectedId}
+              />
             ))}
           </ul>
         ) : (
@@ -49,6 +51,34 @@ export function Rail({ rows, now, selectedId }: RailProps) {
           </Link>
         </p>
       </nav>
+
+      {returns.length > 0 && (
+        <nav aria-label="Returns" className="border-t border-rule pb-7 pt-6">
+          <div className="flex items-baseline justify-between gap-3 px-6 pb-3">
+            <h2 className="eyebrow">Returns</h2>
+            {late > 0 && (
+              <p className="numerals font-mono text-xs font-semibold text-stamp">
+                {late === 1 ? "1 not filed" : `${late} not filed`}
+              </p>
+            )}
+          </div>
+
+          <ul>
+            {returns.map((row) => (
+              <ReturnRow
+                key={row.id}
+                row={row}
+                now={now}
+                current={row.id === selectedId}
+              />
+            ))}
+          </ul>
+
+          <p className="px-6 pt-4 text-xs text-ink-faint">
+            Filed returns need nothing from you.
+          </p>
+        </nav>
+      )}
     </div>
   );
 }

@@ -1,21 +1,18 @@
-/**
- * The rail headline, computed from the rows every time. Two filters over one
- * table (PRD, "Surfaces"). Never a stored aggregate.
- */
-
-import type { ObligationRow } from "@/lib/types";
+import type { DocumentRow } from "./documents";
 import { shortName } from "./copy";
 import { daysSince } from "./dates";
 import { hasAmount } from "./money";
-import { urgencyFor, HORIZON_DAYS, RECEIVABLE_OVERDUE_DAYS, type Tone } from "./urgency";
+import {
+  urgencyFor,
+  HORIZON_DAYS,
+  RECEIVABLE_OVERDUE_DAYS,
+  type Tone,
+} from "./urgency";
 
 export interface ExposureLine {
   id: string;
-  /** "GST demand" / "Sharma Distributors" / "FSSAI licence" */
   label: string;
-  /** Null for a licence, which has a date but no price. */
   amount: number | null;
-  /** "19d left" */
   count: string;
   tone: Tone;
 }
@@ -24,12 +21,10 @@ export interface Collection {
   amount: number;
   days: number;
   counterparty: string;
-  /** Whether collecting it clears the whole 30-day exposure. */
   coversAll: boolean;
 }
 
 export interface Exposure {
-  /** Rupees leaving the account inside the next 30 days, overdue included. */
   movingWithin30: number;
   documentCount: number;
   lines: ExposureLine[];
@@ -43,27 +38,41 @@ const EMPTY_EXPOSURE: Exposure = {
   collection: null,
 };
 
-function labelFor(row: ObligationRow): string {
+function labelFor(row: DocumentRow): string {
   if (row.doc_type === "gst_notice") return "GST demand";
   if (row.doc_type === "licence") return `${shortName(row.counterparty)} licence`;
+  if (row.doc_type === "gst_return") return `${row.return?.form ?? "GST"} return`;
   return shortName(row.counterparty);
 }
 
-function isMovingSoon(row: ObligationRow, now: Date): boolean {
+function isAlreadyCounted(row: DocumentRow, rows: readonly DocumentRow[]): boolean {
+  const detail = row.return;
+  if (detail === null) return false;
+  if (detail.state === "filed") return true;
+
+  return detail.led_to !== null && rows.some((other) => other.id === detail.led_to);
+}
+
+function isMovingSoon(
+  row: DocumentRow,
+  rows: readonly DocumentRow[],
+  now: Date,
+): boolean {
   if (row.direction !== "owing") return false;
+  if (isAlreadyCounted(row, rows)) return false;
 
   const { days } = urgencyFor(row, now);
   return days !== null && days <= HORIZON_DAYS;
 }
 
-function isOverdueReceivable(row: ObligationRow, now: Date): boolean {
+function isOverdueReceivable(row: DocumentRow, now: Date): boolean {
   if (row.direction !== "owed") return false;
 
   const age = daysSince(row.doc_date ?? row.deadline, now);
   return age !== null && age > RECEIVABLE_OVERDUE_DAYS;
 }
 
-function toLine(row: ObligationRow, now: Date): ExposureLine {
+function toLine(row: DocumentRow, now: Date): ExposureLine {
   const urgency = urgencyFor(row, now);
 
   return {
@@ -75,13 +84,8 @@ function toLine(row: ObligationRow, now: Date): ExposureLine {
   };
 }
 
-/**
- * The largest receivable sitting past the statutory 45 days. Named under the
- * exposure so the owner can see that money he is already owed would cover what
- * is about to leave (PRD user story 5).
- */
 function pickCollection(
-  rows: readonly ObligationRow[],
+  rows: readonly DocumentRow[],
   now: Date,
   movingWithin30: number,
 ): Collection | null {
@@ -100,10 +104,10 @@ function pickCollection(
   };
 }
 
-export function computeExposure(rows: readonly ObligationRow[], now: Date): Exposure {
+export function computeExposure(rows: readonly DocumentRow[], now: Date): Exposure {
   if (rows.length === 0) return EMPTY_EXPOSURE;
 
-  const moving = rows.filter((row) => isMovingSoon(row, now));
+  const moving = rows.filter((row) => isMovingSoon(row, rows, now));
   const movingWithin30 = moving.reduce(
     (total, row) => (hasAmount(row.amount) ? total + row.amount : total),
     0,

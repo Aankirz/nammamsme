@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { DocumentRow } from "@/components/lib/documents";
 import { DOC_TYPE_LABEL } from "@/components/lib/copy";
+import { returnStatus } from "@/components/lib/returns";
 import { urgencyFor } from "@/components/lib/urgency";
 
 interface EmptyDetailProps {
@@ -40,7 +41,11 @@ function Steps() {
  * ends in the one document most worth opening.
  */
 export function EmptyDetail({ next, now }: EmptyDetailProps) {
-  const urgency = next ? urgencyFor(next, now) : null;
+  const urgency = next
+    ? next.doc_type === "gst_return"
+      ? returnStatus(next, now)
+      : urgencyFor(next, now)
+    : null;
 
   return (
     <div className="w-full max-w-[var(--content-max)] px-8 pb-16 pt-12">

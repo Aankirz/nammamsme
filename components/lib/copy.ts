@@ -11,6 +11,7 @@ export const DOC_TYPE_LABEL: Record<DocType, string> = {
   gst_notice: "GST notice",
   supplier_invoice: "Invoice",
   licence: "Licence",
+  gst_return: "GST return",
 };
 
 /** The mark on the paper itself. Short enough to sit in a rail row. */
@@ -18,6 +19,7 @@ export const DOC_TYPE_STAMP: Record<DocType, string> = {
   gst_notice: "GST",
   supplier_invoice: "BILL",
   licence: "LIC",
+  gst_return: "RET",
 };
 
 const MONTHS = [
@@ -94,7 +96,8 @@ export function dayCountPhrase(days: number | null, isExpiry: boolean): string {
 
 /** Why the money slot is empty. A licence has no price; a notice should. */
 export function noAmountPhrase(docType: DocType): string {
-  return docType === "licence" ? "Nothing to pay" : "No amount found";
+  if (docType === "licence" || docType === "gst_return") return "Nothing to pay";
+  return "No amount found";
 }
 
 /**
@@ -103,7 +106,9 @@ export function noAmountPhrase(docType: DocType): string {
  * wrong.
  */
 export function allegationHeading(docType: DocType): string {
-  return docType === "gst_notice" ? "What they say you did" : "What this document says";
+  if (docType === "gst_notice") return "What they say you did";
+  if (docType === "gst_return") return "What this return covers";
+  return "What this document says";
 }
 
 export function documentCountPhrase(count: number): string {

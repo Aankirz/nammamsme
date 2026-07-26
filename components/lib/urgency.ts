@@ -30,7 +30,7 @@ export interface Urgency {
   days: number | null;
 }
 
-function toneForDaysLeft(days: number | null): Tone {
+export function toneForDaysLeft(days: number | null): Tone {
   if (days === null) return "unknown";
   if (days <= CRITICAL_DAYS) return "stamp";
   if (days <= HORIZON_DAYS) return "pending";

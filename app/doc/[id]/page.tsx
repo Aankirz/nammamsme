@@ -2,12 +2,11 @@ import { fetchDocuments, findDocument, sortByDeadline } from "@/components/lib/d
 import { CapturePlaceholder } from "@/components/detail/CapturePlaceholder";
 import { DocumentDetail } from "@/components/detail/DocumentDetail";
 import { DocumentMissing } from "@/components/detail/DocumentMissing";
+import { ReturnDetail } from "@/components/detail/ReturnDetail";
 import { Shell } from "@/components/shell/Shell";
 
-/** Days remaining is computed per request. */
 export const dynamic = "force-dynamic";
 
-/** Reserved id for the capture placeholder the rail links to. */
 const CAPTURE_ID = "new";
 
 interface DocPageProps {
@@ -20,10 +19,16 @@ export default async function DocPage({ params }: DocPageProps) {
   const rows = sortByDeadline(await fetchDocuments());
   const row = id === CAPTURE_ID ? null : findDocument(rows, id);
 
+  const isReturn = row?.doc_type === "gst_return";
+  const ledTo = row?.return?.led_to ?? null;
+  const notice = isReturn && ledTo ? findDocument(rows, ledTo) : null;
+
   return (
     <Shell rows={rows} now={now} selectedId={row?.id}>
       {id === CAPTURE_ID ? (
         <CapturePlaceholder />
+      ) : row && isReturn ? (
+        <ReturnDetail row={row} notice={notice} now={now} />
       ) : row ? (
         <DocumentDetail row={row} now={now} />
       ) : (

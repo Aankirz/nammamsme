@@ -1,26 +1,41 @@
-// Shared contract. Owned by the coordinator — do not edit in a subagent.
-// See decisionlog.md D-08 (schema), D-09 (doc_date vs deadline), D-12 (blockers).
+export type DocType = "gst_notice" | "supplier_invoice" | "licence" | "gst_return";
 
-export type DocType = "gst_notice" | "supplier_invoice" | "licence";
+export type ReturnForm = "GSTR-1" | "GSTR-3B" | "GSTR-9";
+
+export type ReturnState = "filed" | "due" | "overdue";
+
+export interface ReturnDetail {
+  form: ReturnForm;
+  period_label: string;
+  period_start: string;
+  period_end: string;
+  state: ReturnState;
+  filed_on: string | null;
+  arn: string | null;
+  tax_payable: number | null;
+  itc_claimed: number | null;
+  itc_available: number | null;
+  late_fee: number | null;
+  days_late: number;
+  blocks: string[];
+  led_to: string | null;
+}
 
 export type Direction = "owing" | "owed";
 
 export type Status = "seeded" | "extracted" | "refused" | "filed";
 
-/** Why filing is blocked. Any blocker present => file button disabled. D-12. */
-export type BlockerKind =
-  | "amount_disagreement" // Extract and Digitise disagree after normalisation
-  | "missing_annexure" // document references a page we do not have
-  | "missing_field"; // a required field is absent
+export type RowRole = "obligation" | "evidence";
+
+export type BlockerKind = "amount_disagreement" | "missing_annexure" | "missing_field";
 
 export interface Blocker {
   kind: BlockerKind;
   field?: string;
-  detail: string; // shown to the user, in Hindi at the UI layer
-  sourceRef?: SourceRef; // so the UI can crop the region
+  detail: string;
+  sourceRef?: SourceRef;
 }
 
-/** Non-blocking observation. Arithmetic mismatch lands here, not in Blocker. D-11. */
 export interface Flag {
   kind: "arithmetic_mismatch";
   detail: string;
@@ -34,29 +49,14 @@ export interface SourceRef {
   bbox?: [number, number, number, number];
 }
 
-/**
- * What a row is FOR.
- *
- * "obligation" — something the trader must act on. Appears in the inbox.
- * "evidence"   — a historical document that backs a claim (e.g. the purchase
- *                invoices supporting an ITC claim). Already settled; it is not a
- *                pending obligation and must NOT clutter the inbox. Surfaces only
- *                when a reply is assembled from it.
- *
- * Without this split the 14 evidence invoices render as year-overdue payables and
- * push the hero notice to the bottom of a deadline-sorted list. See D-30.
- */
-export type RowRole = "obligation" | "evidence";
-
-/** One row per document. Seeded and live rows are indistinguishable. D-08. */
 export interface ObligationRow {
   id: string;
   role: RowRole;
   doc_type: DocType;
   obligation: string;
-  amount: number | null; // paise-free rupees, integer
-  doc_date: string | null; // ISO date. Invoice date / notice date. D-09.
-  deadline: string | null; // ISO date. Reply-by / pay-by / expires-on. D-09.
+  amount: number | null;
+  doc_date: string | null;
+  deadline: string | null;
   counterparty: string;
   consequence: string;
   direction: Direction;
@@ -67,14 +67,10 @@ export interface ObligationRow {
   created_at: string;
 }
 
-// ---------- Sarvam Vision shapes (narrowed to what we consume) ----------
-
-/** Vision Extract: named fields returned directly. */
 export interface ExtractResult {
   fields: Record<string, string | null>;
 }
 
-/** Vision Digitise: full page text with provenance. */
 export interface DigitiseBlock {
   page: number;
   block: number;
@@ -83,12 +79,9 @@ export interface DigitiseBlock {
 
 export interface DigitiseResult {
   blocks: DigitiseBlock[];
-  text: string; // all blocks joined, convenience
+  text: string;
 }
 
-// ---------- Verification ----------
-
-/** Fields that survived verification. Nulls mean "not established". */
 export interface VerifiedFields {
   amount: number | null;
   tax: number | null;
@@ -98,18 +91,16 @@ export interface VerifiedFields {
   deadline: string | null;
   counterparty: string | null;
   section: string | null;
-  claimed_itc: number | null; // notice-stated ITC the trader claimed
-  matched_itc: number | null; // notice-stated ITC the department can see
+  claimed_itc: number | null;
+  matched_itc: number | null;
 }
 
 export interface VerifyResult {
   fields: VerifiedFields;
   blockers: Blocker[];
   flags: Flag[];
-  canFile: boolean; // blockers.length === 0
+  canFile: boolean;
 }
-
-// ---------- Evidence assembly (D-14) ----------
 
 export interface EvidenceRow {
   counterparty: string;
@@ -121,9 +112,9 @@ export interface EvidenceRow {
 
 export interface EvidenceResult {
   rows: EvidenceRow[];
-  claimedTotal: number; // sum of gst across rows
-  matchedTotal: number; // from the notice
-  gap: number; // claimedTotal - matchedTotal, the unmatched portion
+  claimedTotal: number;
+  matchedTotal: number;
+  gap: number;
   periodStart: string;
   periodEnd: string;
 }

@@ -23,6 +23,7 @@ function directionFor(docType: DocType): Direction {
 function obligationFor(docType: DocType, counterparty: string | null): string {
   const who = counterparty ?? "an unnamed party";
   if (docType === "gst_notice") return `GST demand from ${who}. Reply required.`;
+  if (docType === "gst_return") return `GST return acknowledgement from ${who}.`;
   if (docType === "licence") return `Licence from ${who}. Renew before it expires.`;
   return `Invoice from ${who}.`;
 }

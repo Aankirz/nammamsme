@@ -1,27 +1,15 @@
-/**
- * Server-side reader for `GET /api/documents`.
- *
- * The route is owned by another workstream. Every failure path here returns an
- * empty list rather than throwing: a rail that renders "no documents" is
- * recoverable on stage, a 500 is not.
- */
-
 import { headers } from "next/headers";
-import type { Blocker, ObligationRow } from "@/lib/types";
+import type { Blocker, ObligationRow, ReturnDetail } from "@/lib/types";
 import { deadlineSortKey } from "./dates";
+import { toReturnDetail } from "./returns";
 import { toDocumentSource, type DocumentSource } from "./source";
 
-/**
- * A row plus the page it was read off.
- *
- * `source` is carried by the seed alongside the ten shared columns rather than
- * inside them, so it is narrowed here instead of in the shared contract.
- */
 export interface DocumentRow extends ObligationRow {
   source: DocumentSource | null;
+  return: ReturnDetail | null;
 }
 
-const DOCUMENTS_PATH = "/api/documents";
+const DOCUMENTS_PATH = "/api/documents?role=all";
 
 async function resolveBaseUrl(): Promise<string | null> {
   const configured = process.env.NEXT_PUBLIC_BASE_URL;
@@ -30,8 +18,7 @@ async function resolveBaseUrl(): Promise<string | null> {
   }
 
   const requestHeaders = await headers();
-  const host =
-    requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host");
+  const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host");
 
   if (!host) {
     return null;
@@ -52,13 +39,12 @@ function isBlocker(value: unknown): value is Blocker {
   );
 }
 
-/** Trusts the contract but survives a partially-built API. */
 function toDocumentRow(value: unknown): DocumentRow | null {
   if (typeof value !== "object" || value === null) {
     return null;
   }
 
-  const candidate = value as ObligationRow & { source?: unknown };
+  const candidate = value as ObligationRow & { source?: unknown; return?: unknown };
   if (typeof candidate.id !== "string" || candidate.id.length === 0) {
     return null;
   }
@@ -66,6 +52,7 @@ function toDocumentRow(value: unknown): DocumentRow | null {
   return {
     ...candidate,
     source: toDocumentSource(candidate.source),
+    return: toReturnDetail(candidate.return),
     counterparty: candidate.counterparty ?? "",
     obligation: candidate.obligation ?? "",
     consequence: candidate.consequence ?? "",
@@ -73,6 +60,10 @@ function toDocumentRow(value: unknown): DocumentRow | null {
       ? candidate.blockers.filter(isBlocker)
       : [],
   };
+}
+
+function belongsInTheFile(row: DocumentRow): boolean {
+  return row.doc_type === "gst_return" || row.role !== "evidence";
 }
 
 function toDocumentRows(payload: unknown): DocumentRow[] {
@@ -84,7 +75,8 @@ function toDocumentRows(payload: unknown): DocumentRow[] {
 
   return list
     .map(toDocumentRow)
-    .filter((row): row is DocumentRow => row !== null);
+    .filter((row): row is DocumentRow => row !== null)
+    .filter(belongsInTheFile);
 }
 
 export async function fetchDocuments(): Promise<DocumentRow[]> {
@@ -109,13 +101,11 @@ export async function fetchDocuments(): Promise<DocumentRow[]> {
   }
 }
 
-/** Most urgent first. Undated rows sink to the bottom, newest of those first. */
 export function sortByDeadline(rows: readonly DocumentRow[]): DocumentRow[] {
   return [...rows].sort((a, b) => {
     const keyA = deadlineSortKey(a.deadline);
     const keyB = deadlineSortKey(b.deadline);
 
-    // Compared rather than subtracted: two undated rows would give NaN.
     if (keyA !== keyB) {
       return keyA < keyB ? -1 : 1;
     }
