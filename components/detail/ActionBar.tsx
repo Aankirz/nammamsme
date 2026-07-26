@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { blockedReason } from "@/components/lib/blockers";
+import type { RateIndex } from "@/components/lib/rate";
 import { PRIMARY_BUTTON, SECONDARY_BUTTON } from "@/components/ui/buttons";
 import { ReplyPreview } from "./ReplyPreview";
 
@@ -14,6 +15,8 @@ interface ActionBarProps {
   blockerCount: number;
   /** The ARN, once this document has been filed. */
   filedRef: string | null;
+  /** Schedule verdicts for every purchase invoice, checked at render on the server. */
+  rates: RateIndex;
 }
 
 type Stage = "idle" | "reviewing" | "filing" | "filed" | "failed" | "flagged" | "sent";
@@ -41,6 +44,7 @@ export function ActionBar({
   blocked,
   blockerCount,
   filedRef,
+  rates,
 }: ActionBarProps) {
   const router = useRouter();
   const [stage, setStage] = useState<Stage>("idle");
@@ -106,6 +110,7 @@ export function ActionBar({
         <ReplyPreview
           documentId={documentId}
           filing={stage === "filing"}
+          rates={rates}
           onFile={file}
           onCancel={() => setStage("idle")}
         />

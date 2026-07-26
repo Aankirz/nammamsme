@@ -4,9 +4,17 @@ import { deadlineSortKey } from "./dates";
 import { toReturnDetail } from "./returns";
 import { toDocumentSource, type DocumentSource } from "./source";
 
+export interface EvidenceFacts {
+  invoiceRef: string;
+  hsn: string | null;
+  goods: string | null;
+  gstRate: number | null;
+}
+
 export interface DocumentRow extends ObligationRow {
   source: DocumentSource | null;
   return: ReturnDetail | null;
+  evidence: EvidenceFacts | null;
 }
 
 const DOCUMENTS_PATH = "/api/documents?role=all";
@@ -39,12 +47,39 @@ function isBlocker(value: unknown): value is Blocker {
   );
 }
 
+function text(value: unknown): string | null {
+  return typeof value === "string" && value.trim() !== "" ? value.trim() : null;
+}
+
+function toEvidenceFacts(value: unknown): EvidenceFacts | null {
+  if (typeof value !== "object" || value === null) {
+    return null;
+  }
+
+  const candidate = value as Record<string, unknown>;
+  const invoiceRef = text(candidate.invoice_ref);
+  if (invoiceRef === null) {
+    return null;
+  }
+
+  return {
+    invoiceRef,
+    hsn: text(candidate.hsn),
+    goods: text(candidate.goods),
+    gstRate: typeof candidate.gst_rate === "number" ? candidate.gst_rate : null,
+  };
+}
+
 function toDocumentRow(value: unknown): DocumentRow | null {
   if (typeof value !== "object" || value === null) {
     return null;
   }
 
-  const candidate = value as ObligationRow & { source?: unknown; return?: unknown };
+  const candidate = value as ObligationRow & {
+    source?: unknown;
+    return?: unknown;
+    evidence?: unknown;
+  };
   if (typeof candidate.id !== "string" || candidate.id.length === 0) {
     return null;
   }
@@ -53,6 +88,7 @@ function toDocumentRow(value: unknown): DocumentRow | null {
     ...candidate,
     source: toDocumentSource(candidate.source),
     return: toReturnDetail(candidate.return),
+    evidence: toEvidenceFacts(candidate.evidence),
     counterparty: candidate.counterparty ?? "",
     obligation: candidate.obligation ?? "",
     consequence: candidate.consequence ?? "",
@@ -73,13 +109,10 @@ function toDocumentRows(payload: unknown): DocumentRow[] {
       ? ((payload as { data: unknown[] }).data as unknown[])
       : [];
 
-  return list
-    .map(toDocumentRow)
-    .filter((row): row is DocumentRow => row !== null)
-    .filter(belongsInTheFile);
+  return list.map(toDocumentRow).filter((row): row is DocumentRow => row !== null);
 }
 
-export async function fetchDocuments(): Promise<DocumentRow[]> {
+export async function fetchAllRows(): Promise<DocumentRow[]> {
   try {
     const baseUrl = await resolveBaseUrl();
     if (!baseUrl) {
@@ -99,6 +132,18 @@ export async function fetchDocuments(): Promise<DocumentRow[]> {
   } catch {
     return [];
   }
+}
+
+export function inTheFile(rows: readonly DocumentRow[]): DocumentRow[] {
+  return rows.filter(belongsInTheFile);
+}
+
+export function purchaseInvoices(rows: readonly DocumentRow[]): DocumentRow[] {
+  return rows.filter((row) => row.role === "evidence" && row.evidence !== null);
+}
+
+export async function fetchDocuments(): Promise<DocumentRow[]> {
+  return inTheFile(await fetchAllRows());
 }
 
 export function sortByDeadline(rows: readonly DocumentRow[]): DocumentRow[] {

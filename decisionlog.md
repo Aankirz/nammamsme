@@ -376,3 +376,31 @@ Records: 14 invoices, ₹18,00,000 ITC claimed; 11 matched (₹14,00,000); 3 unm
 **Why that matters more than the auth:** a login screen that cannot be got past is the single most avoidable way to lose a live demo. Failing open costs nothing here because there is one hardcoded business and no private data behind the gate.
 **Still hardcoded:** `BUSINESS` in `components/lib/identity.ts`. The session names the signed-in person in the masthead; it does not yet select whose file is opened. Multi-tenant selection is the CA-dashboard wedge (D-23) and is not built.
 **Status:** Built. Inert until credentials are supplied.
+
+---
+
+## 2026-07-26 — The design arrives
+
+### D-55 — The Industry design system supersedes the invented direction
+**Decision:** the frontend follows `design/industry/styles.css` and the designed screens in `design/namma-msme.design.html`, both now vendored into the repo. `DESIGN.md` is rewritten to point at them.
+**What is discarded:** the entire "registry" direction — warm paper ground, stamp red as the consequence accent, system font stack, two-pane master-detail, `Rs` over the `₹` glyph. That was a position taken in the absence of a design, stated explicitly as overrulable. A design now exists, so it is overruled.
+**What replaces it:** a wireframe. Steel `#5980a6` on a light technical ground `#f2f2f3`, Barlow Condensed over Barlow, square corners, hairline borders, `+` registration marks at card corners, cards as transparent line drawings, one solid accent button per view.
+**Structural change, not just visual:** the designed inbox is a **single scrolling page** with a three-cell headline row, a returns row, a document table and a scoreboard. Not a rail plus detail pane. The master-detail work is superseded.
+**Status:** Locked. The stylesheet is the source of truth; where this log or DESIGN.md disagrees with it, the CSS wins.
+
+### D-56 — Currency reverts to the `₹` glyph *(reverses the copy gate)*
+**Decision:** `₹`, not `Rs`.
+**Why:** the designed screens use the glyph throughout. The earlier rule came from a UI agent's reasonable call when the product was Hindi and the app had to match the documents beside it; the design overrides it.
+**Constrains:** the seed's copy gate currently **rejects** the `₹` glyph and must be inverted, or every seed string will fail validation against the new design.
+**Status:** Locked. Gate not yet updated.
+
+### D-57 — The design includes the eval harness I had not built
+**Finding:** the designed inbox ends in a scoreboard — processed, filed, refused, **wrong** — with the line "Counted live in this session. Not a claim."
+**Why it matters:** this is D-18, open since the beginning and repeatedly deferred. The design treats measured accuracy, including a wrong count and an explicit disclaimer that it is a session count rather than a benchmark, as a first-class part of the product rather than an extra.
+**Status:** Now in scope, because the design puts it there.
+
+### D-58 — The rate mismatch is charged 12% against a lawful 5%
+**Decision:** HSN 5208, woven cotton fabric, Dhawan Textile Agency, invoice DTA/2526/0271.
+**Why not the 18% case I asked for:** no invoice in the seed charges 18%; the fourteen are twelve at 12% and two at 5%. Raising a rate to 18 would change `gst` and therefore `amount`, which was forbidden. The two constraints could not both hold, so the pair was inverted. Charged still exceeds lawful, so the over-claim is real: Rs 1,29,000 claimed where Rs 53,750 was chargeable, a Rs 75,250 excess sitting on a row the department cannot see.
+**Also changed:** eleven `obligation` strings had their goods noun moved to match the HSN, because chapters 60 and 61 are largely absent or ambiguous in the compiled schedule and a row describing T-shirts while coded as yarn would be a D-42 in miniature — every gate passing while the record says two different things.
+**Status:** Locked, gated at 13 matches and exactly 1 mismatch on an unmatched row.

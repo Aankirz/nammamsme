@@ -1,16 +1,19 @@
 import type { DocumentRow } from "@/components/lib/documents";
+import type { RateIndex } from "@/components/lib/rate";
 import { traceBlockers } from "@/components/lib/blockers";
 import { allegationHeading } from "@/components/lib/copy";
 import { parseConsequence } from "@/components/lib/consequence";
 import { buildFacts } from "@/components/lib/facts";
 import { TONE_RULE_CLASSES, urgencyFor } from "@/components/lib/urgency";
 import { ActionBar } from "./ActionBar";
+import { AskPanel } from "./AskPanel";
 import { DocumentHeader } from "./DocumentHeader";
 import { TraceLayout } from "./TraceLayout";
 
 interface DocumentDetailProps {
   row: DocumentRow;
   now: Date;
+  rates: RateIndex;
 }
 
 function paragraphsOf(text: string): string[] {
@@ -20,12 +23,7 @@ function paragraphsOf(text: string): string[] {
     .filter(Boolean);
 }
 
-/**
- * One document, open. Everything that can be established sits on the left and
- * the page it was read off sits on the right, so nothing has to be taken on
- * trust.
- */
-export function DocumentDetail({ row, now }: DocumentDetailProps) {
+export function DocumentDetail({ row, now, rates }: DocumentDetailProps) {
   const blockers = traceBlockers(row);
   const blocked = blockers.length > 0;
   const urgency = urgencyFor(row, now);
@@ -35,8 +33,6 @@ export function DocumentDetail({ row, now }: DocumentDetailProps) {
       data-ground={blocked ? "refused" : undefined}
       className="flex min-h-[calc(100dvh-var(--identity-height))] flex-col"
     >
-      {/* The state of the open file, legible across the whole pane before a
-          word of it is read. */}
       <span
         aria-hidden="true"
         className={`block h-[2px] w-full ${TONE_RULE_CLASSES[urgency.tone]}`}
@@ -55,6 +51,10 @@ export function DocumentDetail({ row, now }: DocumentDetailProps) {
             obligationHeading={allegationHeading(row.doc_type)}
           />
         </div>
+
+        <div className="mt-12 max-w-[68ch] pb-4">
+          <AskPanel row={row} />
+        </div>
       </div>
 
       <div className="w-full max-w-[var(--content-max)]">
@@ -64,6 +64,7 @@ export function DocumentDetail({ row, now }: DocumentDetailProps) {
           blocked={blocked}
           blockerCount={blockers.length}
           filedRef={row.file_url}
+          rates={rates}
         />
       </div>
     </article>

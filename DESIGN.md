@@ -1,107 +1,89 @@
 # DESIGN.md
 
-Desktop-first. Minimum 1280px. The user is at a desk.
+The design is given, not invented. It lives in `design/`:
 
-## Direction
+- `design/namma-msme.design.html` — the designed screens for this product
+- `design/industry/styles.css` — the token sheet and component layer. Single source of truth.
+- `design/industry/readme.md` — the system's own guidance. Read it before building.
 
-**Registry.** A case file on a well-organised desk, not an app. Closest cousins are a court docket, a ledger, a lawyer's matter file. Structure and legibility carry the design; ornament does none of the work.
+**Take every colour, font, space, radius and shadow from the CSS variables.** Never hard-code a hex, a font name, or a px value the tokens already carry. When this file and `design/industry/` disagree, the stylesheet wins.
 
-## Theme
+Desktop-first, 1440px primary.
 
-Light. The scene is an office at 11am with daylight through a window, doing document work. Dark is a monitoring-dashboard reflex and wrong here.
+## Direction: Industry
 
-## Color
+A wireframe. Steel-blue on a light technical ground. Cards, figures and buttons are blueprint objects: square-cornered, hairline-bordered, carrying `+` registration marks at their corners. Cards and figures stay **transparent line drawings**. The primary button is the one solid object on the board.
 
-Strategy: **Restrained.** Tinted neutrals, one accent, semantic colours for state only.
+Not a surface-and-shadow interface. A drawing of one.
 
-Everything is tinted toward the ink hue. No pure black, no pure white.
-
-```
---paper:        oklch(97.5% 0.004 60)     page
---paper-raised: oklch(99% 0.003 60)       panels sitting on paper
---paper-sunk:   oklch(95% 0.005 60)       rail, toolbars, table headers
---rule:         oklch(88% 0.006 60)       borders, dividers
---rule-strong:  oklch(78% 0.008 60)
-
---ink:          oklch(24% 0.012 60)       primary text, primary buttons
---ink-muted:    oklch(48% 0.010 60)       secondary text
---ink-faint:    oklch(62% 0.008 60)       labels, metadata
-
---stamp:        oklch(48% 0.175 27)       THE accent
---stamp-tint:   oklch(94% 0.030 27)       backgrounds behind stamp text
---settled:      oklch(45% 0.095 155)      filed, matched, paid
---pending:      oklch(58% 0.120 75)       due soon, unmatched
-```
-
-**`--stamp` is the colour of official red ink on Indian government paper.** It is reserved for consequence: overdue, blocked, refused, demanded. It is never a brand flourish, never a hover state, never a primary button. The primary action is `--ink`. If red appears somewhere that is not about consequence, it is a bug.
-
-Restraint is what makes it mean something. Red everywhere reads as panic, and the user is already anxious.
-
-## Typography
-
-Two families, both functional.
-
-- **UI:** `ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif`
-- **Data:** `ui-monospace, "SF Mono", Menlo, monospace` — amounts, dates, reference numbers, GSTIN, ARN
-
-Fixed rem scale, ratio ~1.2. No fluid clamps; the user is at a consistent DPI.
+## Colour
 
 ```
---text-xs:   0.75rem     labels, metadata
---text-sm:   0.8125rem   secondary, table cells
---text-base: 0.9375rem   body
---text-lg:   1.125rem    section headings
---text-xl:   1.5rem      document title
---text-2xl:  2rem        secondary amounts
---text-hero: 3rem        the amount that matters
+--color-bg        #f2f2f3    ground
+--color-surface   #e9e9ea
+--color-text      #1d1f20
+--color-accent    #5980a6    steel, the only accent
+--color-divider   16% text
 ```
 
-All numerals `font-variant-numeric: tabular-nums`. Money never wraps, never uses a fluid size.
+Mono scheme. `--color-accent-2-*` is a machine-derived stand-in; treat it as the same role.
 
-## Layout
+Each role carries a 100–900 OKLCH ramp. Light steps (100–300) for tinted fills, hovers and subtle borders; 500 as base; dark steps (700–900) for text on tinted fills and pressed states. Prefer ramp steps over ad-hoc `color-mix()`.
 
-Two-pane master-detail, the correct desktop pattern for a case file.
+The accent-to-ground pair is tuned to ~3:1 — enough for icons, large text and chrome, **not for body copy**. Paragraph-size accent text uses `--color-accent-700`.
 
-```
-┌────────────────────────────────────────────────────────────┐
-│ business identity · GSTIN · reset                          │
-├──────────────────┬─────────────────────────────────────────┤
-│ EXPOSURE         │  document header: what, how much, when  │
-│ (the one number) │                                          │
-│                  │  ┌──────────────┬────────────────────┐  │
-│ OBLIGATIONS      │  │ facts        │  source document   │  │
-│  · notice        │  │ what it says │  scan + highlight  │  │
-│  · licence       │  │ what happens │                    │  │
-│  · receivable    │  └──────────────┴────────────────────┘  │
-│                  │  action bar (pinned bottom)              │
-│  360px fixed     │                                          │
-└──────────────────┴─────────────────────────────────────────┘
-```
+Elevation is `--shadow-sm/md/lg`, already tuned to the ground.
 
-- Left rail 360px fixed, `--paper-sunk`. Selection is persistent, not a link-away.
-- Main pane max 1100px content, left-aligned, not centred in a huge void.
-- Below 1024px the rail collapses to a top list. This is structural, not fluid type.
-- Vary spacing. Section gaps 32–48px, row padding 12–16px. Not uniform.
+## Type
+
+`--font-heading` Barlow Condensed over `--font-body` Barlow. Both loaded from Google Fonts by the stylesheet.
+
+Density 0.85× and radius 4px are baked into `--space-*` and `--radius-*`. Use the variables, never raw numbers.
+
+## Structure
+
+Modular grid. Equal-width cells, strong horizontal and vertical rhythm, visible structure.
+
+The designed inbox is a **single scrolling page**, not a master-detail split:
+
+1. Nav bar: brand, kicker, date, business, reset
+2. Headline row — three equal cells: due in 30 days, owed to you, most urgent
+3. GST returns — three cards, one per return, with the filing note beneath
+4. The document table, sorted by deadline
+5. The accuracy scoreboard: processed, filed, refused, wrong
 
 ## Components
 
-Every interactive element ships default, hover, focus-visible, active, disabled. No exceptions.
+Use the system's classes rather than inventing parallel ones. `design/industry/readme.md` carries the full table; the ones this product needs:
 
-- **Focus:** 2px `--ink` outline, 2px offset. Visible, not a subtle glow.
-- **Buttons:** primary is `--ink` fill. Secondary is `--rule` border on transparent. Destructive-adjacent uses `--stamp` text on `--stamp-tint`, never a red fill.
-- **Rows:** full borders or plain dividers. Never a coloured left edge.
-- **Urgency:** a small mono day-count plus a 2px top rule in the state colour. Legible at a glance without reading.
-- **Empty state:** teaches what to do. Never "nothing here."
-- **Loading:** skeletons matching final layout. No centred spinners.
+| Class | Use |
+|---|---|
+| `.blueprint` + four `<i class="corner tl/tr/bl/br">` | The frame every card, figure and primary button wears |
+| `.btn` `.btn-primary` `.btn-secondary` `.btn-ghost` `.btn-icon` | Actions. Primary is the solid accent fill. |
+| `.tag` `.tag-accent` `.tag-neutral` `.tag-outline` | Status labels |
+| `.card` `.card-kicker` `.card-title` `.card-body` `.card-meta` | Transparent, corner-marked |
+| `.table` | The document list |
+| `.field` `.input` `.seg` `.seg-opt` | Forms, on native elements |
+| `.dialog-backdrop` + `.dialog` | Modal at top elevation |
 
-## Motion
+Icons are Lucide at stroke-width 1.5. Thin stroke throughout.
 
-150–250ms, `cubic-bezier(0.16, 1, 0.3, 1)`. `transform` and `opacity` only.
+## Interaction
 
-Motion conveys state: selection, reveal, the processing hop log advancing. Nothing decorative. No page-load choreography; the user arrives in a task.
+States are themed, never browser defaults. Hover tint and pressed state come one step past the base on the accent ramp. Keyboard focus is `outline: 2px solid var(--color-accent); outline-offset: 2px`. Disabled drops to 45% opacity. Do not restyle per page.
 
-One deliberate exception: when the reply assembles, the supporting invoices stagger in at 40ms intervals. That is the product's argument made visible, and it earns the animation.
+## Currency
 
-## Bans
+**`₹`, not `Rs`.** The designed screens use the glyph throughout. This reverses the earlier copy rule and the seed's copy gate must be updated to match.
 
-Beyond the shared bans: no stat-tile row, no sparklines, no card grid, no gradients anywhere, no icon-plus-heading-plus-text triplets, no rounded-pill everything. Radii stay at 4–6px. This is a document, not a toy.
+## Don't
+
+- Do not round cards, figures or buttons.
+- Do not give cards or figures a surface fill. They are line drawings. The solid accent primary button is the one deliberate exception.
+- Do not drop the registration marks from a framed element.
+- Do not use thick icon strokes.
+- Do not add decorative colour beyond the steel accent.
+
+## What this supersedes
+
+This replaces the earlier "registry" direction entirely: warm paper ground, stamp red, system fonts, two-pane master-detail, `Rs` over `₹`. That was a position taken in the absence of a design. A design now exists. See D-55.

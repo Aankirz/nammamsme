@@ -1,4 +1,5 @@
 import seedJson from "@/data/seed.json";
+import { checkRate, lookupRate } from "@/lib/rates";
 import type {
   Blocker,
   BlockerKind,
@@ -14,6 +15,8 @@ import type {
 
 export interface SeedEvidence {
   invoice_ref: string;
+  hsn?: string;
+  goods?: string;
   taxable: number;
   gst: number;
   gst_rate: number;
@@ -72,6 +75,9 @@ const RETURN_STATES: readonly ReturnState[] = ["filed", "due", "overdue"];
 const BBOX_LENGTH = 4;
 
 const SEED_REFERENCE_DATE = "2026-07-26";
+const LAWFUL_RATE_MATCHES = 13;
+const LAWFUL_RATE_MISMATCHES = 1;
+const SINGLE_LAWFUL_RATE = 1;
 const LATE_FEE_PER_DAY = 50;
 const NIL_LATE_FEE_PER_DAY = 20;
 const LATE_FEE_CAP = 5000;
@@ -209,6 +215,23 @@ function validateEvidence(index: number, evidence: SeedEvidence, amount: number 
   if ((evidence.taxable * evidence.gst_rate) / 100 !== evidence.gst) {
     fail(index, `evidence: gst is not ${evidence.gst_rate}% of taxable`);
   }
+  if (typeof evidence.goods !== "string" || evidence.goods.trim() === "") {
+    fail(index, "evidence: an invoice must say what was bought");
+  }
+  if (typeof evidence.hsn !== "string" || evidence.hsn.trim() === "") {
+    fail(index, "evidence: an invoice must carry an HSN code");
+  }
+
+  const entry = lookupRate(evidence.hsn);
+  if (entry === null || entry.code !== evidence.hsn) {
+    fail(index, `evidence: HSN ${evidence.hsn} is not a code in the CBIC rate schedule`);
+  }
+  if (entry.rates.length !== SINGLE_LAWFUL_RATE) {
+    fail(
+      index,
+      `evidence: HSN ${entry.code} carries ${entry.rates.length} lawful rates, so the rate check cannot be decisive`,
+    );
+  }
 }
 
 function validateReturnShape(index: number, detail: ReturnDetail): void {
@@ -324,6 +347,36 @@ function validateItcReconciliation(rows: readonly StoredRow[]): void {
   }
 }
 
+function validateRateSchedule(rows: readonly StoredRow[]): void {
+  const evidence = rows.flatMap((row) => (row.evidence ? [row.evidence] : []));
+  const judged = evidence.map((item) => ({ item, verdict: checkRate(item.hsn, item.gst_rate).verdict }));
+  const matched = judged.filter((entry) => entry.verdict === "match");
+  const mismatched = judged.filter((entry) => entry.verdict === "mismatch");
+  const undecided = judged.filter((entry) => entry.verdict !== "match" && entry.verdict !== "mismatch");
+
+  if (undecided.length !== 0) {
+    const refs = undecided.map((entry) => `${entry.item.invoice_ref} (${entry.verdict})`).join(", ");
+    throw new Error(`data/seed.json: every invoice must get a decisive rate verdict, these did not: ${refs}`);
+  }
+  if (matched.length !== LAWFUL_RATE_MATCHES) {
+    throw new Error(
+      `data/seed.json: expected ${LAWFUL_RATE_MATCHES} invoices charged at their lawful rate, found ${matched.length}`,
+    );
+  }
+  if (mismatched.length !== LAWFUL_RATE_MISMATCHES) {
+    throw new Error(
+      `data/seed.json: expected ${LAWFUL_RATE_MISMATCHES} invoice charged off the schedule, found ${mismatched.length}`,
+    );
+  }
+  for (const entry of mismatched) {
+    if (!entry.item.unmatched) {
+      throw new Error(
+        `data/seed.json: ${entry.item.invoice_ref} is charged off the schedule but the department can see it, so the excess credit is not part of the demand`,
+      );
+    }
+  }
+}
+
 function validateReturnLedger(rows: readonly StoredRow[]): void {
   const returns = rows.flatMap((row) => (row.return ? [{ row, detail: row.return }] : []));
   if (returns.length === 0) return;
@@ -414,6 +467,7 @@ function validateSeed(raw: unknown): StoredRow[] {
   });
 
   validateItcReconciliation(rows);
+  validateRateSchedule(rows);
   validateReturnLedger(rows);
   return rows;
 }

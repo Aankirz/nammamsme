@@ -1,4 +1,10 @@
-import { fetchDocuments, findDocument, sortByDeadline } from "@/components/lib/documents";
+import {
+  fetchAllRows,
+  findDocument,
+  inTheFile,
+  sortByDeadline,
+} from "@/components/lib/documents";
+import { indexRates } from "@/components/lib/rate-index";
 import { CapturePlaceholder } from "@/components/detail/CapturePlaceholder";
 import { DocumentDetail } from "@/components/detail/DocumentDetail";
 import { DocumentMissing } from "@/components/detail/DocumentMissing";
@@ -16,7 +22,9 @@ interface DocPageProps {
 export default async function DocPage({ params }: DocPageProps) {
   const { id } = await params;
   const now = new Date();
-  const rows = sortByDeadline(await fetchDocuments());
+  const all = await fetchAllRows();
+  const rows = sortByDeadline(inTheFile(all));
+  const rates = indexRates(all);
   const row = id === CAPTURE_ID ? null : findDocument(rows, id);
 
   const isReturn = row?.doc_type === "gst_return";
@@ -30,7 +38,7 @@ export default async function DocPage({ params }: DocPageProps) {
       ) : row && isReturn ? (
         <ReturnDetail row={row} notice={notice} now={now} />
       ) : row ? (
-        <DocumentDetail row={row} now={now} />
+        <DocumentDetail row={row} now={now} rates={rates} />
       ) : (
         <DocumentMissing />
       )}

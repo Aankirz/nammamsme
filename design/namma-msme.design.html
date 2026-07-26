@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="_ds/industry-8cdf621b-53e3-4454-bcd6-cf9970259d12/styles.css">
+<script src="_ds/industry-8cdf621b-53e3-4454-bcd6-cf9970259d12/_ds_bundle.js"></script>
+<style>
+html,body{margin:0;background:var(--color-bg);color:var(--color-text)}
+body{font-family:var(--font-body);-webkit-font-smoothing:antialiased}
+a{color:var(--color-accent-700);text-decoration:none}
+a:hover{color:var(--color-accent-900);text-decoration:underline}
+:root{--nm-alert:#a34437;--nm-alert-lt:#e6ab9f}
+@keyframes nmScan{0%{transform:translateY(0)}100%{transform:translateY(300px)}}
+@keyframes nmBlink{0%,100%{opacity:1}50%{opacity:.3}}
+</style>
+</helmet>
+
+<div style="min-height:100vh">
+
+<div class="nav" style="position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:var(--space-4);padding:10px var(--space-6);background:var(--color-bg);border-bottom:1px solid var(--color-divider)">
+  <span style="font-family:var(--font-heading);font-weight:600;font-size:21px;letter-spacing:.02em">NAMMA MSME</span>
+  <span style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.45">Document obligation engine</span>
+  <div style="flex:1"></div>
+  <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.45">26 Jul 2026 · Gurnam Engineering Works, Ludhiana</span>
+  <button class="btn btn-ghost" style="font-size:12px" onClick="{{ onReset }}">Reset demo</button>
+</div>
+
+<!-- ─────────── INBOX ─────────── -->
+<sc-if value="{{ isInbox }}" hint-placeholder-val="{{ true }}">
+<div style="max-width:1200px;margin:0 auto;padding:var(--space-8) var(--space-6) 64px">
+
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:var(--space-4);margin-bottom:var(--space-6);flex-wrap:wrap">
+    <div>
+      <div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.5;margin-bottom:3px">Inbox</div>
+      <h1 style="font-family:var(--font-heading);margin:0;font-size:36px;line-height:1;font-weight:600">Everything you owe, and everything you are owed</h1>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.45;margin-right:4px">Headline</span>
+      <button class="btn btn-ghost" style="font-size:12px;min-width:36px" onClick="{{ onVarA }}">A</button>
+      <button class="btn btn-ghost" style="font-size:12px;min-width:36px" onClick="{{ onVarB }}">B</button>
+      <button class="btn btn-ghost" style="font-size:12px;min-width:36px" onClick="{{ onVarC }}">C</button>
+    </div>
+  </div>
+
+  <!-- Headline A — three cards -->
+  <sc-if value="{{ varA }}" hint-placeholder-val="{{ true }}">
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4);margin-bottom:var(--space-8)">
+    <div class="card blueprint" style="padding:var(--space-6)"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+        <div class="card-kicker" style="letter-spacing:.14em">Due in the next 30 days</div>
+        <button class="btn btn-icon btn-ghost" style="width:28px;height:28px;padding:0" onClick="{{ speakOwed }}" aria-label="Read aloud">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.4 18.4a9 9 0 0 0 0-12.8"/></svg>
+        </button>
+      </div>
+      <div style="font-family:var(--font-heading);font-size:54px;line-height:.95;font-weight:600;margin:10px 0 2px">{{ owed30 }}</div>
+      <div style="font-size:12px;opacity:.55">4 obligations · money going out</div>
+    </div>
+    <div class="card blueprint" style="padding:var(--space-6)"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+        <div class="card-kicker" style="letter-spacing:.14em">Owed to you, over 45 days</div>
+        <button class="btn btn-icon btn-ghost" style="width:28px;height:28px;padding:0" onClick="{{ speakRecv }}" aria-label="Read aloud">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.4 18.4a9 9 0 0 0 0-12.8"/></svg>
+        </button>
+      </div>
+      <div style="font-family:var(--font-heading);font-size:54px;line-height:.95;font-weight:600;margin:10px 0 2px;color:var(--color-accent-700)">{{ recvOverdue }}</div>
+      <div style="font-size:12px;opacity:.55">2 buyers · you can claim under MSMED §15</div>
+    </div>
+    <div class="card blueprint" style="padding:var(--space-6)"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+        <div class="card-kicker" style="letter-spacing:.14em">Most urgent</div>
+        <button class="btn btn-icon btn-ghost" style="width:28px;height:28px;padding:0" onClick="{{ speakUrgent }}" aria-label="Read aloud">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.4 18.4a9 9 0 0 0 0-12.8"/></svg>
+        </button>
+      </div>
+      <div style="font-family:var(--font-heading);font-size:54px;line-height:.95;font-weight:600;margin:10px 0 2px">4 days</div>
+      <div style="font-size:12px;opacity:.55">Pay Sandhu Steel Traders · ₹2,14,500</div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- Headline B — one plate, two sides, balance bar -->
+  <sc-if value="{{ varB }}" hint-placeholder-val="{{ false }}">
+  <div class="blueprint" style="position:relative;border:1px solid var(--color-divider);padding:var(--space-8);margin-bottom:var(--space-8)"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+    <div style="display:grid;grid-template-columns:1fr 1px 1fr;gap:var(--space-8);align-items:center">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.5">Going out · next 30 days</span>
+          <button class="btn btn-icon btn-ghost" style="width:24px;height:24px;padding:0" onClick="{{ speakOwed }}" aria-label="Read aloud"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><path d="M16 9a5 5 0 0 1 0 6"/></svg></button>
+        </div>
+        <div style="font-family:var(--font-heading);font-size:68px;line-height:.9;font-weight:600;margin-top:6px">{{ owed30 }}</div>
+      </div>
+      <div style="background:var(--color-divider);align-self:stretch"></div>
+      <div style="text-align:right">
+        <div style="display:flex;align-items:center;gap:8px;justify-content:flex-end">
+          <span style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.5">Coming in · overdue 45 days+</span>
+          <button class="btn btn-icon btn-ghost" style="width:24px;height:24px;padding:0" onClick="{{ speakRecv }}" aria-label="Read aloud"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><path d="M16 9a5 5 0 0 1 0 6"/></svg></button>
+        </div>
+        <div style="font-family:var(--font-heading);font-size:68px;line-height:.9;font-weight:600;margin-top:6px;color:var(--color-accent-700)">{{ recvOverdue }}</div>
+      </div>
+    </div>
+    <div style="display:flex;height:12px;margin-top:var(--space-8);border:1px solid var(--color-divider)">
+      <div style="flex:8615;background:var(--color-accent-900)"></div>
+      <div style="flex:4950;background:var(--color-accent-300)"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:7px;font-size:11px;opacity:.6">
+      <span>Payable — 4 items</span>
+      <span style="display:flex;align-items:center;gap:6px"><button class="btn btn-icon btn-ghost" style="width:22px;height:22px;padding:0" onClick="{{ speakUrgent }}" aria-label="Read aloud"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><path d="M16 9a5 5 0 0 1 0 6"/></svg></button>Collecting one buyer would cover the GST demand</span>
+      <span>Collectable — 2 buyers</span>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- Headline C — 30-day rule -->
+  <sc-if value="{{ varC }}" hint-placeholder-val="{{ false }}">
+  <div class="blueprint" style="position:relative;border:1px solid var(--color-divider);padding:var(--space-8) var(--space-8) var(--space-6);margin-bottom:var(--space-8)"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+    <div style="display:flex;align-items:baseline;gap:var(--space-6);flex-wrap:wrap;margin-bottom:var(--space-8)">
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <span style="font-family:var(--font-heading);font-size:58px;line-height:.9;font-weight:600">{{ owed30 }}</span>
+        <span style="font-size:12px;opacity:.55">due in the next 30 days</span>
+        <button class="btn btn-icon btn-ghost" style="width:24px;height:24px;padding:0" onClick="{{ speakOwed }}" aria-label="Read aloud"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><path d="M16 9a5 5 0 0 1 0 6"/></svg></button>
+      </div>
+      <div style="flex:1"></div>
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <span style="font-family:var(--font-heading);font-size:34px;line-height:.9;font-weight:600;color:var(--color-accent-700)">{{ recvOverdue }}</span>
+        <span style="font-size:12px;opacity:.55">owed to you, over 45 days</span>
+        <button class="btn btn-icon btn-ghost" style="width:24px;height:24px;padding:0" onClick="{{ speakRecv }}" aria-label="Read aloud"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><path d="M16 9a5 5 0 0 1 0 6"/></svg></button>
+      </div>
+    </div>
+    <div style="position:relative;height:78px;border-top:1px solid var(--color-text)">
+      <sc-for list="{{ ruleMarks }}" as="mk" hint-placeholder-count="4">
+        <div style="{{ mk.wrap }}">
+          <div style="{{ mk.stem }}"></div>
+          <div style="{{ mk.day }}">Day {{ mk.dayNum }}</div>
+          <div style="font-size:11.5px;white-space:nowrap;font-weight:600;margin-top:2px">{{ mk.amount }}</div>
+          <div style="font-size:11px;white-space:nowrap;opacity:.55">{{ mk.label }}</div>
+        </div>
+      </sc-for>
+      <div style="position:absolute;left:0;top:-1px;width:2px;height:18px;background:var(--color-accent-900)"></div>
+      <div style="position:absolute;left:0;top:22px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.5">Today</div>
+      <div style="position:absolute;right:0;top:22px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.5">+30 days</div>
+    </div>
+  </div>
+  </sc-if>
+
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:var(--space-3)">
+    <div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.5">GST returns · your own filings, not notices</div>
+    <span style="font-size:11px;opacity:.45">Nothing here comes from a photo — these are due every month whether or not paper arrives</span>
+  </div>
+  <div class="blueprint" style="position:relative;border:1px solid var(--color-divider);margin-bottom:var(--space-8)"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr)">
+      <sc-for list="{{ returns }}" as="g" hint-placeholder-count="3">
+        <div style="{{ g.cellStyle }}">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+            <span style="font-family:var(--font-heading);font-size:22px;font-weight:600">{{ g.form }}</span>
+            <span class="tag {{ g.tagClass }}" style="font-size:10px;letter-spacing:.08em">{{ g.status }}</span>
+          </div>
+          <div style="font-size:12px;opacity:.55;margin-top:2px">{{ g.period }}</div>
+          <div style="display:flex;align-items:baseline;gap:8px;margin-top:var(--space-4)">
+            <span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.5">Due</span>
+            <span style="font-size:14px;font-variant-numeric:tabular-nums">{{ g.due }}</span>
+            <span style="{{ g.daysStyle }}">{{ g.days }}</span>
+          </div>
+          <div style="font-size:12px;opacity:.6;margin-top:6px">{{ g.note }}</div>
+          <sc-if value="{{ g.actionable }}" hint-placeholder-val="{{ true }}">
+            <button class="btn btn-primary" style="margin-top:var(--space-4);font-size:12.5px" onClick="{{ g.onFile }}">{{ g.cta }}</button>
+          </sc-if>
+          <sc-if value="{{ g.done }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:var(--space-4);font-size:12px;opacity:.6">Filed {{ g.filedOn }} · ARN {{ g.arn }}</div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+    <div style="border-top:1px solid var(--color-divider);padding:var(--space-4) var(--space-6);display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap">
+      <span style="font-size:12.5px;opacity:.7">Late filing costs ₹50 a day, and blocks the next month's return until it clears.</span>
+      <div style="flex:1"></div>
+      <span style="font-size:11px;opacity:.45">Filing runs through the same mock endpoint as the DRC-06 reply.</span>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:var(--space-3)">
+    <div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.5">Sorted by deadline · red means 7 days or less</div>
+    <button class="btn btn-primary" onClick="{{ goCapture }}" style="display:flex;align-items:center;gap:7px">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+      Add a document
+    </button>
+  </div>
+
+  <div class="blueprint" style="position:relative;border:1px solid var(--color-divider)"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+  <table class="table" style="width:100%;border-collapse:collapse">
+    <thead><tr>
+      <th style="text-align:left;width:110px">Type</th>
+      <th style="text-align:left">What you must do</th>
+      <th style="text-align:left;width:200px">Other party</th>
+      <th style="text-align:right;width:120px">Amount</th>
+      <th style="text-align:left;width:180px">Deadline</th>
+      <th style="text-align:left;width:130px">Status</th>
+    </tr></thead>
+    <tbody>
+      <sc-for list="{{ rows }}" as="r" hint-placeholder-count="9">
+        <tr onClick="{{ r.onOpen }}" style="cursor:pointer">
+          <td><span class="tag tag-outline" style="font-size:10px;letter-spacing:.08em">{{ r.kind }}</span></td>
+          <td><div style="font-weight:500">{{ r.title }}</div><div style="font-size:11px;opacity:.5">{{ r.sub }}</div></td>
+          <td style="font-size:12.5px;opacity:.75">{{ r.party }}</td>
+          <td style="text-align:right;font-variant-numeric:tabular-nums;font-weight:600">{{ r.amount }}</td>
+          <td>
+            <sc-if value="{{ r.urgent }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:7px">
+                <span style="width:6px;height:6px;background:var(--nm-alert);display:inline-block"></span>
+                <span style="font-variant-numeric:tabular-nums">{{ r.date }}</span>
+                <span style="font-size:11px;font-weight:600;color:var(--nm-alert)">{{ r.days }}</span>
+              </div>
+            </sc-if>
+            <sc-if value="{{ r.calm }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;align-items:center;gap:7px;opacity:.85">
+                <span style="width:6px;height:6px;border:1px solid var(--color-neutral-400);display:inline-block"></span>
+                <span style="font-variant-numeric:tabular-nums">{{ r.date }}</span>
+                <span style="font-size:11px;opacity:.6">{{ r.days }}</span>
+              </div>
+            </sc-if>
+          </td>
+          <td><span class="tag {{ r.statusClass }}" style="font-size:10px;letter-spacing:.08em">{{ r.status }}</span></td>
+        </tr>
+      </sc-for>
+    </tbody>
+  </table>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);margin-top:var(--space-8);border:1px solid var(--color-divider)">
+    <div style="padding:var(--space-4) var(--space-6);border-right:1px solid var(--color-divider)">
+      <div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.5">Processed</div>
+      <div style="font-family:var(--font-heading);font-size:32px;font-weight:600;line-height:1.1">{{ ctProcessed }}</div>
+    </div>
+    <div style="padding:var(--space-4) var(--space-6);border-right:1px solid var(--color-divider)">
+      <div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.5">Filed</div>
+      <div style="font-family:var(--font-heading);font-size:32px;font-weight:600;line-height:1.1">{{ ctFiled }}</div>
+    </div>
+    <div style="padding:var(--space-4) var(--space-6);border-right:1px solid var(--color-divider)">
+      <div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.5">Refused</div>
+      <div style="font-family:var(--font-heading);font-size:32px;font-weight:600;line-height:1.1">{{ ctRefused }}</div>
+    </div>
+    <div style="padding:var(--space-4) var(--space-6)">
+      <div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.5">Wrong</div>
+      <div style="font-family:var(--font-heading);font-size:32px;font-weight:600;line-height:1.1">{{ ctWrong }}</div>
+    </div>
+  </div>
+  <div style="font-size:11px;opacity:.45;margin-top:6px">Counted live in this session. Not a claim.</div>
+</div>
+</sc-if>
+
+<!-- ─────────── CAPTURE ─────────── -->
+<sc-if value="{{ isCapture }}" hint-placeholder-val="{{ false }}">
+<div style="max-width:900px;margin:0 auto;padding:var(--space-8) var(--space-6) 64px">
+  <button class="btn btn-ghost" style="font-size:12px;margin-bottom:var(--space-6)" onClick="{{ goInbox }}">← Back</button>
+  <h1 style="font-family:var(--font-heading);margin:0 0 4px;font-size:32px;font-weight:600">Take a photo of the document</h1>
+  <p style="margin:0 0 var(--space-8);font-size:13.5px;opacity:.6;max-width:60ch;text-wrap:pretty">A crumpled, badly lit photo is fine. You do not need to say what kind of document it is — the system works that out.</p>
+
+  <div class="blueprint" style="position:relative;border:1px dashed var(--color-neutral-400);padding:var(--space-8);display:flex;flex-direction:column;align-items:center;gap:var(--space-3);margin-bottom:var(--space-8)"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+    <div style="font-size:13px;opacity:.6">Open the camera, or drop a file here</div>
+    <div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.35">Demo — pick one of the two samples below</div>
+  </div>
+
+  <div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.5;margin-bottom:var(--space-3)">Sample documents</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4)">
+    <div class="card blueprint" style="padding:var(--space-6);cursor:pointer" onClick="{{ pickGood }}"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <div class="card-kicker">GST notice DRC-01 · 3 pages</div>
+      <div class="card-title" style="font-size:21px">The complete notice</div>
+      <p class="card-body" style="font-size:12.5px">Annexure A is attached. Both reads should agree and the sums should tie out, so filing will be allowed.</p>
+      <div class="card-meta" style="font-size:11px">IMG_2291.jpg · 1.8 MB</div>
+    </div>
+    <div class="card blueprint" style="padding:var(--space-6);cursor:pointer" onClick="{{ pickBad }}"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <div class="card-kicker">GST notice DRC-01 · 2 pages</div>
+      <div class="card-title" style="font-size:21px">Annexure missing</div>
+      <p class="card-body" style="font-size:12.5px">Page 3 was not photographed. The system should refuse to file and say exactly why.</p>
+      <div class="card-meta" style="font-size:11px">IMG_2293.jpg · 1.2 MB · judge test</div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ─────────── PROCESSING ─────────── -->
+<sc-if value="{{ isProcessing }}" hint-placeholder-val="{{ false }}">
+<div style="max-width:1040px;margin:0 auto;padding:var(--space-8) var(--space-6) 64px">
+  <h1 style="font-family:var(--font-heading);margin:0 0 4px;font-size:32px;font-weight:600">Reading the document</h1>
+  <p style="margin:0 0 var(--space-8);font-size:13.5px;opacity:.6">Every step is timestamped, so the speed can be checked rather than believed.</p>
+  <div style="display:grid;grid-template-columns:320px 1fr;gap:var(--space-8);align-items:start">
+    <div class="blueprint" style="position:relative;border:1px solid var(--color-divider);padding:9px"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <div style="position:relative;height:340px;overflow:hidden;background:#e3e1dc">
+        <div style="padding:16px;font-size:7.4px;line-height:1.75;color:#3a3a38;transform:rotate(-.4deg);filter:contrast(1.05)">
+          <div style="text-align:center;font-weight:700;letter-spacing:.14em">FORM GST DRC-01</div>
+          <div style="text-align:center;opacity:.7">[See rule 142(1)(a)]</div>
+          <div style="margin-top:9px;border-top:1px solid #9a9a96;padding-top:7px">Ref: ZD0307260001842 · Dated 15/07/2026</div>
+          <div>Taxpayer: M/s Gurnam Engineering Works</div>
+          <div>GSTIN: 03AAGCG4512M1ZP</div>
+          <div style="margin-top:7px;opacity:.85">Input tax credit claimed in GSTR-3B exceeds the credit available in GSTR-2B for FY 2025-26. Show cause under section 73 why the said amount should not be recovered with interest and penalty…</div>
+          <div style="margin-top:7px;border:1px solid #9a9a96;padding:4px">Tax 4,00,000 · Interest 72,000 · Penalty 40,000 · Total 5,12,000</div>
+          <div style="margin-top:7px">Reply due on or before: 14/08/2026</div>
+        </div>
+        <div style="position:absolute;left:0;right:0;top:0;height:2px;background:var(--color-accent);box-shadow:0 0 14px 3px var(--color-accent);animation:nmScan 1.5s linear infinite alternate"></div>
+      </div>
+      <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.45;margin-top:7px">{{ procFile }}</div>
+    </div>
+    <div class="blueprint" style="position:relative;border:1px solid var(--color-divider);padding:var(--space-6)"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <sc-for list="{{ steps }}" as="s" hint-placeholder-count="7">
+        <div style="display:grid;grid-template-columns:66px 16px 1fr;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--color-divider)">
+          <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;opacity:.5">{{ s.t }}</span>
+          <span style="{{ s.markStyle }}">{{ s.mark }}</span>
+          <div><span style="font-size:13.5px">{{ s.label }}</span> <span style="font-size:11.5px;opacity:.45">{{ s.detail }}</span></div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ─────────── DETAIL ─────────── -->
+<sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+<div style="max-width:1280px;margin:0 auto;padding:var(--space-6) var(--space-6) 72px">
+  <button class="btn btn-ghost" style="font-size:12px;margin-bottom:var(--space-4)" onClick="{{ goInbox }}">← Inbox</button>
+
+  <!-- Refusal, loud -->
+  <sc-if value="{{ refused }}" hint-placeholder-val="{{ false }}">
+  <div style="background:var(--color-accent-900);color:#f2f2f3;padding:var(--space-8);margin-bottom:var(--space-6);position:relative">
+    <div style="position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--nm-alert)"></div>
+    <div style="display:flex;gap:var(--space-6);align-items:flex-start">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--nm-alert-lt)" stroke-width="1.5" stroke-linecap="round" style="flex:none;margin-top:4px"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
+      <div style="flex:1">
+        <div style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;opacity:.6">Filing blocked</div>
+        <h2 style="font-family:var(--font-heading);margin:4px 0 10px;font-size:44px;line-height:1;font-weight:600">This will not be filed</h2>
+        <p style="margin:0 0 var(--space-6);font-size:14.5px;line-height:1.55;max-width:72ch;opacity:.85;text-wrap:pretty">Two checks failed. The system will not guess a number and send a reply in your name. A wrong reply costs more than a late one.</p>
+        <div style="display:grid;gap:1px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.18)">
+          <sc-for list="{{ blockers }}" as="b" hint-placeholder-count="2">
+            <div style="background:var(--color-accent-900);padding:var(--space-4) var(--space-6);display:grid;grid-template-columns:18px 1fr auto;gap:14px;align-items:center">
+              <span style="color:var(--nm-alert-lt);font-size:15px">✕</span>
+              <div><div style="font-size:14px">{{ b.text }}</div><div style="font-size:11.5px;opacity:.55">{{ b.why }}</div></div>
+              <button class="btn btn-ghost" style="color:#f2f2f3;border-color:rgba(255,255,255,.32);font-size:11.5px" onClick="{{ b.onShow }}">Show me on the page</button>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;gap:var(--space-3);margin-top:var(--space-6);flex-wrap:wrap;align-items:center">
+          <button class="btn btn-primary" onClick="{{ onForwardCA }}">Send to my CA</button>
+          <button class="btn btn-ghost" style="color:#f2f2f3;border-color:rgba(255,255,255,.32)" onClick="{{ goCapture }}">Add the missing page</button>
+          <div style="flex:1"></div>
+          <div class="btn" style="opacity:.35;pointer-events:none;border-color:rgba(255,255,255,.25);color:#f2f2f3">File the DRC-06 reply</div>
+        </div>
+        <sc-if value="{{ caSent }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:var(--space-4);font-size:12.5px;opacity:.75">✓ Sent to sandeep.ca@gmail.com with the photo and both machine reads attached.</div>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <div style="display:grid;grid-template-columns:1fr 400px;gap:var(--space-8);align-items:start">
+
+    <!-- LEFT COLUMN -->
+    <div style="display:grid;gap:var(--space-8)">
+
+      <div>
+        <div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.5;margin-bottom:4px">GST notice DRC-01 · section 73 · input tax credit mismatch</div>
+        <h1 style="font-family:var(--font-heading);margin:0;font-size:34px;line-height:1.02;font-weight:600;max-width:22ch">The GST department says you claimed credit you cannot prove</h1>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));border:1px solid var(--color-divider)">
+        <div style="padding:var(--space-6);border-right:1px solid var(--color-divider)">
+          <div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.5">How much</div>
+          <button style="all:unset;cursor:pointer;display:block;font-family:var(--font-heading);font-size:44px;line-height:1;font-weight:600;margin-top:8px;border-bottom:2px dotted var(--color-accent)" onClick="{{ showTotal }}">₹5,12,000</button>
+          <div style="font-size:11.5px;opacity:.5;margin-top:6px">Tap to see where this came from</div>
+        </div>
+        <div style="padding:var(--space-6);border-right:1px solid var(--color-divider)">
+          <div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.5">By when</div>
+          <button style="all:unset;cursor:pointer;display:block;font-family:var(--font-heading);font-size:44px;line-height:1;font-weight:600;margin-top:8px;border-bottom:2px dotted var(--color-accent)" onClick="{{ showDate }}">14 Aug 2026</button>
+          <div style="font-size:11.5px;opacity:.5;margin-top:6px">19 days left to reply</div>
+        </div>
+        <div style="padding:var(--space-6)">
+          <div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.5">Who from</div>
+          <button style="all:unset;cursor:pointer;display:block;font-family:var(--font-heading);font-size:26px;line-height:1.05;font-weight:600;margin-top:8px;border-bottom:2px dotted var(--color-accent)" onClick="{{ showFrom }}">State GST, Ward 4, Ludhiana</button>
+          <div style="font-size:11.5px;opacity:.5;margin-top:6px">Ref ZD0307260001842</div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.5;margin-bottom:var(--space-3)">What the notice says, in plain words</div>
+        <div class="blueprint" style="position:relative;border:1px solid var(--color-divider);padding:var(--space-6)"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div style="display:grid;gap:var(--space-4)">
+            <div style="display:grid;grid-template-columns:120px 1fr;gap:var(--space-4);align-items:start">
+              <span class="tag tag-neutral" style="font-size:10px;letter-spacing:.1em">They allege</span>
+              <p style="margin:0;font-size:14.5px;line-height:1.6;text-wrap:pretty">In the year 2025-26 you claimed ₹18,00,000 of input tax credit. The department can only see ₹14,00,000 of it in GSTR-2B. It treats the ₹4,00,000 difference as credit taken wrongly.</p>
+            </div>
+            <div style="display:grid;grid-template-columns:120px 1fr;gap:var(--space-4);align-items:start">
+              <span class="tag tag-accent" style="font-size:10px;letter-spacing:.1em">They direct</span>
+              <p style="margin:0;font-size:14.5px;line-height:1.6;text-wrap:pretty">Reply in Form DRC-06 by 14 August 2026, giving reasons why ₹5,12,000 should not be recovered from you.</p>
+            </div>
+          </div>
+          <div style="margin-top:var(--space-6);padding-top:var(--space-4);border-top:1px solid var(--color-divider);font-size:11.5px;opacity:.5">Written from the digitised page only. The model is not allowed near the amounts or the dates — those are locked by the checks before it runs.</div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.5;margin-bottom:var(--space-3)">If you do nothing</div>
+        <div style="border:1px solid var(--color-divider)">
+          <sc-for list="{{ ladder }}" as="l" hint-placeholder-count="4">
+            <div style="display:grid;grid-template-columns:120px 22px 1fr auto;gap:var(--space-4);align-items:center;padding:var(--space-4) var(--space-6);border-bottom:1px solid var(--color-divider)">
+              <span style="font-size:12.5px;font-variant-numeric:tabular-nums;opacity:.7">{{ l.date }}</span>
+              <span style="{{ l.dotStyle }}"></span>
+              <div><div style="font-size:14.5px">{{ l.what }}</div><div style="font-size:11.5px;opacity:.5">{{ l.law }}</div></div>
+              <span style="font-family:var(--font-heading);font-size:19px;font-weight:600;white-space:nowrap">{{ l.cost }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- Evidence -->
+      <sc-if value="{{ showEvidence }}" hint-placeholder-val="{{ true }}">
+      <div>
+        <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:var(--space-3)">
+          <div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.5">The reply is built from bills you already have</div>
+          <span style="font-size:11px;opacity:.45">14 purchase bills · filtered on invoice date, not payment date</span>
+        </div>
+        <div class="blueprint" style="position:relative;border:1px solid var(--color-divider)"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div style="max-height:290px;overflow:auto">
+            <table class="table" style="width:100%;border-collapse:collapse;font-size:12.5px">
+              <thead><tr>
+                <th style="text-align:left">Bill no.</th>
+                <th style="text-align:left">Supplier</th>
+                <th style="text-align:left;width:100px">Invoice date</th>
+                <th style="text-align:right;width:110px">GST on it</th>
+                <th style="text-align:left;width:150px">In GSTR-2B?</th>
+              </tr></thead>
+              <tbody>
+                <sc-for list="{{ invoices }}" as="iv" hint-placeholder-count="14">
+                  <tr>
+                    <td style="font-variant-numeric:tabular-nums;opacity:.7">{{ iv.no }}</td>
+                    <td>{{ iv.supplier }}</td>
+                    <td style="font-variant-numeric:tabular-nums;opacity:.7">{{ iv.date }}</td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums;font-weight:600">{{ iv.gst }}</td>
+                    <td><span class="tag {{ iv.tagClass }}" style="font-size:10px;letter-spacing:.06em">{{ iv.match }}</span></td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--color-text)">
+            <div style="padding:var(--space-4) var(--space-6);border-right:1px solid var(--color-divider)">
+              <div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.5">Credit you claimed</div>
+              <div style="font-family:var(--font-heading);font-size:26px;font-weight:600">₹18,00,000</div>
+            </div>
+            <div style="padding:var(--space-4) var(--space-6);border-right:1px solid var(--color-divider)">
+              <div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.5">Matched · 11 bills</div>
+              <div style="font-family:var(--font-heading);font-size:26px;font-weight:600">₹14,00,000</div>
+            </div>
+            <div style="padding:var(--space-4) var(--space-6);background:var(--color-accent-100)">
+              <div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.6">Not matched · 3 bills</div>
+              <div style="font-family:var(--font-heading);font-size:26px;font-weight:600;color:var(--color-accent-800)">₹4,00,000</div>
+            </div>
+          </div>
+        </div>
+        <p style="margin:var(--space-3) 0 0;font-size:12.5px;opacity:.6;max-width:80ch;text-wrap:pretty">The reply will say this plainly: eleven bills are matched, three are not, and the unmatched ₹4,00,000 is admitted as unmatched. Hiding it would only move the problem to the appeal stage. <span style="opacity:.75">Which three suppliers — that comes from your own bill records, seeded for this demo.</span></p>
+      </div>
+      </sc-if>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div style="display:grid;gap:var(--space-6);position:sticky;top:76px">
+
+      <!-- Page with provenance -->
+      <div class="blueprint" style="position:relative;border:1px solid var(--color-divider);padding:9px"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <div style="position:relative;background:#e3e1dc;height:392px;overflow:hidden" ref="{{ pageRef }}">
+          <div style="padding:15px 16px;font-size:7.6px;line-height:1.8;color:#3a3a38">
+            <div style="text-align:center;font-weight:700;letter-spacing:.16em">FORM GST DRC-01</div>
+            <div style="text-align:center;opacity:.7">[See rule 142(1)(a)]</div>
+            <div style="margin-top:8px;border-top:1px solid #9a9a96;padding-top:6px">Ref: ZD0307260001842 · Dated 15/07/2026</div>
+            <div style="margin-top:6px">To,</div>
+            <div>M/s Gurnam Engineering Works</div>
+            <div>Gali No. 4, Industrial Area A, Ludhiana 141003</div>
+            <div>GSTIN: 03AAGCG4512M1ZP</div>
+            <div style="margin-top:6px" data-hl="from">From: Office of the Assistant Commissioner, State Tax, Ward 4, Ludhiana</div>
+            <div style="margin-top:7px;opacity:.88">Whereas the input tax credit availed in GSTR-3B for the period April 2025 to March 2026 exceeds the credit reflected in GSTR-2B, you are hereby called upon to show cause under section 73 of the CGST Act, 2017 why the amount detailed below should not be recovered along with interest and penalty.</div>
+            <div style="margin-top:7px;border:1px solid #9a9a96;padding:5px 6px">
+              <div>Tax on unmatched credit … 4,00,000</div>
+              <div>Interest u/s 50 @18% … 72,000</div>
+              <div data-hl="penalty">Penalty u/s 73(9) … 40,000</div>
+              <div style="border-top:1px solid #9a9a96;margin-top:3px;padding-top:3px;font-weight:700" data-hl="total">Total amount payable … 5,12,000</div>
+            </div>
+            <div style="margin-top:7px" data-hl="date">Reply in FORM GST DRC-06 on or before 14/08/2026.</div>
+            <div style="margin-top:6px;opacity:.85" data-hl="annex">Supplier-wise details of the unmatched credit are given in Annexure A to this notice.</div>
+          </div>
+          <sc-if value="{{ hlOn }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ hlBox }}"></div>
+          </sc-if>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:7px">
+          <span style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.45">{{ pageLabel }}</span>
+          <span style="font-size:11px;opacity:.6">{{ hlCaption }}</span>
+        </div>
+      </div>
+
+      <!-- Checks -->
+      <div class="blueprint" style="position:relative;border:1px solid var(--color-divider);padding:var(--space-6)"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.5;margin-bottom:var(--space-4)">Checks before anything is filed</div>
+        <sc-for list="{{ checks }}" as="c" hint-placeholder-count="4">
+          <div style="display:grid;grid-template-columns:16px 1fr;gap:11px;align-items:start;padding:8px 0;border-bottom:1px solid var(--color-divider)">
+            <span style="{{ c.markStyle }}">{{ c.mark }}</span>
+            <div><div style="font-size:13px">{{ c.label }}</div><div style="font-size:11.5px;opacity:.5">{{ c.note }}</div></div>
+          </div>
+        </sc-for>
+        <div style="font-size:11.5px;opacity:.5;margin-top:var(--space-4);text-wrap:pretty">Confidence here is these four yes/no checks, not a score the model reported about itself.</div>
+      </div>
+
+      <!-- Confirm and correct -->
+      <sc-if value="{{ canFile }}" hint-placeholder-val="{{ true }}">
+      <div class="blueprint" style="position:relative;border:1px solid var(--color-divider);padding:var(--space-6)"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.5;margin-bottom:var(--space-4)">Check these before you file</div>
+        <div style="display:grid;gap:var(--space-4)">
+          <sc-for list="{{ fields }}" as="f" hint-placeholder-count="3">
+            <div class="field">
+              <label style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.55">{{ f.label }}</label>
+              <input class="input" value="{{ f.value }}" onChange="{{ f.onChange }}" style="font-variant-numeric:tabular-nums" />
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ edited }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:11.5px;opacity:.6;margin-top:var(--space-3)">Your correction is saved. It will be used the next time this field appears, so you never type it twice.</div>
+        </sc-if>
+
+        <sc-if value="{{ fileIdle }}" hint-placeholder-val="{{ true }}">
+          <button class="btn btn-primary btn-block" style="margin-top:var(--space-6)" onClick="{{ onFile }}">File the DRC-06 reply</button>
+          <div style="font-size:11.5px;opacity:.5;margin-top:8px;text-align:center">Filing endpoint is a mock for this demo. Everything up to it is real.</div>
+        </sc-if>
+        <sc-if value="{{ fileSending }}" hint-placeholder-val="{{ false }}">
+          <div class="btn btn-primary btn-block" style="margin-top:var(--space-6);animation:nmBlink 1s infinite;pointer-events:none">Sending…</div>
+        </sc-if>
+        <sc-if value="{{ fileError }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:var(--space-6);border:1px solid var(--nm-alert);padding:var(--space-4)">
+            <div style="font-size:13px;font-weight:600;color:var(--nm-alert)">The portal did not accept it — 500</div>
+            <div style="font-size:12px;opacity:.65;margin-top:3px">Nothing was filed. Your reply is still here. Try again.</div>
+            <button class="btn btn-primary btn-block" style="margin-top:var(--space-4)" onClick="{{ onFile }}">Try again</button>
+          </div>
+        </sc-if>
+      </div>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ─────────── FILED ─────────── -->
+<sc-if value="{{ isFiled }}" hint-placeholder-val="{{ false }}">
+<div style="max-width:840px;margin:0 auto;padding:64px var(--space-6)">
+  <div class="blueprint" style="position:relative;border:1px solid var(--color-divider);padding:var(--space-8)"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+    <div style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;opacity:.5">Filed · Form GST DRC-06</div>
+    <h1 style="font-family:var(--font-heading);margin:6px 0 var(--space-6);font-size:44px;line-height:1;font-weight:600">Your reply has been filed</h1>
+    <div style="display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--color-divider);margin-bottom:var(--space-6)">
+      <div style="padding:var(--space-6);border-right:1px solid var(--color-divider)">
+        <div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.5">Reference number</div>
+        <div style="font-family:ui-monospace,Menlo,monospace;font-size:23px;font-weight:600;margin-top:6px">AD030726014922V</div>
+      </div>
+      <div style="padding:var(--space-6)">
+        <div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.5">Filed at</div>
+        <div style="font-size:23px;font-weight:600;margin-top:6px;font-variant-numeric:tabular-nums">26 Jul 2026, 14:41</div>
+      </div>
+    </div>
+    <div style="display:grid;gap:10px;font-size:14px;line-height:1.5">
+      <div>✓ 14 purchase bills attached as Annexure 1</div>
+      <div>✓ ₹14,00,000 of matched credit defended</div>
+      <div>✓ ₹4,00,000 stated openly as unmatched</div>
+      <div>✓ Emailed to you and to sandeep.ca@gmail.com with the original notice</div>
+    </div>
+    <div style="display:flex;gap:var(--space-3);margin-top:var(--space-8)">
+      <button class="btn btn-primary" onClick="{{ goInbox }}">Back to inbox</button>
+      <button class="btn btn-ghost" onClick="{{ onReset }}">Reset demo</button>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900}}">
+const R = n => '₹' + n.toLocaleString('en-IN');
+
+const BASE_ROWS = [
+  {kind:'Invoice', title:'Pay Sandhu Steel Traders', sub:'Bill SST/26/0418 · MS flats', party:'Sandhu Steel Traders', amt:214500, date:'30 Jul 2026', days:4, dir:'owing', status:'Seeded', statusClass:'tag-neutral'},
+  {kind:'Licence', title:'Renew shop trade licence', sub:'Licence LDH/TL/8841', party:'Ludhiana Municipal Corp.', amt:null, date:'02 Aug 2026', days:7, dir:'owing', status:'Extracted', statusClass:'tag-outline'},
+  {kind:'Invoice', title:'Pay Preet Auto Components', sub:'Bill PAC/1129', party:'Preet Auto Components', amt:86300, date:'12 Aug 2026', days:17, dir:'owing', status:'Seeded', statusClass:'tag-neutral'},
+  {kind:'Notice', title:'Reply to GST demand notice', sub:'DRC-01 · section 73 · credit mismatch', party:'State GST, Ward 4, Ludhiana', amt:512000, date:'14 Aug 2026', days:19, dir:'owing', status:'Needs reply', statusClass:'tag-accent', notice:true},
+  {kind:'Invoice', title:'Pay Gupta Packaging', sub:'Bill GP/2026/311', party:'Gupta Packaging', amt:48700, date:'22 Aug 2026', days:27, dir:'owing', status:'Seeded', statusClass:'tag-neutral'},
+  {kind:'Receivable', title:'Collect from Verma Fabricators', sub:'Overdue 62 days · MSMED §15 claim available', party:'Verma Fabricators Pvt Ltd', amt:310000, date:'25 May 2026', days:'62 days late', dir:'owed', overdue:true, status:'Seeded', statusClass:'tag-neutral'},
+  {kind:'Receivable', title:'Collect from Khanna Motors', sub:'Overdue 51 days · MSMED §15 claim available', party:'Khanna Motors', amt:185000, date:'05 Jun 2026', days:'51 days late', dir:'owed', overdue:true, status:'Seeded', statusClass:'tag-neutral'},
+  {kind:'Invoice', title:'Pay Malhotra Alloys', sub:'Bill MA/774', party:'Malhotra Alloys', amt:142000, date:'05 Sep 2026', days:41, dir:'owing', status:'Seeded', statusClass:'tag-neutral'},
+  {kind:'Licence', title:'Factory licence renewal', sub:'Registration PB/FAC/22019', party:'Directorate of Factories, Punjab', amt:null, date:'28 Sep 2026', days:64, dir:'owing', status:'Seeded', statusClass:'tag-neutral'}
+];
+
+const MATCHED = [
+  ['SST/26/0102','Sandhu Steel Traders','12/05/2025',210000],
+  ['PAC/0871','Preet Auto Components','03/06/2025',175000],
+  ['MA/612','Malhotra Alloys','21/06/2025',160000],
+  ['GP/2025/144','Gupta Packaging','09/07/2025',145000],
+  ['BSC/3390','Bharat Steel Corporation','28/08/2025',140000],
+  ['SST/26/0219','Sandhu Steel Traders','15/09/2025',130000],
+  ['NEL/1188','Nova Electricals','02/10/2025',120000],
+  ['PAC/0954','Preet Auto Components','19/11/2025',110000],
+  ['GP/2025/276','Gupta Packaging','06/12/2025',95000],
+  ['BSC/3612','Bharat Steel Corporation','23/01/2026',80000],
+  ['NEL/1301','Nova Electricals','11/02/2026',35000]
+];
+const UNMATCHED = [
+  ['SST/26/0418','Sandhu Steel Traders','04/03/2026',180000],
+  ['PAC/1129','Preet Auto Components','17/03/2026',135000],
+  ['MA/774','Malhotra Alloys','29/03/2026',85000]
+];
+
+const STEP_DEFS = [
+  ['0.00s','Photo received','1.8 MB, 3 pages'],
+  ['0.31s','Uploaded to Sarvam Vision','job b41c9e'],
+  ['1.42s','Read 1 — fields pulled out','amount, date, section, sender'],
+  ['2.07s','Read 2 — whole page digitised','text with page and block positions'],
+  ['2.11s','Two reads compared','numbers normalised, then matched'],
+  ['2.13s','Sums checked','tax + interest + penalty vs printed total'],
+  ['2.44s','Document type worked out','GST notice DRC-01 · section 73']
+];
+
+const HL = {
+  total:   'Page 1, printed total line',
+  date:    'Page 1, reply due line',
+  from:    'Page 1, issuing office',
+  annex:   'Page 1 refers to Annexure A — not in the photos',
+  penalty: 'Page 1, penalty line — the two reads disagree here'
+};
+
+class Component extends DCLogic {
+  state = {
+    screen:'inbox', variant:'A', doc:'good', stepN:0,
+    hl:null, hlRect:null, caSent:false, fileState:'idle', edited:false,
+    fields:{amount:'₹5,12,000', deadline:'14 Aug 2026', gstin:'03AAGCG4512M1ZP'},
+    counts:{processed:9, filed:0, refused:0, wrong:0}
+  };
+
+  _pageRef = React.createRef();
+
+  componentWillUnmount(){ clearInterval(this._t); if (window.speechSynthesis) window.speechSynthesis.cancel(); }
+
+  componentDidMount(){ this.measure(); }
+  componentDidUpdate(){ this.measure(); }
+
+  measure(){
+    const key = this.state.hl, page = this._pageRef.current;
+    if (!key || !page){ if (this.state.hlRect) this.setState({hlRect:null}); return; }
+    const el = page.querySelector('[data-hl="' + key + '"]');
+    if (!el) return;
+    const p = page.getBoundingClientRect(), r = el.getBoundingClientRect();
+    const next = {top: Math.round(r.top - p.top) - 2, height: Math.round(r.height) + 4};
+    const cur = this.state.hlRect;
+    if (!cur || cur.top !== next.top || cur.height !== next.height) this.setState({hlRect:next});
+  }
+
+  say(text){
+    if(!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.rate = 0.95;
+    window.speechSynthesis.speak(u);
+  }
+
+  runProcessing(doc){
+    clearInterval(this._t);
+    this.setState({screen:'processing', doc, stepN:0, hl:null, fileState:'idle', caSent:false});
+    this._t = setInterval(() => {
+      const n = this.state.stepN + 1;
+      if (n >= STEP_DEFS.length + 1){
+        clearInterval(this._t);
+        const c = {...this.state.counts, processed:this.state.counts.processed + 1};
+        if (doc === 'bad') c.refused = c.refused + 1;
+        this.setState({screen:'detail', counts:c, hl: doc === 'bad' ? 'annex' : null});
+      } else this.setState({stepN:n});
+    }, 430);
+  }
+
+  renderVals(){
+    const s = this.state;
+    const bad = s.doc === 'bad';
+    const cap = s.hl ? HL[s.hl] : null;
+    const rect = s.hl ? s.hlRect : null;
+
+    const rows = BASE_ROWS.map(r => ({
+      kind:r.kind, title:r.title, sub:r.sub, party:r.party,
+      amount: r.amt == null ? '—' : R(r.amt),
+      date:r.date,
+      days: typeof r.days === 'number' ? r.days + ' days' : r.days,
+      urgent: r.overdue || (typeof r.days === 'number' && r.days <= 7),
+      calm: !(r.overdue || (typeof r.days === 'number' && r.days <= 7)),
+      status: r.notice && s.fileState === 'filed' ? 'Filed' : r.status,
+      statusClass: r.notice && s.fileState === 'filed' ? 'tag-accent' : r.statusClass,
+      onOpen: () => r.notice ? this.setState({screen:'detail', doc:'good', hl:null}) : null
+    }));
+
+    const marks = [
+      {d:4, amount:'₹2,14,500', label:'Sandhu Steel'},
+      {d:17, amount:'₹86,300', label:'Preet Auto'},
+      {d:19, amount:'₹5,12,000', label:'GST reply due'},
+      {d:27, amount:'₹48,700', label:'Gupta Packaging'}
+    ].map(m => ({
+      dayNum:m.d, amount:m.amount, label:m.label,
+      wrap:{position:'absolute', left:(m.d/30*100)+'%', top:'0', transform:'translateX(-4px)'},
+      stem:{width:'1px', height:'20px', background:'var(--color-text)', opacity:.4},
+      day:{fontSize:'10px', letterSpacing:'.1em', textTransform:'uppercase', opacity:.45, marginTop:'4px', whiteSpace:'nowrap'}
+    }));
+
+    const steps = STEP_DEFS.slice(0, s.stepN).map((d,i) => ({
+      t:d[0], label:d[1], detail:d[2],
+      mark: i === s.stepN - 1 && s.stepN < STEP_DEFS.length ? '·' : '✓',
+      markStyle:{color:'var(--color-accent-700)', fontSize:'13px'}
+    }));
+
+    const okMark = {color:'var(--color-accent-700)', fontSize:'13px'};
+    const noMark = {color:'var(--nm-alert)', fontSize:'13px'};
+    const checks = [
+      {mark: bad ? '✕' : '✓', markStyle: bad ? noMark : okMark,
+       label:'Both reads agree on every number', note: bad ? 'Penalty read as 40,000 and as 4,00,000' : 'Compared as plain numbers, so ₹5,12,000/- and 512000 count as the same'},
+      {mark: bad ? '✕' : '✓', markStyle: bad ? noMark : okMark,
+       label:'Every page the notice refers to is here', note: bad ? 'Annexure A is referred to but was not photographed' : 'Annexure A found on page 3'},
+      {mark:'✓', markStyle:okMark, label:'Nothing required is missing', note:'Amount, deadline, section, sender, reference all present'},
+      {mark:'✓', markStyle:okMark, label:'The sums tie out', note:'4,00,000 + 72,000 + 40,000 = 5,12,000. Warns but never blocks — real notices round.'}
+    ];
+
+    const ladder = [
+      {date:'14 Aug 2026', what:'Last day to reply in Form DRC-06', law:'Rule 142(4)', cost:'₹0 if you reply', dot:'now'},
+      {date:'Sep 2026', what:'Order passed without hearing you', law:'Section 73(9)', cost:'₹5,12,000', dot:'bad'},
+      {date:'Dec 2026', what:'Last day to appeal — 10% must be paid first', law:'Section 107', cost:'₹40,000 upfront', dot:'bad'},
+      {date:'Jan 2027', what:'No appeal left. Bank account can be attached.', law:'Section 79', cost:'Recovery', dot:'worst'}
+    ].map(l => ({
+      date:l.date, what:l.what, law:l.law, cost:l.cost,
+      dotStyle:{width:'9px', height:'9px', display:'inline-block',
+        background: l.dot === 'now' ? 'var(--color-accent)' : l.dot === 'worst' ? 'var(--nm-alert)' : 'transparent',
+        border: l.dot === 'bad' ? '1px solid var(--nm-alert)' : '1px solid transparent'}
+    }));
+
+    const invoices = MATCHED.map(m => ({no:m[0], supplier:m[1], date:m[2], gst:R(m[3]), match:'Matched', tagClass:'tag-neutral'}))
+      .concat(UNMATCHED.map(m => ({no:m[0], supplier:m[1], date:m[2], gst:R(m[3]), match:'Not matched', tagClass:'tag-accent'})));
+
+    const RET = [
+      {form:'GSTR-1', period:'June 2026 · outward supplies', due:'11 Jul 2026', days:'filed on time', state:'done', filedOn:'09 Jul 2026', arn:'AA0307261188Q', note:'42 invoices reported.'},
+      {form:'GSTR-3B', period:'June 2026 · summary and tax', due:'20 Jul 2026', days:'6 days late', state:'late', note:'Not filed. ₹300 late fee so far, growing daily.', cta:'File now'},
+      {form:'GSTR-1', period:'July 2026 · outward supplies', due:'11 Aug 2026', days:'16 days', state:'open', note:'38 invoices ready from your sales bills.', cta:'Review and file'}
+    ].map((g,i) => ({
+      form:g.form, period:g.period, due:g.due, days:g.days, note:g.note, cta:g.cta,
+      status: g.state === 'done' ? 'Filed' : g.state === 'late' ? 'Overdue' : 'Open',
+      tagClass: g.state === 'done' ? 'tag-neutral' : g.state === 'late' ? 'tag-accent' : 'tag-outline',
+      done: g.state === 'done', actionable: g.state !== 'done',
+      filedOn:g.filedOn, arn:g.arn,
+      cellStyle:{padding:'var(--space-6)', borderRight: i < 2 ? '1px solid var(--color-divider)' : 'none'},
+      daysStyle:{fontSize:'11.5px', fontWeight:600, color: g.state === 'late' ? 'var(--nm-alert)' : 'inherit', opacity: g.state === 'late' ? 1 : .5},
+      onFile: () => this.setState({screen:'capture'})
+    }));
+
+    const setF = k => e => this.setState({fields:{...this.state.fields, [k]:e.target.value}, edited:true});
+
+    return {
+      isInbox: s.screen === 'inbox', isCapture: s.screen === 'capture',
+      isProcessing: s.screen === 'processing', isDetail: s.screen === 'detail',
+      isFiled: s.screen === 'filed',
+      varA: s.variant === 'A', varB: s.variant === 'B', varC: s.variant === 'C',
+      onVarA: () => this.setState({variant:'A'}),
+      onVarB: () => this.setState({variant:'B'}),
+      onVarC: () => this.setState({variant:'C'}),
+      owed30:'₹8,61,500', recvOverdue:'₹4,95,000',
+      rows, returns:RET, ruleMarks:marks, invoices, ladder, checks, steps,
+      ctProcessed:s.counts.processed, ctFiled:s.counts.filed,
+      ctRefused:s.counts.refused, ctWrong:s.counts.wrong,
+      goInbox: () => this.setState({screen:'inbox'}),
+      goCapture: () => this.setState({screen:'capture'}),
+      pickGood: () => this.runProcessing('good'),
+      pickBad: () => this.runProcessing('bad'),
+      procFile: bad ? 'IMG_2293.jpg · 2 pages' : 'IMG_2291.jpg · 3 pages',
+      pageLabel: bad ? 'IMG_2293.jpg · page 1 of 2' : 'IMG_2291.jpg · page 1 of 3',
+      refused: bad, canFile: !bad, showEvidence: !bad,
+      blockers: [
+        {text:'The two reads do not agree on the penalty', why:'One read says ₹40,000, the other says ₹4,00,000', onShow: () => this.setState({hl:'penalty'})},
+        {text:'Annexure A is missing', why:'The notice refers to it. It is not in the photos you sent.', onShow: () => this.setState({hl:'annex'})}
+      ],
+      caSent: s.caSent,
+      onForwardCA: () => this.setState({caSent:true}),
+      pageRef: this._pageRef,
+      hlOn: !!rect,
+      hlBox: rect ? {position:'absolute', top:rect.top + 'px', height:rect.height + 'px', left:'12px', right:'12px', border:'2px solid var(--color-accent)', background:'color-mix(in srgb, var(--color-accent) 18%, transparent)', pointerEvents:'none'} : null,
+      hlCaption: cap || 'Tap any fact to see where it came from',
+      showTotal: () => this.setState({hl:'total'}),
+      showDate: () => this.setState({hl:'date'}),
+      showFrom: () => this.setState({hl:'from'}),
+      fields: [
+        {label:'Amount demanded', value:s.fields.amount, onChange:setF('amount')},
+        {label:'Reply due by', value:s.fields.deadline, onChange:setF('deadline')},
+        {label:'Your GSTIN', value:s.fields.gstin, onChange:setF('gstin')}
+      ],
+      edited: s.edited,
+      fileIdle: s.fileState === 'idle', fileSending: s.fileState === 'sending',
+      fileError: s.fileState === 'error',
+      onFile: () => {
+        const first = s.fileState === 'idle';
+        this.setState({fileState:'sending'});
+        setTimeout(() => {
+          if (first) this.setState({fileState:'error'});
+          else this.setState({fileState:'filed', screen:'filed', counts:{...this.state.counts, filed:this.state.counts.filed + 1}});
+        }, 1100);
+      },
+      onReset: () => { clearInterval(this._t); this.setState({screen:'inbox', doc:'good', stepN:0, hl:null, caSent:false, fileState:'idle', edited:false, fields:{amount:'₹5,12,000', deadline:'14 Aug 2026', gstin:'03AAGCG4512M1ZP'}, counts:{processed:9, filed:0, refused:0, wrong:0}}); },
+      speakOwed: () => this.say('You owe eight lakh sixty one thousand five hundred rupees in the next thirty days, across four items.'),
+      speakRecv: () => this.say('Four lakh ninety five thousand rupees is owed to you and is more than forty five days late, from two buyers.'),
+      speakUrgent: () => this.say('Most urgent: pay Sandhu Steel Traders two lakh fourteen thousand five hundred rupees in four days.')
+    };
+  }
+}
+</script>
+</body>
+</html>

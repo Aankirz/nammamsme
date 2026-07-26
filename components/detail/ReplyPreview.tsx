@@ -1,8 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { RateVerdict } from "@/lib/rates";
 import { formatDateShort } from "@/components/lib/copy";
 import { formatRupees } from "@/components/lib/money";
+import {
+  consequenceOf,
+  percent,
+  restraintNote,
+  scheduleNote,
+  spokenVerdict,
+  type InvoiceRate,
+  type RateIndex,
+} from "@/components/lib/rate";
+import { PRIMARY_BUTTON, SECONDARY_BUTTON } from "@/components/ui/buttons";
 
 interface EvidenceRow {
   counterparty: string;
@@ -23,6 +34,7 @@ interface ReplyDraft {
 type Load = "loading" | "ready" | "failed";
 
 const STAGGER_MS = 40;
+const SKELETON_ROWS = 5;
 
 function toDraft(payload: unknown): ReplyDraft | null {
   if (typeof payload !== "object" || payload === null) return null;
@@ -59,13 +71,22 @@ function toDraft(payload: unknown): ReplyDraft | null {
 function SkeletonRows() {
   return (
     <tbody>
-      {Array.from({ length: 5 }, (_, index) => (
+      {Array.from({ length: SKELETON_ROWS }, (_, index) => (
         <tr key={index} className="border-b border-rule">
           <td className="py-2">
             <span className="block h-3 w-40 rounded-sm bg-paper-sunk" />
           </td>
           <td className="py-2">
             <span className="block h-3 w-20 rounded-sm bg-paper-sunk" />
+          </td>
+          <td className="py-2">
+            <span className="block h-3 w-12 rounded-sm bg-paper-sunk" />
+          </td>
+          <td className="py-2">
+            <span className="block h-3 w-20 rounded-sm bg-paper-sunk" />
+          </td>
+          <td className="py-2 text-right">
+            <span className="ml-auto block h-3 w-10 rounded-sm bg-paper-sunk" />
           </td>
           <td className="py-2 text-right">
             <span className="ml-auto block h-3 w-24 rounded-sm bg-paper-sunk" />
@@ -76,21 +97,57 @@ function SkeletonRows() {
   );
 }
 
+const RATE_TEXT: Record<RateVerdict, string> = {
+  match: "text-ink-muted",
+  mismatch: "font-semibold text-stamp",
+  ambiguous: "text-ink",
+  unknown: "text-ink-muted",
+};
+
+function RateCell({ rate }: { rate: InvoiceRate | undefined }) {
+  if (!rate) {
+    return (
+      <td className="numerals py-2 pr-6 text-right font-mono text-xs text-ink-faint">
+        not checked
+      </td>
+    );
+  }
+
+  const { check } = rate;
+  const note = scheduleNote(check);
+
+  return (
+    <td className="numerals py-2 pr-6 text-right font-mono text-xs">
+      <span className={RATE_TEXT[check.verdict]}>{percent(check.charged)}</span>
+      <span className="sr-only">, {spokenVerdict(check.verdict)}</span>
+      {note && (
+        <span
+          className={`block font-sans text-xs ${
+            check.verdict === "mismatch" ? "text-stamp" : "text-ink-faint"
+          }`}
+        >
+          {note}
+        </span>
+      )}
+    </td>
+  );
+}
+
 interface ReplyPreviewProps {
   documentId: string;
   filing: boolean;
+  rates: RateIndex;
   onFile: () => void;
   onCancel: () => void;
 }
 
-/**
- * What is about to be filed, before it is filed.
- *
- * The reply is not a form fill: it is assembled from purchase invoices already
- * in this file. They arrive one after another because that sequence is the
- * argument, and it is the only animation in the product that earns itself.
- */
-export function ReplyPreview({ documentId, filing, onFile, onCancel }: ReplyPreviewProps) {
+export function ReplyPreview({
+  documentId,
+  filing,
+  rates,
+  onFile,
+  onCancel,
+}: ReplyPreviewProps) {
   const [load, setLoad] = useState<Load>("loading");
   const [draft, setDraft] = useState<ReplyDraft | null>(null);
 
@@ -126,13 +183,25 @@ export function ReplyPreview({ documentId, filing, onFile, onCancel }: ReplyPrev
 
   const rows = draft?.rows ?? [];
 
+  const overcharged = rows.flatMap((row) => {
+    const rate = rates[row.invoice_ref];
+    return rate && rate.check.verdict === "mismatch"
+      ? [{ supplier: row.counterparty, rate }]
+      : [];
+  });
+
+  const unsettled = rows.filter((row) => {
+    const verdict = rates[row.invoice_ref]?.check.verdict;
+    return verdict === "ambiguous" || verdict === "unknown";
+  }).length;
+
   return (
     <div className="border-t border-rule pt-4">
       <h3 className="eyebrow">Reply to be filed</h3>
 
       <p className="mt-2 max-w-[62ch] text-sm text-ink">
         {load === "ready"
-          ? `The reply attaches the ${rows.length} purchase invoices already in this file and states what they add up to.`
+          ? `The reply attaches the ${rows.length} purchase invoices already in this file, states what they add up to, and checks each rate against the schedule.`
           : "Gathering the purchase invoices already in this file."}
       </p>
 
@@ -150,7 +219,7 @@ export function ReplyPreview({ documentId, filing, onFile, onCancel }: ReplyPrev
         </ul>
       )}
 
-      <div className="mt-4 max-h-56 overflow-y-auto overscroll-contain">
+      <div className="mt-4 max-h-64 overflow-y-auto overscroll-contain">
         <table className="w-full text-sm">
           <thead className="sticky top-0 bg-paper-raised">
             <tr className="border-b border-rule-strong text-left">
@@ -161,7 +230,13 @@ export function ReplyPreview({ documentId, filing, onFile, onCancel }: ReplyPrev
                 Invoice
               </th>
               <th scope="col" className="eyebrow py-2 font-semibold">
+                HSN
+              </th>
+              <th scope="col" className="eyebrow py-2 font-semibold">
                 Dated
+              </th>
+              <th scope="col" className="eyebrow py-2 pr-6 text-right font-semibold">
+                Rate
               </th>
               <th scope="col" className="eyebrow py-2 text-right font-semibold">
                 GST claimed
@@ -173,24 +248,44 @@ export function ReplyPreview({ documentId, filing, onFile, onCancel }: ReplyPrev
             <SkeletonRows />
           ) : (
             <tbody>
-              {rows.map((row, index) => (
-                <tr
-                  key={row.invoice_ref || index}
-                  className="ledger-in border-b border-rule"
-                  style={{ animationDelay: `${index * STAGGER_MS}ms` }}
-                >
-                  <td className="py-2 pr-3 text-ink">{row.counterparty}</td>
-                  <td className="numerals py-2 pr-3 font-mono text-xs text-ink-muted">
-                    {row.invoice_ref}
-                  </td>
-                  <td className="numerals py-2 pr-3 font-mono text-xs text-ink-muted">
-                    {formatDateShort(row.doc_date) ?? "no date"}
-                  </td>
-                  <td className="numerals py-2 text-right font-mono text-ink">
-                    {formatRupees(row.gst)}
-                  </td>
-                </tr>
-              ))}
+              {rows.map((row, index) => {
+                const rate = rates[row.invoice_ref];
+                const flagged = rate?.check.verdict === "mismatch";
+
+                return (
+                  <tr
+                    key={row.invoice_ref || index}
+                    data-verdict={rate?.check.verdict ?? "unknown"}
+                    className={`ledger-in border-b ${
+                      flagged ? "border-stamp-rule bg-stamp-tint" : "border-rule"
+                    }`}
+                    style={{ animationDelay: `${index * STAGGER_MS}ms` }}
+                  >
+                    <td
+                      className={`py-2 pr-3 ${flagged ? "font-semibold text-stamp" : "text-ink"}`}
+                    >
+                      {row.counterparty}
+                    </td>
+                    <td className="numerals py-2 pr-3 font-mono text-xs text-ink-muted">
+                      {row.invoice_ref}
+                    </td>
+                    <td className="numerals py-2 pr-3 font-mono text-xs text-ink-muted">
+                      {rate?.check.matchedCode ?? rate?.check.hsn ?? "none"}
+                    </td>
+                    <td className="numerals py-2 pr-3 font-mono text-xs text-ink-muted">
+                      {formatDateShort(row.doc_date) ?? "no date"}
+                    </td>
+                    <RateCell rate={rate} />
+                    <td
+                      className={`numerals py-2 text-right font-mono ${
+                        flagged ? "font-semibold text-stamp" : "text-ink"
+                      }`}
+                    >
+                      {formatRupees(row.gst)}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           )}
         </table>
@@ -207,6 +302,30 @@ export function ReplyPreview({ documentId, filing, onFile, onCancel }: ReplyPrev
         <p className="mt-3 text-sm text-stamp">
           The supporting invoices could not be read just now. Filing is still possible,
           but the reply would go without them.
+        </p>
+      )}
+
+      {load === "ready" &&
+        overcharged.map(({ supplier, rate }) => (
+          <div
+            key={rate.invoiceRef}
+            className="mt-4 rounded-sm border border-stamp-rule bg-stamp-tint px-4 py-3"
+          >
+            <p className="eyebrow text-stamp">One rate does not hold</p>
+            <p className="mt-1.5 max-w-[62ch] text-sm text-ink">
+              {consequenceOf(rate, supplier)}
+            </p>
+            {rate.check.description && (
+              <p className="mt-1.5 max-w-[62ch] text-sm text-ink-muted">
+                The schedule reads {rate.check.matchedCode} as {rate.check.description}.
+              </p>
+            )}
+          </div>
+        ))}
+
+      {load === "ready" && unsettled > 0 && (
+        <p className="mt-3 max-w-[62ch] text-sm text-ink-muted">
+          {restraintNote(unsettled)}
         </p>
       )}
 
@@ -234,7 +353,7 @@ export function ReplyPreview({ documentId, filing, onFile, onCancel }: ReplyPrev
           type="button"
           onClick={onFile}
           disabled={filing}
-          className="rounded-md bg-ink px-4 py-2.5 text-sm font-semibold text-ink-invert transition-[opacity,transform] duration-150 ease-[var(--ease-out)] hover:opacity-90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
+          className={PRIMARY_BUTTON}
         >
           {filing ? "Filing" : "File this reply"}
         </button>
@@ -243,7 +362,7 @@ export function ReplyPreview({ documentId, filing, onFile, onCancel }: ReplyPrev
           type="button"
           onClick={onCancel}
           disabled={filing}
-          className="rounded-md border border-rule px-4 py-2.5 text-sm font-semibold text-ink transition-colors duration-150 ease-[var(--ease-out)] hover:border-ink hover:bg-paper-sunk active:bg-rule disabled:cursor-not-allowed disabled:opacity-50"
+          className={SECONDARY_BUTTON}
         >
           Back
         </button>

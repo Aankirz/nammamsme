@@ -12,6 +12,7 @@ import {
 import { TONE_RULE_CLASSES } from "@/components/lib/urgency";
 import { DayCount } from "@/components/ui/DayCount";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { AskPanel } from "./AskPanel";
 import { ConsequenceLadder } from "./ConsequenceLadder";
 import { ReconciliationPanel } from "./ReconciliationPanel";
 import { ReturnActionBar } from "./ReturnActionBar";
@@ -257,6 +258,10 @@ export function ReturnDetail({ row, notice, now }: ReturnDetailProps) {
               </div>
             )}
           </div>
+        </div>
+
+        <div className="mt-12 max-w-[68ch] pb-4">
+          <AskPanel row={row} />
         </div>
       </div>
 
