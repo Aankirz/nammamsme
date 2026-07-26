@@ -1,7 +1,6 @@
 import { neon } from "@neondatabase/serverless";
 import type { DocumentStore, StoredRow } from "./db";
 
-const TABLE = "documents";
 
 export function createPgStore(url: string, seed: readonly StoredRow[]): DocumentStore {
   const sql = neon(url);

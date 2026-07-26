@@ -60,6 +60,13 @@ export function NavBar({ now }: NavBarProps) {
         {today(now)} · {BUSINESS.name}, {BUSINESS.place}
       </span>
 
+      <Link
+        href="/returns"
+        className="btn btn-ghost text-[11px] uppercase tracking-[0.1em]"
+      >
+        Filing history
+      </Link>
+
       <ResetButton />
     </header>
   );

@@ -1,3 +1,4 @@
+import { createPgStore } from "./pg-store";
 import seedJson from "@/data/seed.json";
 import { checkRate, lookupRate } from "@/lib/rates";
 import type {
@@ -529,7 +530,6 @@ function createStore(): DocumentStore {
   const url = process.env.DATABASE_URL;
   if (!url) return createMemoryStore();
 
-  const { createPgStore } = require("./pg-store") as typeof import("./pg-store");
   return createPgStore(url, SEED);
 }
 

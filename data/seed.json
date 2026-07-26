@@ -670,7 +670,7 @@
     "amount": null,
     "doc_date": "2025-08-01",
     "deadline": "2026-07-31",
-    "counterparty": "SENTINEL Authority of India (FSSAI)",
+    "counterparty": "Food Safety and Standards Authority of India",
     "consequence": "31 July 2026: the registration stops being valid.\n1 August 2026: late renewal starts costing Rs 100 a day.\nAfter that: running the canteen without a valid registration carries a fine up to Rs 5,00,000 and up to six months in jail. The premises can be sealed.",
     "direction": "owing",
     "status": "seeded",
