@@ -5,6 +5,7 @@ import type { RateVerdict } from "@/lib/rates";
 import { formatDateShort } from "@/components/lib/copy";
 import { formatRupees } from "@/components/lib/money";
 import {
+  codeOf,
   consequenceOf,
   percent,
   restraintNote,
@@ -96,6 +97,15 @@ function SkeletonRows() {
     </tbody>
   );
 }
+
+const HEADINGS = [
+  { label: "Supplier", align: "" },
+  { label: "Invoice", align: "" },
+  { label: "HSN", align: "" },
+  { label: "Dated", align: "" },
+  { label: "Rate", align: "pr-6 text-right" },
+  { label: "GST claimed", align: "text-right" },
+];
 
 const RATE_TEXT: Record<RateVerdict, string> = {
   match: "text-ink-muted",
@@ -219,28 +229,19 @@ export function ReplyPreview({
         </ul>
       )}
 
-      <div className="mt-4 max-h-64 overflow-y-auto overscroll-contain">
+      <div className="mt-4">
         <table className="w-full text-sm">
-          <thead className="sticky top-0 bg-paper-raised">
-            <tr className="border-b border-rule-strong text-left">
-              <th scope="col" className="eyebrow py-2 font-semibold">
-                Supplier
-              </th>
-              <th scope="col" className="eyebrow py-2 font-semibold">
-                Invoice
-              </th>
-              <th scope="col" className="eyebrow py-2 font-semibold">
-                HSN
-              </th>
-              <th scope="col" className="eyebrow py-2 font-semibold">
-                Dated
-              </th>
-              <th scope="col" className="eyebrow py-2 pr-6 text-right font-semibold">
-                Rate
-              </th>
-              <th scope="col" className="eyebrow py-2 text-right font-semibold">
-                GST claimed
-              </th>
+          <thead>
+            <tr className="text-left">
+              {HEADINGS.map(({ label, align }) => (
+                <th
+                  key={label}
+                  scope="col"
+                  className={`eyebrow border-b border-rule-strong bg-paper-raised py-2 font-semibold ${align}`}
+                >
+                  {label}
+                </th>
+              ))}
             </tr>
           </thead>
 
@@ -270,7 +271,7 @@ export function ReplyPreview({
                       {row.invoice_ref}
                     </td>
                     <td className="numerals py-2 pr-3 font-mono text-xs text-ink-muted">
-                      {rate?.check.matchedCode ?? rate?.check.hsn ?? "none"}
+                      {rate ? codeOf(rate.check) : "none"}
                     </td>
                     <td className="numerals py-2 pr-3 font-mono text-xs text-ink-muted">
                       {formatDateShort(row.doc_date) ?? "no date"}

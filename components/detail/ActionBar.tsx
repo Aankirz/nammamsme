@@ -95,18 +95,20 @@ export function ActionBar({
     setStage("reviewing");
   }
 
+  const reviewing = stage === "reviewing" || stage === "filing";
+
   return (
     <section
       aria-labelledby="action-heading"
-      className={`sticky bottom-0 z-10 mt-12 border-t bg-paper-raised px-8 py-5 ${
-        blocked ? "border-stamp-rule" : "border-ink"
-      }`}
+      className={`z-10 mt-12 border-t bg-paper-raised px-8 py-5 ${
+        reviewing ? "" : "sticky bottom-0"
+      } ${blocked ? "border-stamp-rule" : "border-ink"}`}
     >
       <h2 id="action-heading" className="sr-only">
         What happens next
       </h2>
 
-      {stage === "reviewing" || stage === "filing" ? (
+      {reviewing ? (
         <ReplyPreview
           documentId={documentId}
           filing={stage === "filing"}

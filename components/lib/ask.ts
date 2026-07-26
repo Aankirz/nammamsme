@@ -1,4 +1,5 @@
 import type { DocumentRow } from "./documents";
+import { DOC_TYPE_LABEL } from "./copy";
 
 export interface TraceStep {
   tool: string;
@@ -92,8 +93,8 @@ export function callCountPhrase(count: number): string {
 }
 
 const NOTICE_STARTERS = [
-  "What happens if I do not reply to this notice?",
-  "Was any of these invoices billed at the wrong rate?",
+  "What happens if I do not reply to this one?",
+  "Were any of these invoices billed at a rate the schedule does not allow?",
 ];
 
 const RETURN_STARTERS = [
@@ -110,4 +111,13 @@ export function askStarters(row: DocumentRow): readonly string[] {
   if (row.doc_type === "gst_notice") return NOTICE_STARTERS;
   if (row.doc_type === "gst_return") return RETURN_STARTERS;
   return GENERAL_STARTERS;
+}
+
+export function askContext(row: DocumentRow): string {
+  const from = row.counterparty.trim() !== "" ? ` from ${row.counterparty}` : "";
+  return `The document open on screen is id ${row.id}, a ${DOC_TYPE_LABEL[row.doc_type].toLowerCase()}${from}. Read it before answering anything about "this one".`;
+}
+
+export function contextNote(row: DocumentRow): string {
+  return `Asked with the open document, ${row.id}.`;
 }

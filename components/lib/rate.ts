@@ -12,11 +12,21 @@ export function percent(rate: number | null): string {
   return rate === null ? "not read" : `${rate}%`;
 }
 
+const READABLE_CODE = /\d{4}/;
+
+export function codeOf(check: RateCheck): string {
+  return check.matchedCode ?? (READABLE_CODE.test(check.hsn) ? check.hsn : "none");
+}
+
 export function scheduleNote(check: RateCheck): string | null {
   if (check.verdict === "match") return null;
-  if (check.verdict === "mismatch") return `schedule ${percent(check.expected[0])}`;
+  if (check.verdict === "mismatch") {
+    return `schedule ${percent(check.expected[0] ?? null)}`;
+  }
   if (check.verdict === "ambiguous") return "two lawful rates";
-  return check.matchedCode === null && check.hsn !== "" ? "not in schedule" : "no code read";
+  if (!READABLE_CODE.test(check.hsn)) return "no code read";
+  if (check.matchedCode === null) return "not in the schedule";
+  return "no rate read";
 }
 
 export function spokenVerdict(verdict: RateVerdict): string {
@@ -29,9 +39,14 @@ export function spokenVerdict(verdict: RateVerdict): string {
 export function consequenceOf(rate: InvoiceRate, supplier: string): string {
   const { check } = rate;
   const who = supplier.trim() !== "" ? supplier : "This supplier";
-  const expected = check.expected[0];
+  const expected = check.expected[0] ?? null;
+  const over = check.charged !== null && expected !== null && check.charged > expected;
 
-  return `${who}, invoice ${rate.invoiceRef}, is billed at ${percent(check.charged)}. The schedule puts HSN ${check.matchedCode ?? check.hsn} at ${percent(expected ?? null)}. Credit claimed above the lawful rate is credit the department will disallow.`;
+  const consequence = over
+    ? "Credit claimed above the lawful rate is credit the department will disallow."
+    : "Tax billed below the lawful rate is tax the department will come back for, with interest.";
+
+  return `${who}, invoice ${rate.invoiceRef}, is billed at ${percent(check.charged)}. The schedule puts HSN ${codeOf(check)} at ${percent(expected)}. ${consequence}`;
 }
 
 export function restraintNote(count: number): string {

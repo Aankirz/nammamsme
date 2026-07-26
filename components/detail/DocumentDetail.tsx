@@ -52,7 +52,7 @@ export function DocumentDetail({ row, now, rates }: DocumentDetailProps) {
           />
         </div>
 
-        <div className="mt-12 max-w-[68ch] pb-4">
+        <div className="mt-12 pb-4">
           <AskPanel row={row} />
         </div>
       </div>

@@ -2,8 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
+  askContext,
   askFailure,
   askStarters,
+  contextNote,
   callCountPhrase,
   elapsedPhrase,
   formatArgs,
@@ -127,7 +129,7 @@ export function AskPanel({ row }: AskPanelProps) {
       const response = await fetch("/api/ask", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ question: trimmed }),
+        body: JSON.stringify({ question: `${trimmed}\n\n${askContext(row)}` }),
       });
 
       const payload: unknown = await response.json().catch(() => null);
@@ -204,17 +206,14 @@ export function AskPanel({ row }: AskPanelProps) {
               type="text"
               autoComplete="off"
               maxLength={400}
+              required
               disabled={asking}
               value={question}
               onChange={(event) => setQuestion(event.target.value)}
-              placeholder="What happens if I do not reply?"
+              placeholder="A question about this document"
               className={`${FIELD} min-w-0 flex-1 basis-80`}
             />
-            <button
-              type="submit"
-              disabled={asking || question.trim() === ""}
-              className={PRIMARY_BUTTON}
-            >
+            <button type="submit" disabled={asking} className={PRIMARY_BUTTON}>
               {asking ? "Reading" : "Ask"}
             </button>
             {stage !== "idle" && (
@@ -235,6 +234,10 @@ export function AskPanel({ row }: AskPanelProps) {
               </button>
             )}
           </form>
+
+          <p className="numerals mt-2 font-mono text-xs text-ink-faint">
+            {contextNote(row)}
+          </p>
 
           {stage === "idle" && (
             <p className="mt-3 flex flex-wrap items-baseline gap-x-5 gap-y-1">

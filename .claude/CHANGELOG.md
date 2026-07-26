@@ -60,3 +60,11 @@
 - Extracted the consequence ladder out of `FactsColumn.tsx` into `ConsequenceLadder.tsx`, and the two ActionBar button class strings into `components/ui/buttons.ts`. Both are reused by the return view; neither changes existing rendering.
 - `fetchDocuments` now reads `?role=all` and drops evidence rows locally, so a return row reaches the rail whatever role the seed gives it. Rows carry a narrowed `return` object.
 - Exposure: a return is left out of the 30-day sum when it is filed, or when its `led_to` notice is itself in the file. Without that rule the Apr-Jun 2025 mismatch would be counted once as the return and again as the Rs 5,12,000 demand it produced.
+
+## 2026-07-26 — Rate verdicts in the reply, and Ask
+- `components/lib/documents.ts`: parse the invoice `evidence` block (hsn, goods, gst_rate) onto `DocumentRow`; split `fetchAllRows` / `inTheFile` / `purchaseInvoices` so one fetch serves both the rail and the rate check.
+- `components/lib/rate.ts`, `components/lib/rate-index.ts`: build a per-invoice `RateCheck` index on the server from `lib/rates.checkRate`, plus the copy for each verdict.
+- `components/detail/ReplyPreview.tsx`: HSN and Rate columns; matches stay silent, mismatch is tinted with a consequence note, ambiguous and unknown say so plainly.
+- `components/detail/ActionBar.tsx`: releases its sticky pin while a reply is under review so all 14 rows can flow.
+- `components/detail/AskPanel.tsx`, `components/lib/ask.ts`: a collapsed question field on every document, with a pending state and the tool trace rendered as what the system read.
+- `app/globals.css`: `ledger-in` fills `backwards` rather than `both`, so finished rows leave no identity transform behind.
