@@ -1,3 +1,5 @@
+import { SectionLabel } from "@/components/ui/SectionLabel";
+
 interface PlainLanguageSectionProps {
   /** `obligation` — the plain-Hindi explanation of what the paper says. */
   text: string;
@@ -12,11 +14,10 @@ export function PlainLanguageSection({ text }: PlainLanguageSectionProps) {
 
   return (
     <section aria-labelledby="explanation-heading" className="px-4 pt-8">
-      <h2
-        id="explanation-heading"
-        className="text-label font-semibold uppercase tracking-[0.1em] text-ink-faint"
-      >
-        यह क्या है
+      <h2 id="explanation-heading">
+        <SectionLabel ruleClassName="bg-ink" className="text-ink-faint">
+          यह क्या है
+        </SectionLabel>
       </h2>
 
       <div className="mt-2 border-l-2 border-ink pl-4">

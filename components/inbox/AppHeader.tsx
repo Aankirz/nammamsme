@@ -14,7 +14,7 @@ function isoDate(date: Date): string {
 export function AppHeader({ today }: AppHeaderProps) {
   return (
     <header className="flex items-baseline justify-between gap-4 border-b-2 border-ink px-5 pb-3 pt-5">
-      <p className="text-title font-bold tracking-[-0.01em]">कागज़</p>
+      <p className="text-title font-bold">कागज़</p>
       <p className="numerals text-micro text-ink-faint">
         {formatHindiDate(isoDate(today))}
       </p>

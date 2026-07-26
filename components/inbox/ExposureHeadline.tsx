@@ -56,7 +56,7 @@ export function ExposureHeadline({ exposure }: ExposureHeadlineProps) {
       className="border-b border-rule px-5 pb-6 pt-6"
     >
       <h1 id="exposure-heading" className="rise">
-        <span className="block text-label font-semibold uppercase tracking-[0.1em] text-ink-faint">
+        <span className="block text-label font-bold text-ink-faint">
           अगले 30 दिनों में देना है
         </span>
         <Money

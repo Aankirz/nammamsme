@@ -1,0 +1,112 @@
+{
+  "page_num": 1,
+  "image_width": 2550,
+  "image_height": 3300,
+  "created_at": "2026-07-26T07:18:41.400904+00:00",
+  "blocks": [
+    {
+      "block_id": "20260726_233a6685-0eed-4432-adee-7509201081d3_1_block_000",
+      "coordinates": {
+        "x1": 60.0,
+        "y1": 71.0,
+        "x2": 921.0,
+        "y2": 284.0
+      },
+      "layout_tag": "paragraph",
+      "confidence": 0.5067616105079651,
+      "reading_order": 1,
+      "text": "FORM GST DRC-01\nSummary of Show Cause Notice\nReference No: ZD030726001234\nDate: 12/07/2026"
+    },
+    {
+      "block_id": "20260726_233a6685-0eed-4432-adee-7509201081d3_1_block_001",
+      "coordinates": {
+        "x1": 62.0,
+        "y1": 318.0,
+        "x2": 1187.0,
+        "y2": 437.0
+      },
+      "layout_tag": "paragraph",
+      "confidence": 0.5056051015853882,
+      "reading_order": 2,
+      "text": "To: M/s Gupta Hosiery Mills, Ludhiana\nGSTIN: 03AABCG1234H1Z5"
+    },
+    {
+      "block_id": "20260726_233a6685-0eed-4432-adee-7509201081d3_1_block_002",
+      "coordinates": {
+        "x1": 60.0,
+        "y1": 467.0,
+        "x2": 1130.0,
+        "y2": 587.0
+      },
+      "layout_tag": "paragraph",
+      "confidence": 0.4550544321537018,
+      "reading_order": 3,
+      "text": "Tax Period: April 2025 to June 2025\nSection: 73 of the CGST Act, 2017"
+    },
+    {
+      "block_id": "20260726_233a6685-0eed-4432-adee-7509201081d3_1_block_003",
+      "coordinates": {
+        "x1": 62.0,
+        "y1": 618.0,
+        "x2": 2026.0,
+        "y2": 789.0
+      },
+      "layout_tag": "paragraph",
+      "confidence": 0.787106990814209,
+      "reading_order": 4,
+      "text": "It is observed that Input Tax Credit of Rs. 18,00,000 was claimed\nin GSTR-3B, whereas credit of only Rs. 14,00,000 is reflected in\nGSTR-2B as reported by your suppliers."
+    },
+    {
+      "block_id": "20260726_233a6685-0eed-4432-adee-7509201081d3_1_block_004",
+      "coordinates": {
+        "x1": 63.0,
+        "y1": 818.0,
+        "x2": 1479.0,
+        "y2": 888.0
+      },
+      "layout_tag": "paragraph",
+      "confidence": 0.560420036315918,
+      "reading_order": 5,
+      "text": "The unmatched Input Tax Credit is Rs. 4,00,000."
+    },
+    {
+      "block_id": "20260726_233a6685-0eed-4432-adee-7509201081d3_1_block_005",
+      "coordinates": {
+        "x1": 62.0,
+        "y1": 920.0,
+        "x2": 775.0,
+        "y2": 1137.0
+      },
+      "layout_tag": "paragraph",
+      "confidence": 0.43424832820892334,
+      "reading_order": 6,
+      "text": "Tax: Rs. 4,00,000\nInterest: Rs. 72,000\nPenalty: Rs. 40,000\nTotal: Rs. 5,12,000"
+    },
+    {
+      "block_id": "20260726_233a6685-0eed-4432-adee-7509201081d3_1_block_006",
+      "coordinates": {
+        "x1": 57.0,
+        "y1": 1169.0,
+        "x2": 2060.0,
+        "y2": 1340.0
+      },
+      "layout_tag": "paragraph",
+      "confidence": 0.7667489647865295,
+      "reading_order": 7,
+      "text": "You are hereby required to show cause and file a reply in FORM GST\nDRC-06 on or before 14/08/2026, failing which the matter will be\ndecided ex-parte on the basis of records available."
+    },
+    {
+      "block_id": "20260726_233a6685-0eed-4432-adee-7509201081d3_1_block_007",
+      "coordinates": {
+        "x1": 58.0,
+        "y1": 1369.0,
+        "x2": 1754.0,
+        "y2": 1488.0
+      },
+      "layout_tag": "paragraph",
+      "confidence": 0.6039317846298218,
+      "reading_order": 8,
+      "text": "The unmatched invoices are: MKF/25-26/0092 Rs. 1,86,000;\nDTA/2526/0271 Rs. 1,29,000; VYS/25-26/0134 Rs. 85,000."
+    }
+  ]
+}

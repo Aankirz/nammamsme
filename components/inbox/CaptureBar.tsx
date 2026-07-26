@@ -9,7 +9,7 @@ import Link from "next/link";
  */
 export function CaptureBar() {
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-20">
+    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-screen-sm">
       <div className="h-10 bg-gradient-to-t from-paper to-transparent" />
       <div className="pointer-events-auto bg-paper px-5 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-2">
         <Link

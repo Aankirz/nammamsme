@@ -43,7 +43,7 @@ export function RefusalPanel({ blockers }: RefusalPanelProps) {
       <div className="h-2 bg-danger" aria-hidden="true" />
 
       <div className="px-5 pb-6 pt-5">
-        <p className="inline-flex -rotate-1 items-center rounded-tag border-2 border-danger px-2 py-1 font-mono text-tag font-bold uppercase text-danger">
+        <p className="inline-flex -rotate-1 items-center rounded-tag border-2 border-danger px-2.5 py-1 text-label font-bold text-danger">
           रोका गया
         </p>
 
@@ -67,12 +67,12 @@ export function RefusalPanel({ blockers }: RefusalPanelProps) {
             >
               <StopMark />
               <div className="min-w-0 flex-1">
-                <p className="text-label font-bold uppercase tracking-[0.06em] text-danger">
+                <p className="text-label font-bold text-danger">
                   {BLOCKER_HEADING[blocker.kind] ?? "जाँच पूरी नहीं हुई"}
                 </p>
                 <p className="mt-1 text-body text-ink">{blocker.detail}</p>
                 {blocker.sourceRef && (
-                  <p className="numerals mt-2 font-mono text-micro text-ink-faint">
+                  <p className="numerals mt-2 text-micro text-ink-faint">
                     पन्ना {blocker.sourceRef.page} · हिस्सा{" "}
                     {blocker.sourceRef.block}
                   </p>

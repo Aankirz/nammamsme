@@ -33,7 +33,7 @@ export function DetailHeader({ docType, blocked = false }: DetailHeaderProps) {
         </svg>
       </Link>
 
-      <p className="truncate text-label font-semibold uppercase tracking-[0.1em] text-ink-faint">
+      <p className="truncate text-label font-bold text-ink-faint">
         {docType ? DOC_TYPE_LABEL[docType] : "दस्तावेज़"}
       </p>
     </header>

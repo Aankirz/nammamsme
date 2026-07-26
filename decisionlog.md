@@ -243,3 +243,32 @@ Records: 14 invoices, ₹18,00,000 ITC claimed; 11 matched (₹14,00,000); 3 unm
 **Observation:** 30b's wrong `amount` (₹4,00,000 against a stated total of ₹5,12,000) would have been caught by the arithmetic check — 4,00,000 + 72,000 + 40,000 ≠ 4,00,000, a ₹1,12,000 discrepancy far outside the ₹100 tolerance — and surfaced as a flag.
 **Why recorded:** this is a real, unstaged instance of a language model misreading a consequential field on a document we control, caught by a check built before the failure was observed. It is the most credible thing we can say about the refusal design, and it should be said on stage.
 **Status:** Recorded as demo evidence.
+
+---
+
+## 2026-07-26 — UI direction
+
+### D-06a — Language is English, not Hindi *(reverses D-06)*
+**Decision:** all user-facing copy is plain English.
+**Why:** D-06 was locked on a single criterion, that the team must be able to proofread what ships. The user has now taken that role and chosen English directly, which satisfies the criterion rather than violating it. The original reasoning is intact; the input changed.
+**Cost:** the Indic-script work is discarded, including a genuine finding that `letter-spacing` on Devanagari visibly pulls matras off their base glyphs. Recorded here because it would recur immediately if Hindi returns.
+**Constrains:** copy rules from PRODUCT.md now carry the load the language switch used to: state the number, state the date, state the consequence, stop.
+**Status:** Locked.
+
+### D-36 — Desktop-first, two-pane master-detail *(reverses the mobile-first assumption)*
+**Decision:** primary target is 1280px and up. Left rail 360px fixed, persistent across selection; detail in the main pane. Below 1024px the rail collapses to a top list.
+**Why:** the original brief assumed a trader on a mid-range Android. The actual working context is a laptop at a desk, and the secondary user (the CA, 150 clients) is unambiguously desktop and wants density. Master-detail is the correct pattern for a case file and removes the navigate-away-and-back loop.
+**Cost:** the mobile build is reworked. The component structure survives; layout and copy do not.
+**Status:** Locked.
+
+### D-37 — Visual direction is "registry", light theme, stamp red
+**Scene sentence:** an accountant or the trader opens a laptop in a Ludhiana office at 11am, daylight through the window, mildly anxious because a notice arrived. That forces **light**; dark would be a monitoring-dashboard reflex applied to daytime document work.
+**Reflex check:** first-order for Indian tax software is navy-and-saffron or SaaS blue. Second-order is editorial serif on cream. Both rejected.
+**Decision:** tinted neutrals, Restrained strategy, with `--stamp` (oklch(48% 0.175 27), the red of official ink on Indian government paper) as the only accent. Reserved exclusively for consequence: overdue, blocked, refused, demanded. Never a brand flourish, never a hover state, never a primary button; the primary action is ink.
+**Why the restraint matters:** the user is already anxious. Red everywhere reads as panic and stops meaning anything. Scarcity is what makes it legible.
+**Status:** Locked. Full tokens in DESIGN.md.
+
+### D-38 — The seed carries a pre-refused notice
+**Decision:** seed data includes a second GST notice with populated `blockers`, alongside the cleanly-fileable hero notice.
+**Why:** the refusal state is the product's single most important screen and its entire trust claim, but until now it could only be reached by processing a broken document live. Seeding it makes it demonstrable without the pipeline, reviewable during design, and independent of API availability on stage.
+**Status:** Locked.

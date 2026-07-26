@@ -34,7 +34,7 @@ export function FactCard({
       />
       <div className="flex items-start gap-3 py-4 pl-5 pr-4">
         <div className="min-w-0 flex-1">
-          <h3 className="text-label font-semibold uppercase tracking-[0.1em] text-ink-faint">
+          <h3 className="text-label font-bold text-ink-faint">
             {question}
           </h3>
           <div className="mt-1">{children}</div>

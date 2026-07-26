@@ -1,4 +1,5 @@
 import { parseConsequence } from "@/components/lib/consequence";
+import { SectionLabel } from "@/components/ui/SectionLabel";
 
 interface ConsequenceLadderProps {
   /** `consequence` — what happens, in order, if he does nothing. */
@@ -29,11 +30,10 @@ export function ConsequenceLadder({ text }: ConsequenceLadderProps) {
 
   return (
     <section aria-labelledby="consequence-heading" className="px-4 pt-8">
-      <h2
-        id="consequence-heading"
-        className="text-label font-semibold uppercase tracking-[0.1em] text-ink-faint"
-      >
-        अगर आप कुछ नहीं करते
+      <h2 id="consequence-heading">
+        <SectionLabel ruleClassName="bg-danger" className="text-ink-faint">
+          अगर आप कुछ नहीं करते
+        </SectionLabel>
       </h2>
 
       {steps.length === 1 ? (
@@ -60,7 +60,7 @@ export function ConsequenceLadder({ text }: ConsequenceLadderProps) {
                 </span>
                 <span className="min-w-0 flex-1 pt-[2px]">
                   {step.when && (
-                    <span className="numerals block text-label font-bold uppercase tracking-[0.06em] text-ink-faint">
+                    <span className="numerals block text-label font-bold text-ink-faint">
                       {step.when}
                     </span>
                   )}

@@ -23,3 +23,11 @@
 - `lib/evidence.ts`: candidates are now filtered to `role === "evidence"` before the `doc_date` period filter (D-30), so obligation rows inside the period are excluded.
 - Signature widened to `assembleEvidence(notice, invoices: readonly StoredRow[])` via a type-only import from `lib/db.ts` (erased at compile time, so the module stays pure).
 - `lib/evidence.test.ts`: added mixed 5%/12% rate coverage, an obligation-row exclusion case, and both fallback paths. 28 tests passing.
+
+## 2026-07-26 — Inbox + detail UI, Hindi, ledger-paper design system
+- `app/globals.css`: replaced the starter tokens with a "ledger paper" design system — warm paper surfaces, ink scale, vermillion/amber/green semantic tones, Devanagari-aware type scale with explicit line-heights, radii, shadows, ledger-rule body texture, danger hatching, transform/opacity-only motion, reduced-motion guard.
+- `app/layout.tsx`: `lang="hi"`, Noto Sans Devanagari as the text face + Geist Mono for Latin document stamps, Hindi metadata and viewport.
+- `app/page.tsx`: inbox — exposure headline computed from rows (30-day payables, 45-day overdue receivables), deadline-sorted document list, fixed capture button, empty state.
+- `app/doc/[id]/page.tsx`: detail — three fact cards (कितना / कब तक / किसने भेजा), plain-language explanation, consequence ladder, sticky decision bar, and the refusal state when `blockers.length > 0`.
+- `components/**`: 20 new components split into `lib` (pure helpers), `ui` (primitives), `inbox`, `detail`.
+- Fixed: letter-spacing was breaking Devanagari conjuncts — removed all tracking from Hindi text and replaced the eyebrow treatment with a rule mark (`components/ui/SectionLabel.tsx`).

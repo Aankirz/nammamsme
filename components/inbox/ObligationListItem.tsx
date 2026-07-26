@@ -67,7 +67,7 @@ export function ObligationListItem({
               </span>
             )}
             {isBlocked && (
-              <span className="rounded-tag bg-danger px-1.5 py-0.5 text-tag font-bold uppercase text-ink-invert">
+              <span className="rounded-tag bg-danger px-2 py-0.5 text-micro font-bold text-ink-invert">
                 रुका
               </span>
             )}

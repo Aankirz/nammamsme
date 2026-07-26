@@ -1,0 +1,28 @@
+FORM GST DRC-01
+Summary of Show Cause Notice
+Reference No: ZD030726001234
+Date: 12/07/2026
+
+To: M/s Gupta Hosiery Mills, Ludhiana
+GSTIN: 03AABCG1234H1Z5
+
+Tax Period: April 2025 to June 2025
+Section: 73 of the CGST Act, 2017
+
+It is observed that Input Tax Credit of Rs. 18,00,000 was claimed
+in GSTR-3B, whereas credit of only Rs. 14,00,000 is reflected in
+GSTR-2B as reported by your suppliers.
+
+The unmatched Input Tax Credit is Rs. 4,00,000.
+
+Tax: Rs. 4,00,000
+Interest: Rs. 72,000
+Penalty: Rs. 40,000
+Total: Rs. 5,12,000
+
+You are hereby required to show cause and file a reply in FORM GST
+DRC-06 on or before 14/08/2026, failing which the matter will be
+decided ex-parte on the basis of records available.
+
+The unmatched invoices are: MKF/25-26/0092 Rs. 1,86,000;
+DTA/2526/0271 Rs. 1,29,000; VYS/25-26/0134 Rs. 85,000.
