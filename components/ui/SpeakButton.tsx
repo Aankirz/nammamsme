@@ -69,29 +69,23 @@ export function SpeakButton({ text, label }: SpeakButtonProps) {
       aria-busy={state === "loading"}
       data-speech-text={text}
       onClick={speak}
-      className={`grid size-6 shrink-0 place-items-center rounded-sm transition-colors duration-150 ease-[var(--ease-out)] hover:bg-paper-sunk hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink active:bg-rule ${
-        state === "failed" ? "text-stamp" : state === "playing" ? "text-ink" : "text-ink-faint"
+      className={`btn btn-icon btn-ghost size-7 shrink-0 p-0 ${
+        state === "failed" ? "text-stamp" : ""
       } ${state === "loading" ? "opacity-50" : ""}`}
     >
       <svg
         viewBox="0 0 24 24"
-        className="size-4"
+        className="size-[15px]"
         fill="none"
         stroke="currentColor"
-        strokeWidth={1.8}
+        strokeWidth={1.5}
         strokeLinecap="round"
         strokeLinejoin="round"
         aria-hidden="true"
       >
-        <path d="M11 5 6.5 9H3v6h3.5L11 19z" />
-        {state === "playing" ? (
-          <>
-            <path d="M15.5 9.5a3.5 3.5 0 0 1 0 5" />
-            <path d="M18 7a7 7 0 0 1 0 10" />
-          </>
-        ) : (
-          <path d="M15.5 9.5a3.5 3.5 0 0 1 0 5" />
-        )}
+        <path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z" />
+        <path d="M16 9a5 5 0 0 1 0 6" />
+        <path d="M19.4 18.4a9 9 0 0 0 0-12.8" />
       </svg>
     </button>
   );

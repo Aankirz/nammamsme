@@ -104,6 +104,49 @@ function pickCollection(
   };
 }
 
+export interface Receivables {
+  amount: number;
+  count: number;
+}
+
+export interface UrgentItem {
+  row: DocumentRow;
+  days: number;
+}
+
+export function overdueReceivables(
+  rows: readonly DocumentRow[],
+  now: Date,
+): Receivables {
+  const overdue = rows.filter((row) => isOverdueReceivable(row, now));
+
+  return {
+    amount: overdue.reduce(
+      (total, row) => (hasAmount(row.amount) ? total + row.amount : total),
+      0,
+    ),
+    count: overdue.length,
+  };
+}
+
+export function mostUrgent(
+  rows: readonly DocumentRow[],
+  now: Date,
+): UrgentItem | null {
+  let best: UrgentItem | null = null;
+
+  for (const row of rows) {
+    if (row.direction !== "owing") continue;
+    if (isAlreadyCounted(row, rows)) continue;
+
+    const { days } = urgencyFor(row, now);
+    if (days === null) continue;
+    if (best === null || days < best.days) best = { row, days };
+  }
+
+  return best;
+}
+
 export function computeExposure(rows: readonly DocumentRow[], now: Date): Exposure {
   if (rows.length === 0) return EMPTY_EXPOSURE;
 

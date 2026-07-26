@@ -412,3 +412,18 @@ Records: 14 invoices, ₹18,00,000 ITC claimed; 11 matched (₹14,00,000); 3 unm
 **What stays ours despite the design showing otherwise:** the business is Gupta Hosiery Mills with its real GSTIN, and every figure comes from the arithmetically gated seed. The design's placeholder names and numbers are content, not design.
 **Rule for conflicts:** the design wins over anything I specified earlier.
 **Status:** In progress.
+
+### D-60 — The chatbot remembers two different things, deliberately
+**Decision:** `POST /api/chat` extends the grounded tool loop into a conversation. Two memory layers, kept separate:
+1. **Conversation turns**, keyed by `chatId`, last 12 replayed to the model. This is what lets "why is that one late?" resolve without the user repeating themselves.
+2. **Remembered facts**, a durable store the model writes to via a `remember_fact` tool and reads via `recall_facts`. These survive across conversations.
+**Why separate:** a transcript is not memory. Replaying turns gets you pronoun resolution and nothing else, and it is bounded by the context window. Facts the user states about themselves — who their CA is, which supplier disputes bills — are worth keeping past the conversation that produced them, and are cheap to store because there are few of them.
+**The boundary that matters:** `remember_fact` is instructed to store only what the *user said*, never a figure that came from a document. Document figures are already on record and re-deriving them from a remembered sentence would route around every gate they passed.
+**Observed working:** turn 1 answered from tools; turn 2 resolved "that one" to the right document id and returned real figures; turn 3 stored the user's CA. Conversation state persisted across all three.
+**Status:** API built and exercised. No UI yet.
+
+### D-61 — The model invented a period the tool never returned
+**Finding:** asked for the most urgent obligation, the chatbot answered "GSTR-3B for **March 2026**". The document is May 2026. `list_obligations` returned an id, an amount and a deadline, and no period label, so the model produced one.
+**Why this matters more than a wrong month:** the tools are the grounding mechanism, and a field the tool omits is a field the model will fill. The system prompt forbidding invention is not sufficient on its own; the tool's return shape is the actual boundary.
+**Fix:** `summarise` now returns the return's `form`, `period_label`, `filing_state`, `days_late` and `late_fee`, and a notice's `section` and period bounds. If a fact is worth stating, the tool must return it.
+**Status:** Fixed, verification pending a free dev server.

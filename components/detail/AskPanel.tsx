@@ -16,45 +16,42 @@ import {
   type TraceStep,
 } from "@/components/lib/ask";
 import type { DocumentRow } from "@/components/lib/documents";
-import { PRIMARY_BUTTON, SECONDARY_BUTTON } from "@/components/ui/buttons";
+import { Blueprint } from "@/components/inbox/Blueprint";
+import { Kicker } from "@/components/ui/Kicker";
 
 type Stage = "idle" | "asking" | "answered" | "failed";
 
 const TICK_MS = 1000;
 const SKELETON_BARS = ["w-full", "w-[86%]", "w-[54%]"];
-
-const FIELD =
-  "w-full rounded-md border border-rule bg-paper px-3 py-2.5 text-base text-ink transition-colors duration-150 ease-[var(--ease-out)] placeholder:text-ink-faint hover:border-rule-strong focus:border-ink disabled:cursor-not-allowed disabled:bg-paper-sunk disabled:text-ink-faint";
-
-const STARTER =
-  "rounded-sm px-1 py-0.5 -mx-1 text-left text-sm text-ink-muted underline decoration-rule-strong decoration-dotted decoration-2 underline-offset-4 transition-colors duration-150 ease-[var(--ease-out)] hover:bg-paper-sunk hover:text-ink hover:decoration-ink active:bg-rule disabled:cursor-not-allowed disabled:opacity-50";
+const BAR = "block h-3 bg-[var(--color-surface)]";
 
 function Trace({ steps }: { steps: readonly TraceStep[] }) {
   if (steps.length === 0) {
     return (
-      <p className="mt-3 max-w-[62ch] text-sm text-ink-muted">
-        Nothing in your records was read to answer that, so treat the answer as
-        general rather than as a fact about this business.
+      <p className="mt-[var(--space-3)] max-w-[72ch] text-[12.5px] opacity-60">
+        Nothing in your records was read to answer that, so treat the answer as general
+        rather than as a fact about this business.
       </p>
     );
   }
 
   return (
-    <ol className="mt-3 border-t border-rule">
+    <ol className="mt-[var(--space-3)] border-t border-rule">
       {steps.map((step, index) => {
         const args = formatArgs(step.args);
 
         return (
-          <li key={index} className="flex gap-3 border-b border-rule py-2.5">
-            <span className="numerals w-5 shrink-0 pt-px text-right font-mono text-xs text-ink-faint">
-              {index + 1}
-            </span>
+          <li
+            key={index}
+            className="grid grid-cols-[22px_minmax(0,1fr)] items-baseline gap-2.5 border-b border-rule py-2"
+          >
+            <span className="numerals text-[11px] opacity-45">{index + 1}</span>
             <div className="min-w-0">
-              <p className="text-sm text-ink">{toolLabel(step.tool)}</p>
-              <p className="numerals mt-0.5 overflow-x-auto font-mono text-xs whitespace-nowrap text-ink-faint">
+              <span className="text-[13.5px]">{toolLabel(step.tool)}</span>{" "}
+              <span className="numerals text-[11.5px] opacity-45">
                 {step.tool}
-                {args && <span className="text-ink-muted">{`  ${args}`}</span>}
-              </p>
+                {args && ` ${args}`}
+              </span>
             </div>
           </li>
         );
@@ -65,22 +62,23 @@ function Trace({ steps }: { steps: readonly TraceStep[] }) {
 
 function Pending({ seconds }: { seconds: number }) {
   return (
-    <div className="mt-5">
-      <p className="numerals font-mono text-xs text-ink-muted">
-        Reading your records. {seconds}s
-      </p>
+    <div className="mt-[var(--space-6)]">
+      <p className="numerals text-[11px] opacity-60">Reading your records. {seconds}s</p>
 
-      <div className="mt-3 max-w-[62ch] space-y-2">
+      <div className="mt-[var(--space-3)] grid max-w-[72ch] gap-2">
         {SKELETON_BARS.map((width) => (
-          <span key={width} className={`block h-3 rounded-sm bg-paper-sunk ${width}`} />
+          <span key={width} className={`${BAR} ${width}`} />
         ))}
       </div>
 
-      <div className="mt-6 border-t border-rule">
+      <div className="mt-[var(--space-6)] border-t border-rule">
         {[0, 1].map((index) => (
-          <div key={index} className="flex gap-3 border-b border-rule py-2.5">
-            <span className="block h-3 w-5 shrink-0 rounded-sm bg-paper-sunk" />
-            <span className="block h-3 w-52 rounded-sm bg-paper-sunk" />
+          <div
+            key={index}
+            className="grid grid-cols-[22px_minmax(0,1fr)] items-baseline gap-2.5 border-b border-rule py-2"
+          >
+            <span className={`${BAR} w-full`} />
+            <span className={`${BAR} w-52`} />
           </div>
         ))}
       </div>
@@ -164,33 +162,39 @@ export function AskPanel({ row }: AskPanelProps) {
   }
 
   return (
-    <section aria-labelledby="ask-heading" className="border border-rule bg-paper-raised">
+    <Blueprint as="section" ariaLabelledBy="ask-heading">
       <details className="group">
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-4 transition-colors duration-150 ease-[var(--ease-out)] hover:bg-paper-sunk active:bg-rule [&::-webkit-details-marker]:hidden">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-[var(--space-6)] py-[var(--space-4)] [&::-webkit-details-marker]:hidden">
           <span className="flex items-center gap-2.5">
-            <span
+            <svg
+              viewBox="0 0 24 24"
+              className="size-3.5 opacity-45 transition-transform duration-150 group-open:rotate-90"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
               aria-hidden="true"
-              className="inline-block font-mono text-xs text-ink-faint transition-transform duration-150 ease-[var(--ease-out)] group-open:rotate-90"
             >
-              &rsaquo;
-            </span>
-            <span id="ask-heading" className="eyebrow">
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+            <Kicker as="h2" id="ask-heading">
               Ask about this file
-            </span>
+            </Kicker>
           </span>
-          <span className="text-sm text-ink-muted">
+          <span className="text-[11px] opacity-45">
             Answers from your records, and says which ones
           </span>
         </summary>
 
-        <div className="border-t border-rule px-6 pb-6 pt-5">
-          <p className="max-w-[62ch] text-sm text-ink-muted">
-            One question at a time. It cannot state a figure that did not come from
-            your records, and it lists every record it opened.
+        <div className="border-t border-rule px-[var(--space-6)] pt-[var(--space-6)] pb-[var(--space-6)]">
+          <p className="max-w-[72ch] text-[12.5px] opacity-60 [text-wrap:pretty]">
+            One question at a time. It cannot state a figure that did not come from your
+            records, and it lists every record it opened.
           </p>
 
           <form
-            className="mt-4 flex flex-wrap items-center gap-3"
+            className="mt-[var(--space-4)] flex flex-wrap items-center gap-[var(--space-3)]"
             onSubmit={(event) => {
               event.preventDefault();
               void ask(question);
@@ -211,9 +215,9 @@ export function AskPanel({ row }: AskPanelProps) {
               value={question}
               onChange={(event) => setQuestion(event.target.value)}
               placeholder="A question about this document"
-              className={`${FIELD} min-w-0 flex-1 basis-80`}
+              className="input min-w-0 flex-1 basis-80"
             />
-            <button type="submit" disabled={asking} className={PRIMARY_BUTTON}>
+            <button type="submit" disabled={asking} className="btn btn-primary">
               {asking ? "Reading" : "Ask"}
             </button>
             {stage !== "idle" && (
@@ -228,26 +232,24 @@ export function AskPanel({ row }: AskPanelProps) {
                   setStage("idle");
                   field.current?.focus();
                 }}
-                className={SECONDARY_BUTTON}
+                className="btn btn-secondary"
               >
                 Clear
               </button>
             )}
           </form>
 
-          <p className="numerals mt-2 font-mono text-xs text-ink-faint">
-            {contextNote(row)}
-          </p>
+          <p className="numerals mt-2 text-[11px] opacity-45">{contextNote(row)}</p>
 
           {stage === "idle" && (
-            <p className="mt-3 flex flex-wrap items-baseline gap-x-5 gap-y-1">
-              <span className="text-sm text-ink-faint">Or ask</span>
+            <p className="mt-[var(--space-3)] flex flex-wrap items-baseline gap-x-4 gap-y-1">
+              <span className="text-[12.5px] opacity-45">Or ask</span>
               {starters.map((starter) => (
                 <button
                   key={starter}
                   type="button"
                   onClick={() => runStarter(starter)}
-                  className={STARTER}
+                  className="btn btn-ghost text-[12.5px]"
                 >
                   {starter}
                 </button>
@@ -259,27 +261,27 @@ export function AskPanel({ row }: AskPanelProps) {
             {asking && <Pending seconds={seconds} />}
 
             {stage === "answered" && result && (
-              <div className="mt-5">
+              <div className="mt-[var(--space-6)]">
                 {result.answer.split("\n").map((paragraph, index) =>
                   paragraph.trim() === "" ? null : (
                     <p
                       key={index}
-                      className="max-w-[62ch] text-base text-ink [&:not(:first-child)]:mt-3"
+                      className="max-w-[72ch] text-[14.5px] leading-[1.6] [&:not(:first-child)]:mt-[var(--space-3)]"
                     >
                       {paragraph}
                     </p>
                   ),
                 )}
 
-                <div className="mt-6">
-                  <h3 className="eyebrow">What it read to answer that</h3>
+                <div className="mt-[var(--space-6)]">
+                  <Kicker as="h3">What it read to answer that</Kicker>
                   <Trace steps={result.trace} />
 
                   {result.trace.length > 0 && (
-                    <p className="numerals mt-3 max-w-[62ch] font-mono text-xs text-ink-faint">
+                    <p className="numerals mt-[var(--space-3)] max-w-[72ch] text-[11px] opacity-45">
                       {callCountPhrase(result.trace.length)} in{" "}
-                      {elapsedPhrase(result.totalMs)}. Every figure above came from
-                      those calls.
+                      {elapsedPhrase(result.totalMs)}. Every figure above came from those
+                      calls.
                     </p>
                   )}
                 </div>
@@ -287,12 +289,12 @@ export function AskPanel({ row }: AskPanelProps) {
             )}
 
             {stage === "failed" && failure && (
-              <div className="mt-5">
-                <p className="max-w-[62ch] text-sm text-stamp">{failure}</p>
+              <div className="mt-[var(--space-6)]">
+                <p className="max-w-[72ch] text-[12.5px] text-stamp">{failure}</p>
 
                 {partial.length > 0 && (
-                  <div className="mt-5">
-                    <h3 className="eyebrow">What it had read before it stopped</h3>
+                  <div className="mt-[var(--space-6)]">
+                    <Kicker as="h3">What it had read before it stopped</Kicker>
                     <Trace steps={partial} />
                   </div>
                 )}
@@ -301,6 +303,6 @@ export function AskPanel({ row }: AskPanelProps) {
           </div>
         </div>
       </details>
-    </section>
+    </Blueprint>
   );
 }

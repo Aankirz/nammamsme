@@ -1,20 +1,27 @@
 import type { DocumentRow } from "@/components/lib/documents";
 import type { RateIndex } from "@/components/lib/rate";
-import { traceBlockers } from "@/components/lib/blockers";
-import { allegationHeading } from "@/components/lib/copy";
+import { blockedReason, traceBlockers } from "@/components/lib/blockers";
+import { allegationHeading, formatDate } from "@/components/lib/copy";
 import { parseConsequence } from "@/components/lib/consequence";
 import { buildFacts } from "@/components/lib/facts";
-import { TONE_RULE_CLASSES, urgencyFor } from "@/components/lib/urgency";
-import { ActionBar } from "./ActionBar";
+import { BUSINESS } from "@/components/lib/identity";
+import { formatRupees } from "@/components/lib/money";
+import { pagesIn } from "@/components/lib/source";
 import { AskPanel } from "./AskPanel";
+import { ChecksPanel } from "./ChecksPanel";
+import { ConsequenceLadder } from "./ConsequenceLadder";
+import { DetailBody } from "./DetailBody";
 import { DocumentHeader } from "./DocumentHeader";
-import { TraceLayout } from "./TraceLayout";
+import { PlainWords } from "./PlainWords";
 
 interface DocumentDetailProps {
   row: DocumentRow;
   now: Date;
   rates: RateIndex;
 }
+
+const FOOTNOTE =
+  "Written from the digitised page. The amounts and the dates are locked by the checks that run before any of this text is produced.";
 
 function paragraphsOf(text: string): string[] {
   return text
@@ -23,50 +30,51 @@ function paragraphsOf(text: string): string[] {
     .filter(Boolean);
 }
 
+function pageLabelFor(row: DocumentRow): string {
+  if (row.source === null) return "No page captured";
+  const count = pagesIn(row.source).length;
+  return `Digitised page · ${count} ${count === 1 ? "page" : "pages"}`;
+}
+
 export function DocumentDetail({ row, now, rates }: DocumentDetailProps) {
   const blockers = traceBlockers(row);
-  const blocked = blockers.length > 0;
-  const urgency = urgencyFor(row, now);
+  const canFile = row.doc_type === "gst_notice";
 
   return (
-    <article
-      data-ground={blocked ? "refused" : undefined}
-      className="flex min-h-[calc(100dvh-var(--identity-height))] flex-col"
-    >
-      <span
-        aria-hidden="true"
-        className={`block h-[2px] w-full ${TONE_RULE_CLASSES[urgency.tone]}`}
-      />
-
-      <div className="w-full max-w-[var(--content-max)] flex-1 px-8">
-        <DocumentHeader row={row} now={now} />
-
-        <div className="pt-8">
-          <TraceLayout
-            facts={buildFacts(row, now)}
-            obligation={paragraphsOf(row.obligation)}
-            consequence={parseConsequence(row.consequence)}
-            blockers={blockers}
-            source={row.source}
-            obligationHeading={allegationHeading(row.doc_type)}
-          />
-        </div>
-
-        <div className="mt-12 pb-4">
-          <AskPanel row={row} />
-        </div>
-      </div>
-
-      <div className="w-full max-w-[var(--content-max)]">
-        <ActionBar
-          documentId={row.id}
-          canFile={row.doc_type === "gst_notice"}
-          blocked={blocked}
-          blockerCount={blockers.length}
-          filedRef={row.file_url}
-          rates={rates}
+    <DetailBody
+      documentId={row.id}
+      header={<DocumentHeader row={row} />}
+      plainWords={
+        <PlainWords
+          heading={`${allegationHeading(row.doc_type)}, in plain words`}
+          headingId="allegation-heading"
+          paragraphs={paragraphsOf(row.obligation)}
+          empty="Nothing has been read off this document yet."
+          footnote={row.source ? FOOTNOTE : null}
         />
-      </div>
-    </article>
+      }
+      ladder={
+        <ConsequenceLadder
+          steps={parseConsequence(row.consequence)}
+          headingId="consequence-heading"
+        />
+      }
+      checks={row.source ? <ChecksPanel row={row} /> : null}
+      ask={<AskPanel row={row} />}
+      facts={buildFacts(row, now)}
+      source={row.source}
+      pageLabel={pageLabelFor(row)}
+      blockers={blockers}
+      blockedReason={blockedReason(blockers.length)}
+      canFile={canFile}
+      fileLabel="File the DRC-06 reply"
+      confirm={[
+        { label: "Amount demanded", value: formatRupees(row.amount) },
+        { label: "Reply due by", value: formatDate(row.deadline) ?? "No date found" },
+        { label: "Your GSTIN", value: BUSINESS.gstin },
+      ]}
+      filedRef={row.file_url}
+      rates={rates}
+    />
   );
 }

@@ -68,3 +68,20 @@
 - `components/detail/ActionBar.tsx`: releases its sticky pin while a reply is under review so all 14 rows can flow.
 - `components/detail/AskPanel.tsx`, `components/lib/ask.ts`: a collapsed question field on every document, with a pending state and the tool trace rendered as what the system read.
 - `app/globals.css`: `ledger-in` fills `backwards` rather than `both`, so finished rows leave no identity transform behind.
+
+## 2026-07-26 — Inbox rebuilt to the Industry design
+- Replaced the two-pane master-detail inbox with the single scrolling page from `design/namma-msme.design.html`: nav bar, three-cell headline row, GST returns plate, document table, accuracy scoreboard.
+- Added `components/inbox/**` (Blueprint primitive, HeadlineRow, ReturnsPlate, DocumentTable, Scoreboard, row/speech/style helpers) and `components/shell/NavBar.tsx`.
+- Deleted `components/shell/{Rail,RailRow,ReturnRow,ExposurePanel,IdentityBar}.tsx` and `components/detail/EmptyDetail.tsx`; `Shell.tsx` is now nav + main only.
+- `components/lib/money.ts` now emits the `₹` glyph; `components/lib/exposure.ts` gained `overdueReceivables` and `mostUrgent`.
+
+## 2026-07-26 — Document detail screens ported to the Industry design
+- `app/doc/[id]/page.tsx`: the detail route is now a centred 1280px page inside `Shell`, opening with the design's `← Inbox` ghost button. The rail is gone with the inbox rebuild.
+- `components/detail/DetailBody.tsx` (new, the one client boundary): the design's `1fr / 400px` grid. Left column is header, fact strip, plain-words card, consequence ladder, evidence assembly, Ask. Right column is the facsimile, the checks panel and the file card, sticky at 76px. It owns the highlight key, the reply draft fetch, and the filing call, so the filed confirmation can replace the whole screen.
+- `components/detail/RefusalPanel.tsx`: rebuilt as the design's loud refusal — an `--color-accent-900` field with a 5px `--stamp` edge, a circle-slash at stroke 1.5, "This will not be filed" at 44px condensed, one hairline-separated row per blocker with "Show me on the page", and the file action present, disabled and wired to its reason through `aria-describedby`. When a document is refused the right-column file card is not drawn, exactly as the design does it.
+- New: `TracedFacts` + `FactCell` (the bordered three-cell fact strip with dotted-accent trace buttons and the speak button), `PlainWords`, `ChecksPanel` (three yes/no checks derived from the blocker kinds), `EvidenceTable` (design table plus the claimed / matched / unmatched footer, the third cell tinted `--color-accent-100`), `FilePanel`, `FiledScreen`, `ReturnFilePanel`.
+- Deleted: `TraceLayout`, `FactsColumn`, `ActionBar`, `ReplyPreview`, `ReturnActionBar`, `ui/SectionHeading`, `ui/DocTypeStamp`, `ui/DayCount`, and the duplicate `ui/Blueprint` (the inbox primitive is the one).
+- `SourcePane` keeps click-to-highlight both ways; the highlight is now steel accent rather than stamp, since stamp is reserved for lateness and refusal.
+- `CapturePlaceholder` carries both design screens: the dashed blueprint drop zone and, while working, the two-up processing view with a preview plate and the measured hop log.
+- `ui/{Money,SpeakButton,buttons}.ts(x)` moved onto the system: condensed display numerals, a Lucide speaker at stroke 1.5 in a `.btn .btn-icon .btn-ghost`, and `.btn`/`.btn-primary`/`.btn-secondary` in place of the old hand-rolled classes. `ui/Kicker.tsx` reads the inbox's `KICKER` token so the two cannot drift.
+- `components/lib/money.ts` gained `inRupees`, which rewrites `Rs 4,00,000` in seeded and model-written prose to the glyph on the way to the screen.

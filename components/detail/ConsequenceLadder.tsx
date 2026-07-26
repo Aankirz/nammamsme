@@ -1,5 +1,6 @@
 import type { ConsequenceStep } from "@/components/lib/consequence";
-import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Kicker } from "@/components/ui/Kicker";
+import { inRupees } from "@/components/lib/money";
 
 interface ConsequenceLadderProps {
   steps: readonly ConsequenceStep[];
@@ -8,37 +9,40 @@ interface ConsequenceLadderProps {
   className?: string;
 }
 
+function dotClass(index: number, total: number): string {
+  if (index === 0) return "bg-[var(--color-accent)]";
+  if (index === total - 1) return "bg-stamp";
+  return "border border-stamp";
+}
+
 export function ConsequenceLadder({
   steps,
   headingId,
-  title = "What happens if you ignore this",
-  className = "mt-10",
+  title = "If you do nothing",
+  className = "",
 }: ConsequenceLadderProps) {
   if (steps.length === 0) return null;
 
   return (
     <section aria-labelledby={headingId} className={className}>
-      <SectionHeading>
-        <span id={headingId}>{title}</span>
-      </SectionHeading>
+      <Kicker as="h2" id={headingId} className="mb-[var(--space-3)]">
+        {title}
+      </Kicker>
 
-      <ol className="mt-1">
+      <ol className="border border-rule">
         {steps.map((step, index) => (
-          <li key={index} className="flex gap-3 border-b border-rule py-3">
+          <li
+            key={index}
+            className="grid grid-cols-[120px_22px_minmax(0,1fr)] items-center gap-[var(--space-4)] border-b border-rule px-[var(--space-6)] py-[var(--space-4)] last:border-b-0"
+          >
+            <span className="numerals text-[12.5px] opacity-70">{step.when ?? ""}</span>
+
             <span
               aria-hidden="true"
-              className="numerals mt-px w-4 shrink-0 font-mono text-xs text-ink-faint"
-            >
-              {index + 1}
-            </span>
-            <span className="min-w-0 flex-1">
-              {step.when && (
-                <span className="numerals mr-2 font-mono text-sm font-semibold text-stamp">
-                  {step.when}
-                </span>
-              )}
-              <span className="text-base text-ink">{step.text}</span>
-            </span>
+              className={`inline-block size-[9px] ${dotClass(index, steps.length)}`}
+            />
+
+            <p className="text-[14.5px] [text-wrap:pretty]">{inRupees(step.text)}</p>
           </li>
         ))}
       </ol>

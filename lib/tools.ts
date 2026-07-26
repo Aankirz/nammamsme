@@ -1,4 +1,5 @@
 import { db, type StoredRow } from "./db";
+import { chat } from "./chat";
 import { assembleEvidence } from "./evidence";
 import { checkRate, lookupRate } from "./rates";
 
@@ -66,6 +67,30 @@ export const TOOL_SPECS: ToolSpec[] = [
   {
     type: "function",
     function: {
+      name: "remember_fact",
+      description:
+        "Store something the user told you that is not in their documents and will matter later: who their CA is, which supplier disputes bills, a decision they made. Only store what the user actually said. Never store a figure that came from a document, those are already on record.",
+      parameters: {
+        type: "object",
+        properties: {
+          fact: { type: "string", description: "One short sentence, in the third person" },
+        },
+        required: ["fact"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "recall_facts",
+      description:
+        "Everything previously remembered about this business that is not in its documents. Check this before saying you do not know something about the user.",
+      parameters: { type: "object", properties: {}, required: [] },
+    },
+  },
+  {
+    type: "function",
+    function: {
       name: "filing_status",
       description:
         "The GST return filing calendar: which returns are filed, due or overdue, with late fees and what each unfiled return blocks.",
@@ -75,7 +100,7 @@ export const TOOL_SPECS: ToolSpec[] = [
 ];
 
 function summarise(row: StoredRow) {
-  return {
+  const base = {
     id: row.id,
     kind: row.doc_type,
     who: row.counterparty,
@@ -85,6 +110,27 @@ function summarise(row: StoredRow) {
     status: row.status,
     blocked: row.blockers.length > 0,
   };
+
+  if (row.return) {
+    return {
+      ...base,
+      form: row.return.form,
+      period: row.return.period_label,
+      filing_state: row.return.state,
+      days_late: row.return.days_late,
+      late_fee: row.return.late_fee,
+    };
+  }
+
+  if (row.notice) {
+    return {
+      ...base,
+      section: row.notice.section,
+      period: `${row.notice.period_start} to ${row.notice.period_end}`,
+    };
+  }
+
+  return base;
 }
 
 export async function runTool(name: string, args: Record<string, unknown>): Promise<unknown> {
@@ -144,6 +190,21 @@ export async function runTool(name: string, args: Record<string, unknown>): Prom
       unmatched: evidence.gap,
       period: [evidence.periodStart, evidence.periodEnd],
     };
+  }
+
+  if (name === "remember_fact") {
+    const fact = String(args.fact ?? "").trim();
+    if (!fact) return { error: "empty_fact" };
+    const stored = chat.remember(fact, "user");
+    return { remembered: stored.fact, id: stored.id };
+  }
+
+  if (name === "recall_facts") {
+    const facts = chat.facts();
+    if (facts.length === 0) {
+      return { facts: [], note: "Nothing has been remembered about this business yet." };
+    }
+    return { facts: facts.map((f) => ({ id: f.id, fact: f.fact, since: f.at.slice(0, 10) })) };
   }
 
   if (name === "filing_status") {
