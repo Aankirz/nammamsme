@@ -135,8 +135,8 @@
     "id": "doc_notice_drc01_refused",
     "role": "obligation",
     "doc_type": "gst_notice",
-    "obligation": "GST show cause notice, form DRC-01. Reference ZD030726002891. Period April 2025 to June 2025. The page puts the demand at Rs 5,12,000. We cannot stand behind that figure. One page it refers to is missing, and the interest is stated twice with two different numbers. Reply in form DRC-06 by 7 August 2026. We will not file until the figures are settled.",
-    "amount": 512000,
+    "obligation": "GST show cause notice, form DRC-01. Reference ZD030726002891. Period October 2024 to December 2024. A separate demand from the 14 August 2026 one. The page puts the demand at Rs 2,04,800. We cannot stand behind that figure. One page it refers to is missing, and the interest is stated twice with two different numbers. Reply in form DRC-06 by 7 August 2026. We will not file until the figures are settled.",
+    "amount": 204800,
     "doc_date": "2026-07-05",
     "deadline": "2026-08-07",
     "counterparty": "Commercial Taxes Department, Ludhiana",
@@ -193,7 +193,7 @@
         {
           "page": 1,
           "block": 0,
-          "text": "FORM GST DRC-01\nSummary of Show Cause Notice\nReference No: ZD030726002891\nDate: 12/07/2026",
+          "text": "FORM GST DRC-01\nSummary of Show Cause Notice\nReference No: ZD030726002891\nDate: 05/07/2026",
           "bbox": [
             60,
             71,
@@ -215,7 +215,7 @@
         {
           "page": 1,
           "block": 2,
-          "text": "Tax Period: April 2025 to June 2025\nSection: 73 of the CGST Act, 2017",
+          "text": "Tax Period: October 2024 to December 2024\nSection: 73 of the CGST Act, 2017",
           "bbox": [
             60,
             467,
@@ -226,7 +226,7 @@
         {
           "page": 1,
           "block": 3,
-          "text": "It is observed that Input Tax Credit of Rs. 18,00,000 was claimed\nin GSTR-3B, whereas credit of only Rs. 14,00,000 is reflected in\nGSTR-2B as reported by your suppliers.",
+          "text": "It is observed that Input Tax Credit of Rs. 9,60,000 was claimed\nin GSTR-3B, whereas credit of only Rs. 8,00,000 is reflected in\nGSTR-2B as reported by your suppliers.",
           "bbox": [
             62,
             618,
@@ -237,7 +237,7 @@
         {
           "page": 1,
           "block": 4,
-          "text": "The unmatched Input Tax Credit is Rs. 4,00,000.",
+          "text": "The unmatched Input Tax Credit is Rs. 1,60,000.",
           "bbox": [
             63,
             818,
@@ -248,7 +248,7 @@
         {
           "page": 1,
           "block": 5,
-          "text": "Tax: Rs. 4,00,000\nInterest: Rs. 72,000\nInterest (recomputed): Rs. 84,000\nPenalty: Rs. 40,000\nTotal: Rs. 5,12,000",
+          "text": "Tax: Rs. 1,60,000\nInterest: Rs. 28,800\nInterest (recomputed): Rs. 33,600\nPenalty: Rs. 16,000\nTotal: Rs. 2,04,800",
           "bbox": [
             62,
             920,
@@ -259,7 +259,7 @@
         {
           "page": 1,
           "block": 6,
-          "text": "You are hereby required to show cause and file a reply in FORM GST\nDRC-06 on or before 14/08/2026, failing which the matter will be\ndecided ex-parte on the basis of records available.",
+          "text": "You are hereby required to show cause and file a reply in FORM GST\nDRC-06 on or before 07/08/2026, failing which the matter will be\ndecided ex-parte on the basis of records available.",
           "bbox": [
             57,
             1169,

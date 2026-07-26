@@ -105,6 +105,7 @@ export function ActionBar({
 
       {stage === "reviewing" || stage === "filing" ? (
         <ReplyPreview
+          documentId={documentId}
           filing={stage === "filing"}
           onFile={file}
           onCancel={() => setStage("idle")}

@@ -2,38 +2,58 @@
 
 import { useEffect, useState } from "react";
 import { formatDateShort } from "@/components/lib/copy";
-import { formatRupees, hasAmount } from "@/components/lib/money";
+import { formatRupees } from "@/components/lib/money";
 
-/** Only the shared columns are read, so a change to the seed cannot break this. */
 interface EvidenceRow {
-  id: string;
   counterparty: string;
-  doc_date: string | null;
-  amount: number | null;
+  invoice_ref: string;
+  doc_date: string;
+  taxable: number;
+  gst: number;
+}
+
+interface ReplyDraft {
+  rows: EvidenceRow[];
+  claimedTotal: number;
+  matchedTotal: number;
+  gap: number;
+  statements: string[];
 }
 
 type Load = "loading" | "ready" | "failed";
 
 const STAGGER_MS = 40;
 
-function toEvidenceRows(payload: unknown): EvidenceRow[] {
-  if (!Array.isArray(payload)) return [];
+function toDraft(payload: unknown): ReplyDraft | null {
+  if (typeof payload !== "object" || payload === null) return null;
 
-  return payload.flatMap((value) => {
+  const draft = payload as Record<string, unknown>;
+  const evidence = draft.evidence as Record<string, unknown> | undefined;
+  if (!evidence || !Array.isArray(evidence.rows)) return null;
+
+  const rows = evidence.rows.flatMap((value) => {
     if (typeof value !== "object" || value === null) return [];
-
     const row = value as Record<string, unknown>;
-    if (typeof row.id !== "string") return [];
-
     return [
       {
-        id: row.id,
         counterparty: typeof row.counterparty === "string" ? row.counterparty : "",
-        doc_date: typeof row.doc_date === "string" ? row.doc_date : null,
-        amount: typeof row.amount === "number" ? row.amount : null,
+        invoice_ref: typeof row.invoice_ref === "string" ? row.invoice_ref : "",
+        doc_date: typeof row.doc_date === "string" ? row.doc_date : "",
+        taxable: typeof row.taxable === "number" ? row.taxable : 0,
+        gst: typeof row.gst === "number" ? row.gst : 0,
       },
     ];
   });
+
+  return {
+    rows,
+    claimedTotal: typeof evidence.claimedTotal === "number" ? evidence.claimedTotal : 0,
+    matchedTotal: typeof evidence.matchedTotal === "number" ? evidence.matchedTotal : 0,
+    gap: typeof evidence.gap === "number" ? evidence.gap : 0,
+    statements: Array.isArray(draft.statements)
+      ? draft.statements.filter((s): s is string => typeof s === "string")
+      : [],
+  };
 }
 
 function SkeletonRows() {
@@ -57,6 +77,7 @@ function SkeletonRows() {
 }
 
 interface ReplyPreviewProps {
+  documentId: string;
   filing: boolean;
   onFile: () => void;
   onCancel: () => void;
@@ -69,24 +90,28 @@ interface ReplyPreviewProps {
  * in this file. They arrive one after another because that sequence is the
  * argument, and it is the only animation in the product that earns itself.
  */
-export function ReplyPreview({ filing, onFile, onCancel }: ReplyPreviewProps) {
+export function ReplyPreview({ documentId, filing, onFile, onCancel }: ReplyPreviewProps) {
   const [load, setLoad] = useState<Load>("loading");
-  const [rows, setRows] = useState<EvidenceRow[]>([]);
+  const [draft, setDraft] = useState<ReplyDraft | null>(null);
 
   useEffect(() => {
     let live = true;
 
     async function read() {
       try {
-        const response = await fetch("/api/documents?role=evidence", {
+        const response = await fetch(`/api/reply/${documentId}`, {
           headers: { accept: "application/json" },
         });
         if (!response.ok) throw new Error(String(response.status));
 
-        const parsed = toEvidenceRows(await response.json());
+        const parsed = toDraft(await response.json());
         if (!live) return;
+        if (!parsed) {
+          setLoad("failed");
+          return;
+        }
 
-        setRows(parsed);
+        setDraft(parsed);
         setLoad("ready");
       } catch {
         if (live) setLoad("failed");
@@ -97,12 +122,9 @@ export function ReplyPreview({ filing, onFile, onCancel }: ReplyPreviewProps) {
     return () => {
       live = false;
     };
-  }, []);
+  }, [documentId]);
 
-  const total = rows.reduce(
-    (sum, row) => (hasAmount(row.amount) ? sum + row.amount : sum),
-    0,
-  );
+  const rows = draft?.rows ?? [];
 
   return (
     <div className="border-t border-rule pt-4">
@@ -114,6 +136,20 @@ export function ReplyPreview({ filing, onFile, onCancel }: ReplyPreviewProps) {
           : "Gathering the purchase invoices already in this file."}
       </p>
 
+      {load === "ready" && draft && draft.statements.length > 0 && (
+        <ul className="mt-4 max-w-[62ch] space-y-2 border-l-0">
+          {draft.statements.map((statement, index) => (
+            <li
+              key={index}
+              className="ledger-in text-sm leading-relaxed text-ink"
+              style={{ animationDelay: `${index * STAGGER_MS}ms` }}
+            >
+              {statement}
+            </li>
+          ))}
+        </ul>
+      )}
+
       <div className="mt-4 max-h-56 overflow-y-auto overscroll-contain">
         <table className="w-full text-sm">
           <thead className="sticky top-0 bg-paper-raised">
@@ -122,10 +158,13 @@ export function ReplyPreview({ filing, onFile, onCancel }: ReplyPreviewProps) {
                 Supplier
               </th>
               <th scope="col" className="eyebrow py-2 font-semibold">
+                Invoice
+              </th>
+              <th scope="col" className="eyebrow py-2 font-semibold">
                 Dated
               </th>
               <th scope="col" className="eyebrow py-2 text-right font-semibold">
-                Amount
+                GST claimed
               </th>
             </tr>
           </thead>
@@ -136,16 +175,19 @@ export function ReplyPreview({ filing, onFile, onCancel }: ReplyPreviewProps) {
             <tbody>
               {rows.map((row, index) => (
                 <tr
-                  key={row.id}
+                  key={row.invoice_ref || index}
                   className="ledger-in border-b border-rule"
                   style={{ animationDelay: `${index * STAGGER_MS}ms` }}
                 >
                   <td className="py-2 pr-3 text-ink">{row.counterparty}</td>
                   <td className="numerals py-2 pr-3 font-mono text-xs text-ink-muted">
+                    {row.invoice_ref}
+                  </td>
+                  <td className="numerals py-2 pr-3 font-mono text-xs text-ink-muted">
                     {formatDateShort(row.doc_date) ?? "no date"}
                   </td>
                   <td className="numerals py-2 text-right font-mono text-ink">
-                    {formatRupees(row.amount)}
+                    {formatRupees(row.gst)}
                   </td>
                 </tr>
               ))}
@@ -168,13 +210,23 @@ export function ReplyPreview({ filing, onFile, onCancel }: ReplyPreviewProps) {
         </p>
       )}
 
-      {load === "ready" && rows.length > 0 && (
-        <p className="mt-3 flex items-baseline justify-between border-t border-rule-strong pt-3 text-sm">
-          <span className="text-ink-muted">Attached in support</span>
-          <span className="numerals font-mono font-semibold text-ink">
-            {formatRupees(total)}
-          </span>
-        </p>
+      {load === "ready" && draft && rows.length > 0 && (
+        <dl className="mt-3 border-t border-rule-strong pt-3 text-sm">
+          <div className="flex items-baseline justify-between py-1">
+            <dt className="text-ink-muted">Attached in support</dt>
+            <dd className="numerals font-mono font-semibold text-ink">
+              {formatRupees(draft.claimedTotal)}
+            </dd>
+          </div>
+          <div className="flex items-baseline justify-between py-1">
+            <dt className="text-ink-muted">Confirmed by the department</dt>
+            <dd className="numerals font-mono text-ink">{formatRupees(draft.matchedTotal)}</dd>
+          </div>
+          <div className="flex items-baseline justify-between border-t border-rule pt-2 text-stamp">
+            <dt className="font-semibold">Unmatched, stated openly</dt>
+            <dd className="numerals font-mono font-semibold">{formatRupees(draft.gap)}</dd>
+          </div>
+        </dl>
       )}
 
       <div className="mt-5 flex flex-wrap items-center gap-3">
