@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { auth, signOut, AUTH_ENABLED } from "@/auth";
 import { formatDateShort } from "@/components/lib/copy";
 import { BUSINESS } from "@/components/lib/identity";
 import { HEADING, KICKER } from "@/components/inbox/styles";
@@ -12,25 +11,6 @@ function today(now: Date): string {
   return formatDateShort(ist.toISOString().slice(0, 10)) ?? "";
 }
 
-async function AccountControl() {
-  if (!AUTH_ENABLED) return null;
-
-  const session = await auth();
-  if (!session?.user) return null;
-
-  return (
-    <form
-      action={async () => {
-        "use server";
-        await signOut({ redirectTo: "/sign-in" });
-      }}
-    >
-      <button type="submit" className="btn btn-ghost" style={{ fontSize: "12px" }}>
-        Sign out
-      </button>
-    </form>
-  );
-}
 
 interface NavBarProps {
   now: Date;
@@ -80,7 +60,6 @@ export function NavBar({ now }: NavBarProps) {
         {today(now)} · {BUSINESS.name}, {BUSINESS.place}
       </span>
 
-      <AccountControl />
       <ResetButton />
     </header>
   );
