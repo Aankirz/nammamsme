@@ -404,3 +404,11 @@ Records: 14 invoices, ₹18,00,000 ITC claimed; 11 matched (₹14,00,000); 3 unm
 **Why not the 18% case I asked for:** no invoice in the seed charges 18%; the fourteen are twelve at 12% and two at 5%. Raising a rate to 18 would change `gst` and therefore `amount`, which was forbidden. The two constraints could not both hold, so the pair was inverted. Charged still exceeds lawful, so the over-claim is real: Rs 1,29,000 claimed where Rs 53,750 was chargeable, a Rs 75,250 excess sitting on a row the department cannot see.
 **Also changed:** eleven `obligation` strings had their goods noun moved to match the HSN, because chapters 60 and 61 are largely absent or ambiguous in the compiled schedule and a row describing T-shirts while coded as yarn would be a D-42 in miniature — every gate passing while the record says two different things.
 **Status:** Locked, gated at 13 matches and exactly 1 mismatch on an unmatched row.
+
+### D-59 — The design is the frontend, not a reference *(sharpens D-55)*
+**Decision:** `design/namma-msme.design.html` is ported directly. Its markup and structure are the frontend; existing components without a counterpart in it are deleted, not reshaped.
+**What this changes from D-55:** D-55 adopted the design's tokens and direction while leaving our component structure in place. That was too weak a reading. The two-pane shell, the rail and its rows, the exposure panel and the trace layout's column split all exist to serve a master-detail layout the design does not have, and adapting them would have produced a hybrid answering to neither.
+**What survives:** only data wiring and behaviour. The fetch and derivation helpers, and the capabilities that must keep working once rebound into the design's structure: provenance highlighting, the refusal gate, evidence assembly with the rate check, Ask with its trace, filing, and the upload hop log.
+**What stays ours despite the design showing otherwise:** the business is Gupta Hosiery Mills with its real GSTIN, and every figure comes from the arithmetically gated seed. The design's placeholder names and numbers are content, not design.
+**Rule for conflicts:** the design wins over anything I specified earlier.
+**Status:** In progress.
