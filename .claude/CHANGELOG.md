@@ -98,3 +98,23 @@
 - `rows.ts`: `actionTitle` speaks plainly ("Answer the tax demand", "Renew your food licence"), `kindMark` replaces `kindLabel`, `isBlocked` replaces the status tag map, and `actionDetail`/`STATUS_LABEL`/`STATUS_TAG` are gone.
 - MSMED section 15 now reads "The law lets you charge interest on this." Show cause notices, DRC-06, outward supplies and Rule 59(6) no longer appear on the inbox.
 - `styles.ts`: `FIGURE`/`SCORE` replaced by `LEAD`, `SECOND_FIGURE`, `QUIET_FIGURE`, `BODY`, `MARK` — four ranks of type instead of one shouted size.
+
+## 2026-07-26 — Detail: the filled government form replaces the CA hand-off
+
+- Removed every "Send to my CA" button and the local state each one set. `RefusalPanel.tsx` (now stateless; "Add the missing page" is the primary action), `DetailBody.tsx`'s `AdvicePanel` (now prose only), and `ReturnFilePanel.tsx`, which was deleted outright — both its buttons were acknowledgements that did nothing.
+- Added `components/detail/FilledForm.tsx`, `components/detail/FormFieldRow.tsx` and `components/detail/CopyButton.tsx`. The form is laid out as the real numbered government form, already completed: a masthead carrying the form code and its rule, a three-cell tally, the portal path, then one row per field with the form's own serial (1, 3a, 4(A)(5)) in a hairline gutter beside the label and value. DRC-06 reads 1 GSTIN, 2 Name, 3 the notice, 4 financial year, 5 reply, 6 documents uploaded, 7 hearing, 8 verification, in that order.
+- Three field states, three treatments. `filled` is the value in normal ink. `your_choice` keeps the default value but marks the row with a steel edge, a "Your call" outline tag and a steel note. `not_established` shows no value at all — a dashed blank rule where the value would sit, a stamp-red edge and tag, and the note saying what the owner must supply. Nothing is ever guessed into a blank.
+- Copying is the point: per-field Copy, a full-width "Copy the whole reply" under field 5's four-paragraph legal text, "Copy all 14 lines" under the enclosure list, and a copy for the portal path. Each confirms in the button label and through an `aria-live` region, then resets.
+- `app/doc/[id]/page.tsx` calls `fillForm` server-side and passes the result down; `DocumentDetail` and `ReturnDetail` render it in the main column as the primary artifact. `CopyButton` is the only client boundary added. The DRC-06 ARN mock stays in the right rail, now clearly secondary.
+- GSTR-1 has no form to write out (it is built from sales invoices, and this file holds purchase bills). The rail says so instead of offering an action.
+
+## 2026-07-26 — /returns: the filing history the inbox hides
+
+- Added `app/returns/page.tsx` and `components/returns/**` (`history.ts`, `copy.ts`, `HistoryTotals.tsx`, `FilingHistory.tsx`, `MonthBand.tsx`, `FormCell.tsx`, `CloseOut.tsx`). All server components; no client boundary was needed.
+- `history.ts` re-narrows each row through `toReturnDetail` and drops any return whose period cannot be read as two ISO dates, rather than trusting the payload. Returns are grouped by `period_start|period_end`, so the April–June 2025 quarter forms its own period instead of collapsing into a month.
+- A period shows its two returns side by side: what you sold (GSTR-1) and the summary and tax (GSTR-3B), the form code demoted to a quiet second label. A period with nothing on file for a slot says so rather than implying a return exists.
+- Settled periods are drawn quiet: grey month label, hairline state rule, title and tax figure dropped to muted ink. Open periods keep the 2px stamp rule, stamp-red status line and full-weight month label, so red only ever means act now.
+- The April–June 2025 GSTR-3B is the only framed period on the page — a `Blueprint` with all four registration marks, the ₹4,00,000 unmatched credit set as the largest figure on the screen in accent-800, and a primary link to the notice at `/doc/doc_notice_drc01`. Consequence is framed; urgency is red. Two different emphases, never mixed.
+- Totals across the visible history: tax paid ₹6,48,600, late fees paid ₹0 with the ₹2,850 still running named beside it, and ₹4,00,000 of credit the suppliers never reported. Every figure summed from the seeded returns.
+- The page ends in an action, not a noun: the oldest open return, named and linked, plus the way back to the inbox.
+- `components/shell/NavBar.tsx` takes no link list, so `/returns` is not yet reachable from the nav. Left untouched.

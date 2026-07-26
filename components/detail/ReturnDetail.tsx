@@ -153,13 +153,22 @@ export function ReturnDetail({ row, notice, now, filled }: ReturnDetailProps) {
         {detail === null ? (
           <Blueprint as="section" className="p-[var(--space-6)]">
             <Kicker as="h2">Nothing read off this return</Kicker>
-            <p className="mt-2 text-[12.5px] opacity-70 [text-wrap:pretty]">
+            <p className="mt-2 mb-0 text-[12.5px] leading-[1.5] opacity-70 [text-wrap:pretty]">
               Until the form and the period are established, no action is offered
               against it.
             </p>
           </Blueprint>
         ) : (
-          <ReturnFilePanel form={detail.form} filed={detail.state === "filed"} />
+          filled === null && (
+            <Blueprint as="section" className="p-[var(--space-6)]">
+              <Kicker as="h2">No {detail.form} written out</Kicker>
+              <p className="mt-2 mb-0 text-[12.5px] leading-[1.5] opacity-70 [text-wrap:pretty]">
+                The {detail.form} is prepared from your sales invoices. This file holds
+                purchase bills, so there is no value here that could be filled in for
+                you.
+              </p>
+            </Blueprint>
+          )
         )}
       </div>
     </div>
