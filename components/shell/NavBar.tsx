@@ -2,7 +2,6 @@ import Link from "next/link";
 import { formatDateShort } from "@/components/lib/copy";
 import { BUSINESS } from "@/components/lib/identity";
 import { HEADING, KICKER } from "@/components/inbox/styles";
-import { ResetButton } from "./ResetButton";
 
 const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
 
@@ -67,7 +66,6 @@ export function NavBar({ now }: NavBarProps) {
         Filing history
       </Link>
 
-      <ResetButton />
     </header>
   );
 }
