@@ -1,0 +1,236 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Namma MSME — design tokens
+   Direction: "ledger paper". A trader's account book, not a SaaS dashboard.
+   Warm paper ground, ink-black text, one officialdom vermillion for danger,
+   one deep green for money coming in. Committed to light: the user is on a
+   mid-range Android in a Ludhiana shop with daylight glare.
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* --- Surfaces ---------------------------------------------------------- */
+  --paper: #f6f2ea;
+  --paper-raised: #fffdf8;
+  --paper-sunk: #ece5d8;
+  --rule: #ddd3c2;
+  --rule-strong: #c6b8a1;
+
+  /* --- Ink --------------------------------------------------------------- */
+  --ink: #191512;
+  --ink-soft: #4c4238;
+  --ink-faint: #6f6455;
+  --ink-invert: #fdfaf4;
+
+  /* --- Semantic: money going out, urgently ------------------------------- */
+  --danger: #a8201a;
+  --danger-bright: #cf3225;
+  --danger-wash: #fbeae7;
+  --danger-rule: #edc0b8;
+  --danger-page: #fdf3f1;
+
+  /* --- Semantic: money going out, soon ----------------------------------- */
+  --warn: #8a5100;
+  --warn-wash: #fcf1dc;
+  --warn-rule: #e7d0a2;
+
+  /* --- Semantic: money coming in ----------------------------------------- */
+  --credit: #0d6146;
+  --credit-wash: #e6f1ec;
+  --credit-rule: #b7d6c8;
+
+  /* --- Interaction -------------------------------------------------------- */
+  --focus: #14509e;
+
+  /* --- Motion ------------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 140ms;
+  --duration-normal: 380ms;
+
+  /* --- Touch -------------------------------------------------------------- */
+  --tap-min: 2.75rem; /* 44px — never go below this on any control */
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-raised: var(--paper-raised);
+  --color-paper-sunk: var(--paper-sunk);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-ink-invert: var(--ink-invert);
+
+  --color-danger: var(--danger);
+  --color-danger-bright: var(--danger-bright);
+  --color-danger-wash: var(--danger-wash);
+  --color-danger-rule: var(--danger-rule);
+  --color-danger-page: var(--danger-page);
+
+  --color-warn: var(--warn);
+  --color-warn-wash: var(--warn-wash);
+  --color-warn-rule: var(--warn-rule);
+
+  --color-credit: var(--credit);
+  --color-credit-wash: var(--credit-wash);
+  --color-credit-rule: var(--credit-rule);
+
+  --color-focus: var(--focus);
+
+  /* Devanagari carries matras above and below the baseline, so every
+     line-height here is set deliberately looser than a Latin equivalent. */
+  --font-sans: var(--font-deva), "Noto Sans Devanagari", ui-sans-serif, system-ui,
+    sans-serif;
+  --font-mono: var(--font-stamp), ui-monospace, "SFMono-Regular", monospace;
+
+  --text-tag: 0.6875rem;
+  --text-tag--line-height: 1;
+  --text-tag--letter-spacing: 0.14em;
+
+  --text-micro: 0.8125rem;
+  --text-micro--line-height: 1.5;
+
+  --text-label: 0.9375rem;
+  --text-label--line-height: 1.65;
+
+  --text-body: 1.125rem;
+  --text-body--line-height: 1.8;
+
+  --text-lead: 1.3125rem;
+  --text-lead--line-height: 1.7;
+
+  --text-title: 1.5rem;
+  --text-title--line-height: 1.5;
+
+  --text-display: 1.875rem;
+  --text-display--line-height: 1.4;
+
+  /* Money is the hero. Three steps, all clamped so nothing wraps at 320px. */
+  --text-money-sm: clamp(1.5rem, 5.6vw, 1.875rem);
+  --text-money-sm--line-height: 1.1;
+
+  --text-money: clamp(2rem, 8.4vw, 2.75rem);
+  --text-money--line-height: 1.05;
+
+  --text-money-hero: clamp(2.75rem, 12vw, 4rem);
+  --text-money-hero--line-height: 1;
+
+  --radius-tag: 3px;
+  --radius-card: 14px;
+  --radius-panel: 18px;
+  --radius-chip: 999px;
+
+  --shadow-card: 0 1px 0 0 var(--rule), 0 2px 10px -6px rgb(25 21 18 / 0.22);
+  --shadow-lift: 0 10px 30px -14px rgb(25 21 18 / 0.45);
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  color: var(--ink);
+  background-color: var(--paper);
+  /* Faint ledger ruling + a wash of vermillion bleeding in from the corner. */
+  background-image: radial-gradient(
+      120% 60% at 8% -8%,
+      rgb(168 32 26 / 0.06),
+      transparent 62%
+    ),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0 27px,
+      rgb(25 21 18 / 0.022) 27px 28px
+    );
+  background-attachment: fixed;
+  font-family: var(--font-deva), "Noto Sans Devanagari", ui-sans-serif, system-ui,
+    sans-serif;
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* Numerals never wrap and never jitter between renders. */
+.numerals {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  white-space: nowrap;
+}
+
+:where(a, button, [tabindex]):focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+/* ==========================================================================
+   Textures — used sparingly, only where meaning depends on them
+   ========================================================================== */
+
+/* Official-stamp hatching. Marks the refusal panel as a deliberate state
+   rather than a red error box. */
+.hatch-danger {
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0 9px,
+    rgb(168 32 26 / 0.055) 9px 18px
+  );
+}
+
+/* The whole detail page changes ground when the system declines to act. */
+.doc-shell[data-state="refused"] {
+  background-color: var(--danger-page);
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0 11px,
+    rgb(168 32 26 / 0.035) 11px 22px
+  );
+}
+
+/* ==========================================================================
+   Motion — transform and opacity only
+   ========================================================================== */
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise {
+  animation: rise var(--duration-normal) var(--ease-out) both;
+}
+
+@keyframes press {
+  50% {
+    transform: scale(0.94);
+  }
+}
+
+.press-on-tap:active {
+  transform: scale(0.97);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
