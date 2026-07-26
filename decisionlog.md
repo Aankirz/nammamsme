@@ -368,3 +368,11 @@ Records: 14 invoices, ₹18,00,000 ITC claimed; 11 matched (₹14,00,000); 3 unm
 **Fix:** today's date is injected into the system prompt with an instruction to compute every relative date against it.
 **Why recorded:** the tools returned correct absolute dates throughout. The model had every figure it needed and still produced a wrong answer, because the question was relative and the anchor was missing. Nothing in the tool layer could have caught this.
 **Status:** Fixed and verified: four obligations, correct amounts, correct dates.
+
+### D-54 — Google auth added, and it fails open by design *(reverses a non-goal)*
+**Decision:** Auth.js v5 with the Google provider. `auth.ts`, a catch-all route handler, `middleware.ts` protecting everything except `/sign-in` and `/api/auth`, and a sign-in page in the existing design vocabulary.
+**Why it was a non-goal:** D-21 and the PRD both excluded it. It scores nothing on the rubric, and the handbook names production auth as a build-window trap. The user asked for it directly, so it is built; the reasoning is recorded because it was a deliberate reversal, not an oversight.
+**The important property:** `AUTH_ENABLED` is derived from whether `AUTH_GOOGLE_ID` and `AUTH_GOOGLE_SECRET` are both present. When they are absent the middleware passes everything through and `/sign-in` redirects to the file. So the demo cannot be bricked by a missing or expired OAuth credential on the day, and a laptop without the secrets still runs the whole product.
+**Why that matters more than the auth:** a login screen that cannot be got past is the single most avoidable way to lose a live demo. Failing open costs nothing here because there is one hardcoded business and no private data behind the gate.
+**Still hardcoded:** `BUSINESS` in `components/lib/identity.ts`. The session names the signed-in person in the masthead; it does not yet select whose file is opened. Multi-tenant selection is the CA-dashboard wedge (D-23) and is not built.
+**Status:** Built. Inert until credentials are supplied.
