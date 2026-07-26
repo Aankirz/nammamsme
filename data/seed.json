@@ -1,0 +1,1020 @@
+[
+  {
+    "id": "doc_notice_drc01",
+    "role": "obligation",
+    "doc_type": "gst_notice",
+    "obligation": "GST show cause notice, form DRC-01. Reference ZD030726001234. Period April 2025 to June 2025. You claimed input tax credit of Rs 18,00,000. The department can see Rs 14,00,000. Rs 4,00,000 does not match. Demand: tax Rs 4,00,000 plus interest Rs 72,000 plus penalty Rs 40,000, Rs 5,12,000 in all. Reply in form DRC-06 by 14 August 2026.",
+    "amount": 512000,
+    "doc_date": "2026-07-12",
+    "deadline": "2026-08-14",
+    "counterparty": "Commercial Taxes Department, Ludhiana",
+    "consequence": "14 August 2026: your window to reply closes\nSeptember 2026: order passed without hearing you\nDecember 2026: appeal window shuts, needs Rs 51,200 deposit first\nAfter that: recovery. Bank account can be attached.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": {
+      "page": 1,
+      "block": 5,
+      "bbox": [
+        62,
+        920,
+        775,
+        1137
+      ]
+    },
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "notice": {
+      "section": "73",
+      "tax": 400000,
+      "interest": 72000,
+      "penalty": 40000,
+      "total": 512000,
+      "claimed_itc": 1800000,
+      "matched_itc": 1400000,
+      "unmatched_itc": 400000,
+      "period_start": "2025-04-01",
+      "period_end": "2025-06-30"
+    },
+    "source": {
+      "pageWidth": 2550,
+      "pageHeight": 3300,
+      "blocks": [
+        {
+          "page": 1,
+          "block": 0,
+          "text": "FORM GST DRC-01\nSummary of Show Cause Notice\nReference No: ZD030726001234\nDate: 12/07/2026",
+          "bbox": [
+            60,
+            71,
+            921,
+            284
+          ]
+        },
+        {
+          "page": 1,
+          "block": 1,
+          "text": "To: M/s Gupta Hosiery Mills, Ludhiana\nGSTIN: 03AABCG1234H1Z5",
+          "bbox": [
+            62,
+            318,
+            1187,
+            437
+          ]
+        },
+        {
+          "page": 1,
+          "block": 2,
+          "text": "Tax Period: April 2025 to June 2025\nSection: 73 of the CGST Act, 2017",
+          "bbox": [
+            60,
+            467,
+            1130,
+            587
+          ]
+        },
+        {
+          "page": 1,
+          "block": 3,
+          "text": "It is observed that Input Tax Credit of Rs. 18,00,000 was claimed\nin GSTR-3B, whereas credit of only Rs. 14,00,000 is reflected in\nGSTR-2B as reported by your suppliers.",
+          "bbox": [
+            62,
+            618,
+            2026,
+            789
+          ]
+        },
+        {
+          "page": 1,
+          "block": 4,
+          "text": "The unmatched Input Tax Credit is Rs. 4,00,000.",
+          "bbox": [
+            63,
+            818,
+            1479,
+            888
+          ]
+        },
+        {
+          "page": 1,
+          "block": 5,
+          "text": "Tax: Rs. 4,00,000\nInterest: Rs. 72,000\nPenalty: Rs. 40,000\nTotal: Rs. 5,12,000",
+          "bbox": [
+            62,
+            920,
+            775,
+            1137
+          ]
+        },
+        {
+          "page": 1,
+          "block": 6,
+          "text": "You are hereby required to show cause and file a reply in FORM GST\nDRC-06 on or before 14/08/2026, failing which the matter will be\ndecided ex-parte on the basis of records available.",
+          "bbox": [
+            57,
+            1169,
+            2060,
+            1340
+          ]
+        },
+        {
+          "page": 1,
+          "block": 7,
+          "text": "The unmatched invoices are: MKF/25-26/0092 Rs. 1,86,000;\nDTA/2526/0271 Rs. 1,29,000; VYS/25-26/0134 Rs. 85,000.",
+          "bbox": [
+            58,
+            1369,
+            1754,
+            1488
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "doc_notice_drc01_refused",
+    "role": "obligation",
+    "doc_type": "gst_notice",
+    "obligation": "GST show cause notice, form DRC-01. Reference ZD030726002891. Period October 2024 to December 2024. A separate demand from the 14 August 2026 one. The page puts the demand at Rs 2,04,800. We cannot stand behind that figure. One page it refers to is missing, and the interest is stated twice with two different numbers. Reply in form DRC-06 by 7 August 2026. We will not file until the figures are settled.",
+    "amount": 204800,
+    "doc_date": "2026-07-05",
+    "deadline": "2026-08-07",
+    "counterparty": "Commercial Taxes Department, Ludhiana",
+    "consequence": "7 August 2026: your window to reply closes\nSeptember 2026: order passed without hearing you\nDecember 2026: appeal window shuts, needs a deposit of 10 percent of whatever the order confirms\nAfter that: recovery. Bank account can be attached.",
+    "direction": "owing",
+    "status": "refused",
+    "blockers": [
+      {
+        "kind": "missing_annexure",
+        "detail": "This notice refers to Annexure-A. That page was not in what you uploaded. The amount may be incomplete.",
+        "sourceRef": {
+          "page": 1,
+          "block": 7,
+          "bbox": [
+            58,
+            1369,
+            1754,
+            1488
+          ]
+        }
+      },
+      {
+        "kind": "amount_disagreement",
+        "field": "interest",
+        "detail": "We read two different interest figures from this page and cannot tell which is correct.",
+        "sourceRef": {
+          "page": 1,
+          "block": 5,
+          "bbox": [
+            62,
+            920,
+            775,
+            1137
+          ]
+        }
+      }
+    ],
+    "source_ref": {
+      "page": 1,
+      "block": 5,
+      "bbox": [
+        62,
+        920,
+        775,
+        1137
+      ]
+    },
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "source": {
+      "pageWidth": 2550,
+      "pageHeight": 3300,
+      "blocks": [
+        {
+          "page": 1,
+          "block": 0,
+          "text": "FORM GST DRC-01\nSummary of Show Cause Notice\nReference No: ZD030726002891\nDate: 05/07/2026",
+          "bbox": [
+            60,
+            71,
+            921,
+            284
+          ]
+        },
+        {
+          "page": 1,
+          "block": 1,
+          "text": "To: M/s Gupta Hosiery Mills, Ludhiana\nGSTIN: 03AABCG1234H1Z5",
+          "bbox": [
+            62,
+            318,
+            1187,
+            437
+          ]
+        },
+        {
+          "page": 1,
+          "block": 2,
+          "text": "Tax Period: October 2024 to December 2024\nSection: 73 of the CGST Act, 2017",
+          "bbox": [
+            60,
+            467,
+            1130,
+            587
+          ]
+        },
+        {
+          "page": 1,
+          "block": 3,
+          "text": "It is observed that Input Tax Credit of Rs. 9,60,000 was claimed\nin GSTR-3B, whereas credit of only Rs. 8,00,000 is reflected in\nGSTR-2B as reported by your suppliers.",
+          "bbox": [
+            62,
+            618,
+            2026,
+            789
+          ]
+        },
+        {
+          "page": 1,
+          "block": 4,
+          "text": "The unmatched Input Tax Credit is Rs. 1,60,000.",
+          "bbox": [
+            63,
+            818,
+            1479,
+            888
+          ]
+        },
+        {
+          "page": 1,
+          "block": 5,
+          "text": "Tax: Rs. 1,60,000\nInterest: Rs. 28,800\nInterest (recomputed): Rs. 33,600\nPenalty: Rs. 16,000\nTotal: Rs. 2,04,800",
+          "bbox": [
+            62,
+            920,
+            775,
+            1137
+          ]
+        },
+        {
+          "page": 1,
+          "block": 6,
+          "text": "You are hereby required to show cause and file a reply in FORM GST\nDRC-06 on or before 07/08/2026, failing which the matter will be\ndecided ex-parte on the basis of records available.",
+          "bbox": [
+            57,
+            1169,
+            2060,
+            1340
+          ]
+        },
+        {
+          "page": 1,
+          "block": 7,
+          "text": "Details of the unmatched invoices are given in Annexure-A.",
+          "bbox": [
+            58,
+            1369,
+            1754,
+            1488
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "doc_invoice_01",
+    "role": "evidence",
+    "doc_type": "supplier_invoice",
+    "obligation": "Purchase invoice KT/2526/0142 from Kumar Textiles. Terry towelling fabric. Taxable value Rs 15,00,000 plus GST at 12 percent Rs 1,80,000, Rs 16,80,000 in all. Invoice dated 8 April 2025. Payment due 8 May 2025 (30 days).",
+    "amount": 1680000,
+    "doc_date": "2025-04-08",
+    "deadline": "2025-05-08",
+    "counterparty": "Kumar Textiles",
+    "consequence": "8 May 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n5 October 2025: 180 days from the invoice date. Pay later than this and the Rs 1,80,000 credit goes back, with interest.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "evidence": {
+      "invoice_ref": "KT/2526/0142",
+      "hsn": "5802",
+      "goods": "Terry towelling fabric",
+      "taxable": 1500000,
+      "gst": 180000,
+      "gst_rate": 12,
+      "unmatched": false
+    }
+  },
+  {
+    "id": "doc_invoice_02",
+    "role": "evidence",
+    "doc_type": "supplier_invoice",
+    "obligation": "Purchase invoice CKM/25-26/0087 from Chadha Knit Mills. Nonwoven fusible interlining. Taxable value Rs 14,00,000 plus GST at 12 percent Rs 1,68,000, Rs 15,68,000 in all. Invoice dated 14 April 2025. Payment due 29 May 2025 (45 days).",
+    "amount": 1568000,
+    "doc_date": "2025-04-14",
+    "deadline": "2025-05-29",
+    "counterparty": "Chadha Knit Mills",
+    "consequence": "29 May 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n11 October 2025: 180 days from the invoice date. Pay later than this and the Rs 1,68,000 credit goes back, with interest.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "evidence": {
+      "invoice_ref": "CKM/25-26/0087",
+      "hsn": "5603",
+      "goods": "Nonwoven fusible interlining",
+      "taxable": 1400000,
+      "gst": 168000,
+      "gst_rate": 12,
+      "unmatched": false
+    }
+  },
+  {
+    "id": "doc_invoice_03",
+    "role": "evidence",
+    "doc_type": "supplier_invoice",
+    "obligation": "Purchase invoice BYA/2526/0311 from Bansal Yarn Agencies. Cotton yarn 30s. Taxable value Rs 17,20,000 plus GST at 5 percent Rs 86,000, Rs 18,06,000 in all. Invoice dated 19 April 2025. Payment due 19 May 2025 (30 days).",
+    "amount": 1806000,
+    "doc_date": "2025-04-19",
+    "deadline": "2025-05-19",
+    "counterparty": "Bansal Yarn Agencies",
+    "consequence": "19 May 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n16 October 2025: 180 days from the invoice date. Pay later than this and the Rs 86,000 credit goes back, with interest.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "evidence": {
+      "invoice_ref": "BYA/2526/0311",
+      "hsn": "5205",
+      "goods": "Cotton yarn 30s",
+      "taxable": 1720000,
+      "gst": 86000,
+      "gst_rate": 5,
+      "unmatched": false
+    }
+  },
+  {
+    "id": "doc_invoice_04",
+    "role": "evidence",
+    "doc_type": "supplier_invoice",
+    "obligation": "Purchase invoice SKW/25-26/0064 from Singla Knitwear. Quilted textile panels. Taxable value Rs 13,00,000 plus GST at 12 percent Rs 1,56,000, Rs 14,56,000 in all. Invoice dated 25 April 2025. Payment due 9 June 2025 (45 days).",
+    "amount": 1456000,
+    "doc_date": "2025-04-25",
+    "deadline": "2025-06-09",
+    "counterparty": "Singla Knitwear",
+    "consequence": "9 June 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n22 October 2025: 180 days from the invoice date. Pay later than this and the Rs 1,56,000 credit goes back, with interest.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "evidence": {
+      "invoice_ref": "SKW/25-26/0064",
+      "hsn": "5811",
+      "goods": "Quilted textile panels",
+      "taxable": 1300000,
+      "gst": 156000,
+      "gst_rate": 12,
+      "unmatched": false
+    }
+  },
+  {
+    "id": "doc_invoice_05",
+    "role": "evidence",
+    "doc_type": "supplier_invoice",
+    "obligation": "Purchase invoice AWM/2526/0219 from Arora Woollen Mills. Woollen felt. Taxable value Rs 12,00,000 plus GST at 12 percent Rs 1,44,000, Rs 13,44,000 in all. Invoice dated 2 May 2025. Payment due 1 June 2025 (30 days).",
+    "amount": 1344000,
+    "doc_date": "2025-05-02",
+    "deadline": "2025-06-01",
+    "counterparty": "Arora Woollen Mills",
+    "consequence": "1 June 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n29 October 2025: 180 days from the invoice date. Pay later than this and the Rs 1,44,000 credit goes back, with interest.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "evidence": {
+      "invoice_ref": "AWM/2526/0219",
+      "hsn": "5602",
+      "goods": "Woollen felt",
+      "taxable": 1200000,
+      "gst": 144000,
+      "gst_rate": 12,
+      "unmatched": false
+    }
+  },
+  {
+    "id": "doc_invoice_06",
+    "role": "evidence",
+    "doc_type": "supplier_invoice",
+    "obligation": "Purchase invoice JF/25-26/0455 from Jindal Fabrics. Polyester fabric coated with plastics. Taxable value Rs 11,00,000 plus GST at 12 percent Rs 1,32,000, Rs 12,32,000 in all. Invoice dated 9 May 2025. Payment due 23 June 2025 (45 days).",
+    "amount": 1232000,
+    "doc_date": "2025-05-09",
+    "deadline": "2025-06-23",
+    "counterparty": "Jindal Fabrics",
+    "consequence": "23 June 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n5 November 2025: 180 days from the invoice date. Pay later than this and the Rs 1,32,000 credit goes back, with interest.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "evidence": {
+      "invoice_ref": "JF/25-26/0455",
+      "hsn": "5903",
+      "goods": "Polyester fabric coated with plastics",
+      "taxable": 1100000,
+      "gst": 132000,
+      "gst_rate": 12,
+      "unmatched": false
+    }
+  },
+  {
+    "id": "doc_invoice_07",
+    "role": "evidence",
+    "doc_type": "supplier_invoice",
+    "obligation": "Purchase invoice STC/2526/0128 from Soni Thread Company. Sewing thread of manmade filaments. Taxable value Rs 10,50,000 plus GST at 12 percent Rs 1,26,000, Rs 11,76,000 in all. Invoice dated 16 May 2025. Payment due 15 June 2025 (30 days).",
+    "amount": 1176000,
+    "doc_date": "2025-05-16",
+    "deadline": "2025-06-15",
+    "counterparty": "Soni Thread Company",
+    "consequence": "15 June 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n12 November 2025: 180 days from the invoice date. Pay later than this and the Rs 1,26,000 credit goes back, with interest.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "evidence": {
+      "invoice_ref": "STC/2526/0128",
+      "hsn": "5401",
+      "goods": "Sewing thread of manmade filaments",
+      "taxable": 1050000,
+      "gst": 126000,
+      "gst_rate": 12,
+      "unmatched": false
+    }
+  },
+  {
+    "id": "doc_invoice_08",
+    "role": "evidence",
+    "doc_type": "supplier_invoice",
+    "obligation": "Purchase invoice MG/25-26/0073 from Malhotra Garments. Woven labels and size badges. Taxable value Rs 10,00,000 plus GST at 12 percent Rs 1,20,000, Rs 11,20,000 in all. Invoice dated 23 May 2025. Payment due 7 July 2025 (45 days).",
+    "amount": 1120000,
+    "doc_date": "2025-05-23",
+    "deadline": "2025-07-07",
+    "counterparty": "Malhotra Garments",
+    "consequence": "7 July 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n19 November 2025: 180 days from the invoice date. Pay later than this and the Rs 1,20,000 credit goes back, with interest.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "evidence": {
+      "invoice_ref": "MG/25-26/0073",
+      "hsn": "5807",
+      "goods": "Woven labels and size badges",
+      "taxable": 1000000,
+      "gst": 120000,
+      "gst_rate": 12,
+      "unmatched": false
+    }
+  },
+  {
+    "id": "doc_invoice_09",
+    "role": "evidence",
+    "doc_type": "supplier_invoice",
+    "obligation": "Purchase invoice CHW/2526/0396 from Chawla Hosiery Works. Textile wadding. Taxable value Rs 9,00,000 plus GST at 12 percent Rs 1,08,000, Rs 10,08,000 in all. Invoice dated 30 May 2025. Payment due 29 June 2025 (30 days).",
+    "amount": 1008000,
+    "doc_date": "2025-05-30",
+    "deadline": "2025-06-29",
+    "counterparty": "Chawla Hosiery Works",
+    "consequence": "29 June 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n26 November 2025: 180 days from the invoice date. Pay later than this and the Rs 1,08,000 credit goes back, with interest.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "evidence": {
+      "invoice_ref": "CHW/2526/0396",
+      "hsn": "5601",
+      "goods": "Textile wadding",
+      "taxable": 900000,
+      "gst": 108000,
+      "gst_rate": 12,
+      "unmatched": false
+    }
+  },
+  {
+    "id": "doc_invoice_10",
+    "role": "evidence",
+    "doc_type": "supplier_invoice",
+    "obligation": "Purchase invoice SHT/25-26/0208 from Sethi Hosiery Traders. Elastic tape, rubber thread textile covered. Taxable value Rs 8,00,000 plus GST at 12 percent Rs 96,000, Rs 8,96,000 in all. Invoice dated 5 June 2025. Payment due 20 July 2025 (45 days).",
+    "amount": 896000,
+    "doc_date": "2025-06-05",
+    "deadline": "2025-07-20",
+    "counterparty": "Sethi Hosiery Traders",
+    "consequence": "20 July 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n2 December 2025: 180 days from the invoice date. Pay later than this and the Rs 96,000 credit goes back, with interest.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "evidence": {
+      "invoice_ref": "SHT/25-26/0208",
+      "hsn": "5604",
+      "goods": "Elastic tape, rubber thread textile covered",
+      "taxable": 800000,
+      "gst": 96000,
+      "gst_rate": 12,
+      "unmatched": false
+    }
+  },
+  {
+    "id": "doc_invoice_11",
+    "role": "evidence",
+    "doc_type": "supplier_invoice",
+    "obligation": "Purchase invoice BSM/2526/0517 from Batra Spinning Mills. Melange yarn of manmade staple fibres. Taxable value Rs 7,00,000 plus GST at 12 percent Rs 84,000, Rs 7,84,000 in all. Invoice dated 11 June 2025. Payment due 11 July 2025 (30 days).",
+    "amount": 784000,
+    "doc_date": "2025-06-11",
+    "deadline": "2025-07-11",
+    "counterparty": "Batra Spinning Mills",
+    "consequence": "11 July 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n8 December 2025: 180 days from the invoice date. Pay later than this and the Rs 84,000 credit goes back, with interest.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "evidence": {
+      "invoice_ref": "BSM/2526/0517",
+      "hsn": "5509",
+      "goods": "Melange yarn of manmade staple fibres",
+      "taxable": 700000,
+      "gst": 84000,
+      "gst_rate": 12,
+      "unmatched": false
+    }
+  },
+  {
+    "id": "doc_invoice_12",
+    "role": "evidence",
+    "doc_type": "supplier_invoice",
+    "obligation": "Purchase invoice MKF/25-26/0092 from Mittal Knit Fab. Blended staple fibre yarn. Taxable value Rs 15,50,000 plus GST at 12 percent Rs 1,86,000, Rs 17,36,000 in all. Invoice dated 17 June 2025. Payment due 1 August 2025 (45 days). The department cannot see this invoice in GSTR-2B. The supplier has not filed its GSTR-1.",
+    "amount": 1736000,
+    "doc_date": "2025-06-17",
+    "deadline": "2025-08-01",
+    "counterparty": "Mittal Knit Fab",
+    "consequence": "1 August 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n14 December 2025: 180 days from the invoice date. Pay later than this and the Rs 1,86,000 credit goes back, with interest.\n14 August 2026: the GST reply is due. This is one of the three invoices behind the Rs 4,00,000 demand. Until Mittal Knit Fab files its GSTR-1, this credit is not safe.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "evidence": {
+      "invoice_ref": "MKF/25-26/0092",
+      "hsn": "5510",
+      "goods": "Blended staple fibre yarn",
+      "taxable": 1550000,
+      "gst": 186000,
+      "gst_rate": 12,
+      "unmatched": true
+    }
+  },
+  {
+    "id": "doc_invoice_13",
+    "role": "evidence",
+    "doc_type": "supplier_invoice",
+    "obligation": "Purchase invoice DTA/2526/0271 from Dhawan Textile Agency. Woven cotton fabric. Taxable value Rs 10,75,000 plus GST at 12 percent Rs 1,29,000, Rs 12,04,000 in all. Invoice dated 23 June 2025. Payment due 23 July 2025 (30 days). The department cannot see this invoice in GSTR-2B. The supplier has not filed its GSTR-1.",
+    "amount": 1204000,
+    "doc_date": "2025-06-23",
+    "deadline": "2025-07-23",
+    "counterparty": "Dhawan Textile Agency",
+    "consequence": "23 July 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n20 December 2025: 180 days from the invoice date. Pay later than this and the Rs 1,29,000 credit goes back, with interest.\n14 August 2026: the GST reply is due. This is one of the three invoices behind the Rs 4,00,000 demand. Until Dhawan Textile Agency files its GSTR-1, this credit is not safe.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "evidence": {
+      "invoice_ref": "DTA/2526/0271",
+      "hsn": "5208",
+      "goods": "Woven cotton fabric",
+      "taxable": 1075000,
+      "gst": 129000,
+      "gst_rate": 12,
+      "unmatched": true
+    }
+  },
+  {
+    "id": "doc_invoice_14",
+    "role": "evidence",
+    "doc_type": "supplier_invoice",
+    "obligation": "Purchase invoice VYS/25-26/0134 from Verma Yarn Suppliers. Cotton yarn 40s. Taxable value Rs 17,00,000 plus GST at 5 percent Rs 85,000, Rs 17,85,000 in all. Invoice dated 28 June 2025. Payment due 12 August 2025 (45 days). The department cannot see this invoice in GSTR-2B. The supplier has not filed its GSTR-1.",
+    "amount": 1785000,
+    "doc_date": "2025-06-28",
+    "deadline": "2025-08-12",
+    "counterparty": "Verma Yarn Suppliers",
+    "consequence": "12 August 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n25 December 2025: 180 days from the invoice date. Pay later than this and the Rs 85,000 credit goes back, with interest.\n14 August 2026: the GST reply is due. This is one of the three invoices behind the Rs 4,00,000 demand. Until Verma Yarn Suppliers files its GSTR-1, this credit is not safe.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "evidence": {
+      "invoice_ref": "VYS/25-26/0134",
+      "hsn": "5205",
+      "goods": "Cotton yarn 40s",
+      "taxable": 1700000,
+      "gst": 85000,
+      "gst_rate": 5,
+      "unmatched": true
+    }
+  },
+  {
+    "id": "doc_receivable_01",
+    "role": "obligation",
+    "doc_type": "supplier_invoice",
+    "obligation": "Sales invoice SGE/2627/0041. Rs 6,40,000 due from Sharma Distributors. Invoice dated 25 April 2026, payment due 25 May 2026. As at 12 July 2026 it is 78 days old and unpaid.",
+    "amount": 640000,
+    "doc_date": "2026-04-25",
+    "deadline": "2026-05-25",
+    "counterparty": "Sharma Distributors",
+    "consequence": "25 May 2026: payment fell due. Nothing came in.\n9 June 2026: 45 days from the invoice date. Past this you can claim interest at three times the RBI bank rate, compounded monthly.\nAfter that: you can file on the Samadhaan portal. Until it is paid, Rs 6,40,000 of your working capital sits in someone else's account.",
+    "direction": "owed",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z"
+  },
+  {
+    "id": "doc_licence_01",
+    "role": "obligation",
+    "doc_type": "licence",
+    "obligation": "FSSAI registration certificate for the factory canteen. Registration number 12825998000123. Issued 1 August 2025. Expires 31 July 2026. Apply for renewal before it expires.",
+    "amount": null,
+    "doc_date": "2025-08-01",
+    "deadline": "2026-07-31",
+    "counterparty": "Food Safety and Standards Authority of India",
+    "consequence": "31 July 2026: the registration stops being valid.\n1 August 2026: late renewal starts costing Rs 100 a day.\nAfter that: running the canteen without a valid registration carries a fine up to Rs 5,00,000 and up to six months in jail. The premises can be sealed.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z"
+  },
+  {
+    "id": "doc_return_3b_2025_q1",
+    "role": "obligation",
+    "doc_type": "gst_return",
+    "obligation": "GSTR-3B for April to June 2025. Due 20 July 2025. Filed 18 July 2025, two days early. ARN AA1807250091426. You claimed input tax credit of Rs 18,00,000 here. GSTR-2B for the same period showed Rs 14,00,000 from your suppliers. That Rs 4,00,000 difference is what the notice of 12 July 2026 is about. Tax paid in cash Rs 3,84,000. This return covered a full quarter, so it fell due on the 20th of the month after the quarter ended.",
+    "amount": null,
+    "doc_date": "2025-07-20",
+    "deadline": null,
+    "counterparty": "GST Department, Ludhiana",
+    "consequence": "20 July 2025: return was due.\n18 July 2025: filed two days early. ARN AA1807250091426.\n12 July 2026: the department issued notice DRC-01 ZD030726001234 on this return. Rs 4,00,000 of the credit claimed here is not visible to them.\n14 August 2026: the reply to that notice is due. Nothing further is owing on the return itself.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "return": {
+      "form": "GSTR-3B",
+      "period_label": "April to June 2025",
+      "period_start": "2025-04-01",
+      "period_end": "2025-06-30",
+      "state": "filed",
+      "filed_on": "2025-07-18",
+      "arn": "AA1807250091426",
+      "tax_payable": 384000,
+      "itc_claimed": 1800000,
+      "itc_available": 1400000,
+      "late_fee": 0,
+      "days_late": -2,
+      "blocks": [],
+      "led_to": "doc_notice_drc01"
+    }
+  },
+  {
+    "id": "doc_return_r1_2026_03",
+    "role": "obligation",
+    "doc_type": "gst_return",
+    "obligation": "GSTR-1 for March 2026. This return reports what you sold. No tax is paid with it. Due 11 April 2026. Filed 9 April 2026, two days early. ARN AA0904260118337.",
+    "amount": null,
+    "doc_date": "2026-04-11",
+    "deadline": null,
+    "counterparty": "GST Department, Ludhiana",
+    "consequence": "11 April 2026: return was due.\n9 April 2026: filed two days early. ARN AA0904260118337.\nAs at 26 July 2026: nothing outstanding on this return.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "return": {
+      "form": "GSTR-1",
+      "period_label": "March 2026",
+      "period_start": "2026-03-01",
+      "period_end": "2026-03-31",
+      "state": "filed",
+      "filed_on": "2026-04-09",
+      "arn": "AA0904260118337",
+      "tax_payable": null,
+      "itc_claimed": null,
+      "itc_available": null,
+      "late_fee": 0,
+      "days_late": -2,
+      "blocks": [],
+      "led_to": null
+    }
+  },
+  {
+    "id": "doc_return_3b_2026_03",
+    "role": "obligation",
+    "doc_type": "gst_return",
+    "obligation": "GSTR-3B for March 2026. Due 20 April 2026. Filed 18 April 2026, two days early. ARN AA1804260125904. Input tax credit claimed Rs 2,38,000, and GSTR-2B showed the same Rs 2,38,000. Tax paid in cash Rs 1,26,400.",
+    "amount": null,
+    "doc_date": "2026-04-20",
+    "deadline": null,
+    "counterparty": "GST Department, Ludhiana",
+    "consequence": "20 April 2026: return was due.\n18 April 2026: filed two days early. ARN AA1804260125904.\nAs at 26 July 2026: nothing outstanding on this return.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "return": {
+      "form": "GSTR-3B",
+      "period_label": "March 2026",
+      "period_start": "2026-03-01",
+      "period_end": "2026-03-31",
+      "state": "filed",
+      "filed_on": "2026-04-18",
+      "arn": "AA1804260125904",
+      "tax_payable": 126400,
+      "itc_claimed": 238000,
+      "itc_available": 238000,
+      "late_fee": 0,
+      "days_late": -2,
+      "blocks": [],
+      "led_to": null
+    }
+  },
+  {
+    "id": "doc_return_r1_2026_04",
+    "role": "obligation",
+    "doc_type": "gst_return",
+    "obligation": "GSTR-1 for April 2026. This return reports what you sold. No tax is paid with it. Due 11 May 2026. Filed 10 May 2026, one day early. ARN AA1005260142718.",
+    "amount": null,
+    "doc_date": "2026-05-11",
+    "deadline": null,
+    "counterparty": "GST Department, Ludhiana",
+    "consequence": "11 May 2026: return was due.\n10 May 2026: filed one day early. ARN AA1005260142718.\nAs at 26 July 2026: nothing outstanding on this return.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "return": {
+      "form": "GSTR-1",
+      "period_label": "April 2026",
+      "period_start": "2026-04-01",
+      "period_end": "2026-04-30",
+      "state": "filed",
+      "filed_on": "2026-05-10",
+      "arn": "AA1005260142718",
+      "tax_payable": null,
+      "itc_claimed": null,
+      "itc_available": null,
+      "late_fee": 0,
+      "days_late": -1,
+      "blocks": [],
+      "led_to": null
+    }
+  },
+  {
+    "id": "doc_return_3b_2026_04",
+    "role": "obligation",
+    "doc_type": "gst_return",
+    "obligation": "GSTR-3B for April 2026. Due 20 May 2026. Filed 20 May 2026, on the due date. ARN AA2005260151063. Input tax credit claimed Rs 2,61,500, and GSTR-2B showed the same Rs 2,61,500. Tax paid in cash Rs 1,38,200.",
+    "amount": null,
+    "doc_date": "2026-05-20",
+    "deadline": null,
+    "counterparty": "GST Department, Ludhiana",
+    "consequence": "20 May 2026: return was due.\n20 May 2026: filed on the due date. ARN AA2005260151063.\nAs at 26 July 2026: nothing outstanding on this return.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "return": {
+      "form": "GSTR-3B",
+      "period_label": "April 2026",
+      "period_start": "2026-04-01",
+      "period_end": "2026-04-30",
+      "state": "filed",
+      "filed_on": "2026-05-20",
+      "arn": "AA2005260151063",
+      "tax_payable": 138200,
+      "itc_claimed": 261500,
+      "itc_available": 261500,
+      "late_fee": 0,
+      "days_late": 0,
+      "blocks": [],
+      "led_to": null
+    }
+  },
+  {
+    "id": "doc_return_r1_2026_05",
+    "role": "obligation",
+    "doc_type": "gst_return",
+    "obligation": "GSTR-1 for May 2026. This return reports what you sold. No tax is paid with it. Due 11 June 2026. Filed 11 June 2026, on the due date. ARN AA1106260167842.",
+    "amount": null,
+    "doc_date": "2026-06-11",
+    "deadline": null,
+    "counterparty": "GST Department, Ludhiana",
+    "consequence": "11 June 2026: return was due.\n11 June 2026: filed on the due date. ARN AA1106260167842.\nAs at 26 July 2026: nothing outstanding on this return.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "return": {
+      "form": "GSTR-1",
+      "period_label": "May 2026",
+      "period_start": "2026-05-01",
+      "period_end": "2026-05-31",
+      "state": "filed",
+      "filed_on": "2026-06-11",
+      "arn": "AA1106260167842",
+      "tax_payable": null,
+      "itc_claimed": null,
+      "itc_available": null,
+      "late_fee": 0,
+      "days_late": 0,
+      "blocks": [],
+      "led_to": null
+    }
+  },
+  {
+    "id": "doc_return_3b_2026_05",
+    "role": "obligation",
+    "doc_type": "gst_return",
+    "obligation": "GSTR-3B for May 2026. Due 20 June 2026. Not filed. As at 26 July 2026 it is 36 days late. Tax of Rs 1,12,000 is sitting unpaid. Late fee so far Rs 1,800, at Rs 50 a day. GSTR-2B shows Rs 2,24,000 of input tax credit waiting to be claimed in it.",
+    "amount": 112000,
+    "doc_date": "2026-06-20",
+    "deadline": "2026-06-20",
+    "counterparty": "GST Department, Ludhiana",
+    "consequence": "20 June 2026: return was due. Not filed.\nAs at 26 July 2026: 36 days late. Late fee Rs 1,800, growing at Rs 50 a day. Interest running at 18 percent a year on Rs 1,12,000, about Rs 55 a day.\n28 September 2026: the late fee stops at Rs 5,000. Interest does not stop.\nUntil it is filed: you cannot file GSTR-1 for June 2026. With June 2026 also unfiled, you cannot generate e-way bills.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "return": {
+      "form": "GSTR-3B",
+      "period_label": "May 2026",
+      "period_start": "2026-05-01",
+      "period_end": "2026-05-31",
+      "state": "overdue",
+      "filed_on": null,
+      "arn": null,
+      "tax_payable": 112000,
+      "itc_claimed": null,
+      "itc_available": 224000,
+      "late_fee": 1800,
+      "days_late": 36,
+      "blocks": [
+        "GSTR-1 for June 2026 cannot be filed until this return is filed. Rule 59(6).",
+        "E-way bill generation is blocked while this and GSTR-3B for June 2026 both stay unfiled."
+      ],
+      "led_to": null
+    }
+  },
+  {
+    "id": "doc_return_r1_2026_06",
+    "role": "obligation",
+    "doc_type": "gst_return",
+    "obligation": "GSTR-1 for June 2026. This return reports what you sold. No tax is paid with it. Due 11 July 2026. Not filed. As at 26 July 2026 it is 15 days late. Late fee so far Rs 750, at Rs 50 a day. It cannot be filed either: GSTR-3B for May 2026 is still open. The late fee runs whether or not you are allowed to file.",
+    "amount": null,
+    "doc_date": "2026-07-11",
+    "deadline": "2026-07-11",
+    "counterparty": "GST Department, Ludhiana",
+    "consequence": "11 July 2026: return was due. Not filed.\nAs at 26 July 2026: 15 days late. Late fee Rs 750, growing at Rs 50 a day.\n19 October 2026: the late fee stops at Rs 5,000.\nUntil GSTR-3B for May 2026 is filed: this return is blocked. The late fee runs anyway.\nUntil this is filed: you cannot file GSTR-3B for June 2026.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "return": {
+      "form": "GSTR-1",
+      "period_label": "June 2026",
+      "period_start": "2026-06-01",
+      "period_end": "2026-06-30",
+      "state": "overdue",
+      "filed_on": null,
+      "arn": null,
+      "tax_payable": null,
+      "itc_claimed": null,
+      "itc_available": null,
+      "late_fee": 750,
+      "days_late": 15,
+      "blocks": [
+        "GSTR-3B for June 2026 cannot be filed until this return is filed."
+      ],
+      "led_to": null
+    }
+  },
+  {
+    "id": "doc_return_3b_2026_06",
+    "role": "obligation",
+    "doc_type": "gst_return",
+    "obligation": "GSTR-3B for June 2026. Due 20 July 2026. Not filed. As at 26 July 2026 it is 6 days late. Tax of Rs 94,500 is sitting unpaid. Late fee so far Rs 300, at Rs 50 a day. GSTR-2B shows Rs 1,96,500 of input tax credit waiting to be claimed in it. It cannot be filed until GSTR-1 for June 2026 is filed.",
+    "amount": 94500,
+    "doc_date": "2026-07-20",
+    "deadline": "2026-07-20",
+    "counterparty": "GST Department, Ludhiana",
+    "consequence": "20 July 2026: return was due. Not filed.\nAs at 26 July 2026: 6 days late. Late fee Rs 300, growing at Rs 50 a day. Interest running at 18 percent a year on Rs 94,500, about Rs 47 a day.\n28 October 2026: the late fee stops at Rs 5,000. Interest does not stop.\nUntil it is filed: you cannot file GSTR-1 for July 2026. With May 2026 also unfiled, you cannot generate e-way bills.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "return": {
+      "form": "GSTR-3B",
+      "period_label": "June 2026",
+      "period_start": "2026-06-01",
+      "period_end": "2026-06-30",
+      "state": "overdue",
+      "filed_on": null,
+      "arn": null,
+      "tax_payable": 94500,
+      "itc_claimed": null,
+      "itc_available": 196500,
+      "late_fee": 300,
+      "days_late": 6,
+      "blocks": [
+        "GSTR-1 for July 2026 cannot be filed until this return is filed. Rule 59(6).",
+        "E-way bill generation is blocked while this and GSTR-3B for May 2026 both stay unfiled."
+      ],
+      "led_to": null
+    }
+  },
+  {
+    "id": "doc_return_r1_2026_07",
+    "role": "obligation",
+    "doc_type": "gst_return",
+    "obligation": "GSTR-1 for July 2026. This return reports what you sold. No tax is paid with it. Due 11 August 2026. Not filed yet. It cannot be filed until GSTR-3B for June 2026 is filed. Clear May and June 2026 first or this one goes late as well.",
+    "amount": null,
+    "doc_date": "2026-08-11",
+    "deadline": "2026-08-11",
+    "counterparty": "GST Department, Ludhiana",
+    "consequence": "11 August 2026: return is due.\nAfter 11 August 2026: late fee Rs 50 a day, up to Rs 5,000.\nUntil GSTR-3B for June 2026 is filed: this return is blocked, so that work has to happen before 11 August 2026.",
+    "direction": "owing",
+    "status": "seeded",
+    "blockers": [],
+    "source_ref": null,
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "return": {
+      "form": "GSTR-1",
+      "period_label": "July 2026",
+      "period_start": "2026-07-01",
+      "period_end": "2026-07-31",
+      "state": "due",
+      "filed_on": null,
+      "arn": null,
+      "tax_payable": null,
+      "itc_claimed": null,
+      "itc_available": null,
+      "late_fee": 0,
+      "days_late": -16,
+      "blocks": [],
+      "led_to": null
+    }
+  }
+]

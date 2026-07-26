@@ -1,0 +1,414 @@
+# Decision Log
+
+Every decision, why it was made, and what it constrains. Append-only. Newest section at the bottom.
+
+Format: **D-nn — Decision** / Why / Constrains / Status.
+
+---
+
+## 2026-07-26 — Pre-build decisions
+
+### D-01 — Build for MSME document obligations, not an ERP
+**Decision:** One engine, one inbox, many document types. No per-domain modules (no inventory screen, no staff screen).
+**Why:** Every MSME problem has the same shape — paper arrives, it contains an obligation, the owner can't parse it, the obligation lapses, it costs money. Modules would demonstrate zero document intelligence, which is the scored Sarvam parameter.
+**Constrains:** Navigation is two screens. Adding a document type is a prompt example, never a new surface.
+**Status:** Locked.
+
+### D-02 — Selected Sarvam parameter is Document Intelligence
+**Decision:** Document Intelligence, weighted 2.5×. Voice used only as one-way TTS on three fields.
+**Why:** A photographed notice is the hard input and sits at the centre of the job. Additional Sarvam capabilities score zero.
+**Constrains:** No STT, no streaming, no telephony, no interruption handling.
+**Status:** Locked.
+
+### D-03 — The job is: notice → verified extraction → filed reply
+**Decision:** The demo completes one job end to end, ending in a state change (filing) rather than a document.
+**Why:** JTBD completion is weighted 2.5× and scores job completion, not comprehension. A summariser caps at L3.
+**Constrains:** Exactly one document type gets an action path. All others stop at the inbox.
+**Status:** Locked.
+
+### D-04 — Notice type is ITC mismatch under §73
+**Decision:** The hero notice alleges input tax credit claimed that suppliers did not report. Section 73, not 74.
+**Why:** ITC mismatch is the only demand type where purchase invoices constitute the defence, which the evidence-assembly feature depends on. It is also the most common notice in practice (auto-generated from GSTR-2B vs GSTR-3B). §74 alleges wilful suppression and makes the protagonist look guilty.
+**Constrains:** Seed invoices must reconcile exactly to the claimed ITC. Evidence assembly is only meaningful for this type.
+**Status:** Locked.
+
+### D-05 — Locked figures
+**Decision:**
+Notice: tax ₹4,00,000 + interest ₹72,000 + penalty ₹40,000 = **₹5,12,000**.
+Records: 14 invoices, ₹18,00,000 ITC claimed; 11 matched (₹14,00,000); 3 unmatched (₹4,00,000).
+**Why:** Every figure is verified live on stage, so they are engineered to reconcile exactly. Earlier figures (₹4,12,000 / ₹4,87,300) were internally inconsistent — the department demands only the unmatched portion, not the whole claim.
+**Constrains:** Seed data cannot drift from these numbers. The ₹4,00,000 gap is derived (claimed minus department-visible), not seeded; naming *which* three suppliers is seeded and must be labelled as such.
+**Status:** Locked. Supersedes earlier figures.
+
+### D-06 — Language is Hindi; trader is in Ludhiana
+**Decision:** Hindi throughout — UI, explanation, TTS. Trader relocated from Erode to Ludhiana.
+**Why:** The binding criterion is proofreadability, not model coverage. A language nobody on the team can verify cannot be shipped — subtly wrong output is invisible to the team and obvious to a judge. Ludhiana is a genuine textile/hosiery MSME cluster, so the story survives the move.
+**Override:** If a native Tamil reader on the team will personally proofread every string, Tamil is better for an Indic-focused audience.
+**Constrains:** One language end to end. No mixed-language surfaces.
+**Status:** Locked.
+
+### D-07 — Storage is Supabase
+**Decision:** Supabase (Postgres). Convex only if a team member has shipped it before.
+**Why:** The dominant risk in a six-hour build is learning a tool under time pressure. Convex reactivity is nicer and does not matter enough. Local JSON and SQLite are rejected — they do not persist on serverless.
+**Constrains:** Seeded and live rows share one table. A reset endpoint truncates and reseeds.
+**Status:** Locked.
+
+### D-08 — Single obligation schema, ten columns
+**Decision:** `id, doc_type, obligation, amount, doc_date, deadline, counterparty, consequence, direction, status, blockers[], source_ref, file_url, created_at`.
+**Why:** One schema across all document types is what makes cross-document reasoning possible and makes new types a prompt change rather than a build.
+**Constrains:** Any field that triggers nothing gets cut. No analytics columns.
+**Status:** Locked.
+
+### D-09 — `doc_date` is distinct from `deadline` *(reversal)*
+**Decision:** Add `doc_date` as a separate column.
+**Why:** Evidence assembly filters invoices by invoice date. For an invoice, `deadline` is the payment due date, not the invoice date. Conflating them would pull the wrong invoices and the defect would surface at V4 with two hours left.
+**Constrains:** Extraction must populate both for invoices.
+**Status:** Locked. **Reverses an earlier nine-column schema.**
+
+### D-10 — Verification by dual extraction, normalised comparison *(reversal)*
+**Decision:** Run Vision Extract and Vision Digitise on the same image. Compare numbers after normalising both sides to integers (strip all non-digits). Do not compare literally.
+**Why:** Literal matching fails on `₹5,12,000/-` versus `512000` and produces a false refusal on a valid notice. A false refusal on the happy path kills the run being scored — worse than having no check at all.
+**Constrains:** All numeric comparison goes through one normaliser.
+**Status:** Locked. **Reverses "character for character" matching.**
+
+### D-11 — Arithmetic check is a flag, not a blocker *(reversal)*
+**Decision:** Compare tax + interest + penalty against the printed total with a ₹100 tolerance. Mismatch flags; it does not disable filing.
+**Why:** Real notices legitimately fail exact equality — interest is computed to a stated date, and penalty under §73 is "10% of tax or ₹10,000, whichever is higher," a conditional rather than a percentage.
+**Constrains:** Only three conditions block filing (D-12).
+**Status:** Locked. **Reverses strict equality.**
+
+### D-12 — Refusal is gated on three binary conditions, not a model score
+**Decision:** Filing is blocked when (1) the two extractions disagree on a number after normalisation, (2) the document references an annexure not present in the uploaded pages, or (3) a required field is absent. Confidence is derived from these, not read from the model.
+**Why:** Sarvam may not return per-field confidence, and an uncalibrated float is not a sound gate on a money action. Binary signals we control are more robust and explainable in one sentence on stage.
+**Constrains:** Refusal must be rare. A system that refuses often is a broken system with good manners.
+**Status:** Locked.
+
+### D-13 — The language model never touches consequential fields
+**Decision:** The reasoning model receives Digitise text as its only source and produces only the plain-language explanation and consequence ladder. Amount, deadline and section are locked by the verification layer before it runs.
+**Why:** Language models explain well and count badly. The architecture reflects that rather than hoping.
+**Constrains:** No LLM call may write into the obligation row's numeric fields.
+**Status:** Locked.
+
+### D-14 — Evidence assembly is the headline feature; HTML only, no PDF
+**Decision:** The DRC-06 reply attaches the 14 purchase invoices, sums their GST, and derives the unmatched gap. Rendered as HTML in-app and in the email.
+**Why:** Turns the reply from a form fill into a defence assembled from documents already held — moves Memory & Context to L5 and retroactively justifies the whole inbox. PDF generation is where the time goes and nobody opens a PDF during a demo.
+**Constrains:** Sits at V4 with an explicit cut line at 3:45 PM — drop the table, file the plain reply.
+**Status:** Locked.
+
+### D-15 — Three document types; the fourth is a live party trick
+**Decision:** Build for GST notice, supplier invoice, licence certificate. Demonstrate a fourth live as a prompt example.
+**Why:** The three are maximally unalike — dense legal prose, a number table, a single date on decorative paper. Three unlike documents prove generality; eight similar ones prove nothing.
+**Constrains:** No fourth type in the build. Pre-test the live paste on the exact document.
+**Status:** Locked.
+
+### D-16 — The receivables collection action is cut
+**Decision:** Not built. Explicit non-goal.
+**Why:** It competes with evidence assembly for the same hour, and evidence assembly is strictly better — it deepens the path being rehearsed rather than adding one that needs separate rehearsal. Flagging it twice as "optional" is how features get half-built at 4:15 PM.
+**Constrains:** Twenty-minute bonus only if V5 is complete and rehearsed.
+**Status:** Locked (cut).
+
+### D-17 — Filing goes to a Beeceptor mock, stated aloud
+**Decision:** `POST /drc06 → { arn, filed_at, status }`. One failure response defined, recovery visible on screen.
+**Why:** Real filing needs a GSP licence, unobtainable in a build window. The handbook explicitly blesses faithful mocks. Preempting the question costs eight seconds; being caught hiding it costs the round.
+**Constrains:** Everything up to the destination must be genuinely real.
+**Status:** Locked.
+
+### D-18 — Accuracy scoreboard is included but honestly labelled
+**Decision:** Show processed / filed / refused / wrong. Label the corpus "12 test documents, hand-labelled by us." Show the failure case aloud.
+**Why:** Claiming a measured accuracy rate on self-authored documents is not measurement. Credibility comes from volunteering the failure, not from the percentage.
+**Constrains:** No percentage may be presented as a benchmark.
+**Status:** Locked.
+
+### D-19 — Read-aloud on the three summary cards only
+**Decision:** TTS applies to amount, deadline, counterparty. Not the explanation.
+**Why:** Long TTS on stage is dead air, and dead air is the most expensive thing in a three-minute demo.
+**Status:** Locked.
+
+### D-20 — Prove the hardest dependency at minute one
+**Decision:** Before schema, UI, or repo structure: one tiny image through Vision upload → job ID → poll → result printed to terminal.
+**Why:** Sarvam Vision is asynchronous with a 10-page cap. A frozen upload screen during judging is a named, common failure. If it doesn't work, the whole plan changes and that must be known at 10:35 AM.
+**Constrains:** V0 cannot be cut or deferred.
+**Status:** Locked.
+
+### D-21 — No new code after V4
+**Decision:** V5 assembles working parts. V6 is deploy and rehearsal only.
+**Why:** Four of the five available rubric level-jumps are bought with evidence and rehearsal rather than code. Building past hour four actively lowers the score.
+**Constrains:** The non-goals list exists so mid-build additions have a written answer and need not be argued under time pressure.
+**Status:** Locked.
+
+### D-22 — Impact rests on obtaining one real redacted DRC-01
+**Decision:** Treated as task zero, owned by a named person, before any code.
+**Why:** Without it the entire demonstration runs on self-authored documents, and "has a real business seen this?" is unanswerable. Zero build hours; highest available return.
+**Constrains:** Blocks Impact L3 → L4 and nothing else.
+**Status:** Open — not yet obtained.
+
+### D-23 — Distribution wedge is the chartered accountant
+**Decision:** CA, not distributor or NBFC.
+**Why:** One CA serves 50–200 small businesses and already does this work informally and unpaid. Can onboard a whole client book in a week.
+**Constrains:** Pitch only. Changes nothing about the build.
+**Status:** Locked.
+
+### D-24 — Testing: three pure seams, no mocks
+**Decision:** Unit test `verifyExtraction`, `assembleEvidence`, `classifyDocType` only. Vision calls, DB, mock POST and UI are covered by the V6 acceptance runs.
+**Why:** If a test needs a mock, the seam is in the wrong place. The build window does not permit ceremony, and ceremony is not what catches the bugs that matter. False-refusal cases matter more than true-refusal cases.
+**Constrains:** No mocking frameworks, no fixtures, no per-function suites.
+**Status:** Locked.
+
+---
+
+## 2026-07-26 — V0 findings (build day, pre-code)
+
+### D-25 — There is no Sarvam Extract API; the cross-check is redesigned *(reversal)*
+**Decision:** Verification cross-checks a **language-model extraction against the Digitise OCR text**, not two Sarvam Vision calls.
+**Why:** Introspecting the `sarvamai` SDK shows exactly one document surface — `documentIntelligence` (Digitise). `Extract` exists only as a Doc AI Studio UI page. The dual-Vision design in D-10 is not buildable.
+**Replacement pipeline:** Digitise → OCR text with block provenance → language model extracts fields as JSON from that text → every number the model reports must be findable in the OCR text, else refuse.
+**Why this is better than the original:** the two sources are now genuinely independent in *kind* — one is a model, one is deterministic text off the page. Two calls to the same vendor model would have had correlated errors. This directly enforces "the model may not invent a number that is not printed on the page."
+**Constrains:** `verifyExtraction(extract, digitise)` signature is unchanged — `extract` now means the model's JSON, `digitise` the OCR result. No rework required downstream.
+**Status:** Locked. **Reverses the dual-Vision half of D-10. The normalisation rule in D-10 stands.**
+
+### D-26 — Digitise pipeline shape confirmed end to end
+**Decision:** Five steps: `initialise({job_parameters})` → `getUploadLinks({job_id, files})` → `PUT` to the returned Azure blob URL → `start(jobId)` → poll `getStatus(jobId)` → `getDownloadLinks(jobId)` → download and unzip.
+**Measured:** 7.4 s wall clock for a one-page PDF. Job reached `Completed` on the third 2 s poll.
+**Gotchas found, all of which would have cost build time:**
+- `output_format` accepts only `html` or `md`. The published docs list `json`; the API rejects it. Page-level JSON ships in the ZIP regardless.
+- `initialise` and `getUploadLinks` take an object; `start`, `getStatus` and `getDownloadLinks` take the job id **positionally**. The SDK is inconsistent.
+- Response shapes are `upload_urls[filename].file_url` and `download_urls["document.zip"].file_url`.
+- Upload is a raw `PUT` to Azure with `x-ms-blob-type: BlockBlob`. Returns 201.
+- Output is a **ZIP** that must be downloaded and unzipped — not a JSON response. Budget for this.
+- Rate limit is 10 requests/minute across the account.
+**Status:** Verified working against the real API.
+
+### D-27 — OCR fidelity on a synthetic notice is exact
+**Result:** Every figure read correctly — ₹18,00,000, ₹14,00,000, ₹4,00,000, tax ₹4,00,000, interest ₹72,000, penalty ₹40,000, total ₹5,12,000 — plus the `Annexure-A` reference the refusal case depends on.
+**Caveat:** this was a clean machine-generated PDF. Fidelity on a crumpled phone photo of a real notice is **unproven** and remains the largest technical unknown. It is the reason D-22 (obtain a real notice) matters.
+**Status:** Verified on synthetic input only.
+
+### D-28 — Block confidence exists, is uncalibrated, and will not gate filing
+**Finding:** Each block carries a `confidence` float. A block read **perfectly** scored 0.52; another scored 0.83. The values do not track correctness.
+**Why it matters:** confirms D-12. Gating a filing decision on this number would refuse valid documents and accept invalid ones. Blocking stays on the three binary conditions.
+**Secondary use:** confidence may still rank which region to crop first in the escalation UI, where being wrong is cheap.
+**Status:** Locked.
+
+### D-29 — Provenance is real; an adapter isolates the vendor shape
+**Finding:** Page JSON gives `page_num`, `image_width`, `image_height`, and per block: `block_id`, `coordinates {x1,y1,x2,y2}`, `layout_tag`, `confidence`, `reading_order`, `text`. Coordinates are in image pixel space, so tap-to-source highlighting and crop-on-refusal are both buildable with real geometry rather than a stub.
+**Decision:** `lib/types.ts` stays vendor-neutral. A `lib/sarvam.ts` adapter maps Sarvam's page JSON into our `DigitiseResult`.
+**Why:** insulates every consumer from SDK churn and from the ZIP unpacking, and meant the in-flight verification work needed no change when D-25 landed.
+**Status:** Locked.
+
+### D-30 — Rows have a `role`: obligation vs evidence *(modelling fix)*
+**Decision:** `ObligationRow.role` is `"obligation" | "evidence"`. The inbox shows obligations only; evidence rows surface when a reply is assembled.
+**Why:** the 14 purchase invoices are not pending obligations — they were paid, and they exist to back the ITC claim. Modelling them as obligations made them render as year-overdue payables and pushed the hero notice to row 17 of a deadline-sorted list, because its 2026-08-14 deadline is the furthest-out date in the set.
+**Found by:** the data agent, which flagged the sort symptom; the role confusion underneath it was the actual defect.
+**Constrains:** inbox shows 3 rows (notice, receivable, licence), not 17. `assembleEvidence` considers only `role === "evidence"` candidates. `GET /api/documents` filters by role, with `?role=evidence|all` for the other views.
+**Status:** Locked.
+
+### D-31 — Extraction model is `sarvam-30b`; `sarvam-105b` is too slow for the demo
+**Finding:** valid models are `sarvam-30b` and `sarvam-105b` only. `sarvam-105b` took **24.4 s** to extract eleven fields — on top of ~7.4 s of OCR, that is a ~32 s wait inside a 180 s demo.
+**Decision:** default to `sarvam-30b`. Extraction quality was identical on the test notice — every field verbatim and correct.
+**Constrains:** the hop log (D-26) must stay visible during the wait; a spinner would make this feel broken. If 30b proves materially worse on a real notice, the fallback is to pre-process the hero document and run only the refusal case live.
+**Status:** Locked, pending a 30b latency measurement on the real notice.
+
+### D-32 — Two distinct test documents are required
+**Decision:** the hero notice must NOT reference an absent annexure. The refusal case is a **separate** document that does.
+**Why:** the V0 test notice referenced `Annexure-A` without including it, which under D-12 correctly makes it refuse. Using it as the hero would mean the happy path never files. This was invisible until the refusal rule and the seed data were considered together.
+**Constrains:** hero = annexure reference removed or the annexure page attached. Refusal case = annexure referenced, page withheld. Per D-25 the refusal document should be a real notice with a page removed, not a fabrication.
+**Status:** Locked.
+
+### D-33 — The model is prompt-constrained against arithmetic
+**Decision:** the extraction system prompt forbids inferring, computing, estimating or converting, and requires verbatim copying or `null`.
+**Why:** D-13 keeps the model away from consequential fields architecturally; this closes the same gap at the prompt layer. A model that computes a total instead of reading it would produce a figure that is arithmetically right but not printed on the page — and the grounding check would then correctly refuse a valid notice.
+**Also:** unparseable JSON from the model returns an empty field set rather than throwing, so every required field reads as absent and filing is blocked. A model that cannot produce JSON has established nothing.
+**Status:** Locked.
+
+### D-31a — Extraction model is `sarvam-105b`, not `sarvam-30b` *(reverses D-31)*
+**Measured on the hero notice, same prompt, `temperature: 0`, `max_tokens: 4096`:**
+
+| Model | Latency | `amount` returned | Reasoning tokens |
+|---|---|---|---|
+| `sarvam-30b` | 23.1 s | ₹4,00,000 — **WRONG** (returned the tax, not the total) | 9,082 chars |
+| `sarvam-105b` | 18.0 s | ₹5,12,000 — correct | 4,304 chars |
+
+**Decision:** `sarvam-105b` is the default. It is both faster and more accurate here; 30b spends roughly twice the reasoning and arrives somewhere worse. The earlier D-31 timing (105b at 24.4 s) was measured without an explicit `max_tokens` and is superseded.
+**Full pipeline budget:** ~5.5 s OCR + ~18 s extraction ≈ **23.5 s** per document. Acceptable only because the hop log makes the wait legible; a spinner here would read as broken.
+**Status:** Locked. **Reverses D-31.**
+
+### D-34 — Both Sarvam chat models are reasoning models with two silent failure modes
+**Finding 1 — null content.** `message` carries `content`, `reasoning_content`, `refusal` and `tool_calls`. With no explicit `max_tokens`, the reasoning trace can consume the entire allowance and `content` returns **null with `finish_reason: "stop"` and no error**. The first full-pipeline run failed exactly this way after 15.8 s.
+**Finding 2 — tier ceiling.** `max_tokens` above **4096** is a 400 on the starter tier. The cap must be set, and set at 4096.
+**Decision:** always send `max_tokens: 4096`. Treat null content as "nothing established" — return an empty field set so every required field reads absent and filing is blocked. Never treat it as a successful empty extraction.
+**Why it matters:** a naive `message.content.trim()` throws, and a naive null-coalesce silently files a reply with no verified fields. Both are worse than refusing.
+**Status:** Locked.
+
+### D-35 — The 30b failure is evidence the verification design works
+**Observation:** 30b's wrong `amount` (₹4,00,000 against a stated total of ₹5,12,000) would have been caught by the arithmetic check — 4,00,000 + 72,000 + 40,000 ≠ 4,00,000, a ₹1,12,000 discrepancy far outside the ₹100 tolerance — and surfaced as a flag.
+**Why recorded:** this is a real, unstaged instance of a language model misreading a consequential field on a document we control, caught by a check built before the failure was observed. It is the most credible thing we can say about the refusal design, and it should be said on stage.
+**Status:** Recorded as demo evidence.
+
+---
+
+## 2026-07-26 — UI direction
+
+### D-06a — Language is English, not Hindi *(reverses D-06)*
+**Decision:** all user-facing copy is plain English.
+**Why:** D-06 was locked on a single criterion, that the team must be able to proofread what ships. The user has now taken that role and chosen English directly, which satisfies the criterion rather than violating it. The original reasoning is intact; the input changed.
+**Cost:** the Indic-script work is discarded, including a genuine finding that `letter-spacing` on Devanagari visibly pulls matras off their base glyphs. Recorded here because it would recur immediately if Hindi returns.
+**Constrains:** copy rules from PRODUCT.md now carry the load the language switch used to: state the number, state the date, state the consequence, stop.
+**Status:** Locked.
+
+### D-36 — Desktop-first, two-pane master-detail *(reverses the mobile-first assumption)*
+**Decision:** primary target is 1280px and up. Left rail 360px fixed, persistent across selection; detail in the main pane. Below 1024px the rail collapses to a top list.
+**Why:** the original brief assumed a trader on a mid-range Android. The actual working context is a laptop at a desk, and the secondary user (the CA, 150 clients) is unambiguously desktop and wants density. Master-detail is the correct pattern for a case file and removes the navigate-away-and-back loop.
+**Cost:** the mobile build is reworked. The component structure survives; layout and copy do not.
+**Status:** Locked.
+
+### D-37 — Visual direction is "registry", light theme, stamp red
+**Scene sentence:** an accountant or the trader opens a laptop in a Ludhiana office at 11am, daylight through the window, mildly anxious because a notice arrived. That forces **light**; dark would be a monitoring-dashboard reflex applied to daytime document work.
+**Reflex check:** first-order for Indian tax software is navy-and-saffron or SaaS blue. Second-order is editorial serif on cream. Both rejected.
+**Decision:** tinted neutrals, Restrained strategy, with `--stamp` (oklch(48% 0.175 27), the red of official ink on Indian government paper) as the only accent. Reserved exclusively for consequence: overdue, blocked, refused, demanded. Never a brand flourish, never a hover state, never a primary button; the primary action is ink.
+**Why the restraint matters:** the user is already anxious. Red everywhere reads as panic and stops meaning anything. Scarcity is what makes it legible.
+**Status:** Locked. Full tokens in DESIGN.md.
+
+### D-38 — The seed carries a pre-refused notice
+**Decision:** seed data includes a second GST notice with populated `blockers`, alongside the cleanly-fileable hero notice.
+**Why:** the refusal state is the product's single most important screen and its entire trust claim, but until now it could only be reached by processing a broken document live. Seeding it makes it demonstrable without the pipeline, reviewable during design, and independent of API availability on stage.
+**Status:** Locked.
+
+---
+
+## 2026-07-26 — End-to-end close
+
+### D-39 — The golden path runs. Measured, live.
+**Result:** a real PDF posted to `POST /api/process` completes the full chain: Digitise, language-model extraction, verification, row written.
+**Hero notice:** amount 512000, deadline 2026-08-14, classified `gst_notice`, 8 source blocks, 0 blockers, `canFile: true`.
+**Refusal document:** processed live, missing Annexure-A detected, `status: "refused"`, `canFile: false`. The refusal is produced by the pipeline, not seeded.
+**Latency is highly variable: 13.4 s to 73.5 s** across runs on the same one-page PDF, driven almost entirely by the extraction call. This is a live-demo risk. Mitigation is the visible hop log plus honest copy ("fifteen to seventy seconds"). If a run stalls on stage, narrate the refusal case instead, which is the more interesting artifact anyway.
+**Status:** V1 closed.
+
+### D-40 — `counterparty` means the issuer, never the addressee
+**Finding:** the first live run returned `counterparty: "M/s Gupta Hosiery Mills, Ludhiana"` — the trader himself, because the document is addressed to him. Every notice would have been filed against its own recipient.
+**Fix:** the extraction prompt now states that counterparty is whoever issued or sent the document, never the addressee.
+**Second finding:** with the prompt corrected, a test notice that names no issuing authority returned `null`, which surfaced as "Unknown". That is correct behaviour, not a regression: the model declined to infer rather than guessing. The fixture was deficient. Real notices name the issuing office, so the test documents were regenerated with one.
+**Status:** Fixed and verified live.
+
+### D-41 — `/api/reply` refuses as a designed 200, not a 422
+**Finding:** the refused notice carries no verified `notice` figures, correctly, since we cannot stand behind them. The endpoint returned 422 `NOTICE_FIGURES_MISSING`, making the product's central behaviour look like a server error.
+**Decision:** blockers are checked before figures. A blocked document returns 200 with `canFile: false` and the reasons. Refusal is a designed response and must never render as a fault.
+**Status:** Fixed.
+
+### D-42 — Twin notices double-counted the exposure headline *(found by looking at it)*
+**Finding:** the refused notice was seeded as a copy of the hero, so the rail showed two identical Rs 5,12,000 GST demands and the exposure headline read Rs 10,24,000: the same demand twice. The headline is the first thing anyone reads.
+**Cause:** mine. Asking for a duplicate row to make the refusal state visible without considering what a duplicate does to a cross-document total.
+**Fix:** the refused notice becomes a genuinely different demand, period Oct-Dec 2024, Rs 2,04,800, with source blocks rewritten to match its own figures so the facsimile cannot contradict the row.
+**Worth recording:** every arithmetic gate passed throughout. The bug was in what the numbers *meant* across rows, which no unit test was positioned to catch and which one look at the rendered page made obvious.
+**Status:** In progress.
+
+---
+
+## 2026-07-26 — GST filing section
+
+### D-43 — GST returns are obligations, not a separate subsystem
+**Decision:** periodic GST returns (GSTR-1 due the 11th, GSTR-3B due the 20th) become rows with `doc_type: "gst_return"` and a nested `ReturnDetail`, carried in the same table and the same rail as everything else.
+**Why:** a return has a number, a date and a consequence, which is the definition the whole product is built on. Modelling it as a separate module would contradict D-01 and reintroduce the ERP shape we rejected.
+**Status:** Locked.
+
+### D-44 — The section exists to show cause, not to add a calendar
+**Decision:** the load-bearing element is the GSTR-3B reconciliation: `itc_claimed` 18,00,000 against `itc_available` 14,00,000, and the `led_to` link opening the DRC-01 that gap produced.
+**Why:** a filing calendar on its own is a commodity; every accounting package has one. The defensible claim is that the notice was foreseeable from a return filed months earlier, and that the product can point at the exact figure that caused it. Cause to consequence in one click.
+**Constrains:** filed returns must recede visually. The design job is that one row on fire is unmistakable among seven that are fine.
+**Status:** Locked.
+
+### D-45 — Return consequences use real statutory arithmetic
+**Decision:** late fee Rs 50/day (Rs 20 nil), capped at Rs 5,000 per return; interest 18% p.a. on tax paid late; Rule 59(6) blocking the next GSTR-1 after an unfiled GSTR-3B; e-way bill generation blocked after two consecutive unfiled periods, claimed only when the seed genuinely contains two.
+**Why:** the consequence ladder is the product's persuasive core and a judge may know these numbers. Inventing them would be worse than omitting them. Generator gates enforce that every stated fee equals days late times rate, or the cap.
+**Status:** Locked.
+
+### D-46 — Classifier keywords must not collide with notice text
+**Finding:** the hero notice contains "GSTR-3B" and "GSTR-2B", so keying `gst_return` on those strings would classify demand notices as returns.
+**Decision:** `gst_return` keys on acknowledgement language ("acknowledgement", "return filed", "filing successful", "filed on") and `gst_notice` stays first in priority so it wins ties.
+**Status:** Locked.
+
+### D-47 — No comments in source
+**Decision:** source files carry no comments. Names and structure carry meaning; rationale lives in this log.
+**Why:** user preference, stated twice. The decision log already holds every explanation the comments were duplicating, and duplicated rationale drifts.
+**Status:** Locked.
+
+### D-48 — A return's `amount` is its tax only while unfiled
+**Decision:** `amount` carries `tax_payable` only when a GSTR-3B is outstanding. Null on every filed return and on every GSTR-1, which carries no tax. `deadline` is the due date while outstanding and goes null on filing. `doc_date` carries the statutory due date always, so the calendar keeps every date it needs.
+**Why:** a filed GSTR-3B was paid when it was filed; you cannot file one otherwise. Its tax is history, exactly like the 14 evidence invoices. Counting it in a forward 30-day exposure would be false, and would be D-42 again in a new costume: the Apr-Jun 2025 return's Rs 3,84,000 sits in the same period the hero notice demands Rs 5,12,000 for.
+**Result:** exposure moves from Rs 7,16,800 across 3 documents to **Rs 9,23,300 across 7**, adding only the two genuinely unpaid GSTR-3Bs. A gate asserts no return carrying an amount starts on or before 2025-06-30.
+**Enforced twice, independently:** the data excludes them and the UI's `isAlreadyCounted` guard excludes them.
+**Status:** Locked.
+
+### D-49 — The e-way bill claim is data-gated in both directions
+**Decision:** the two-consecutive-unfiled-periods e-way bill block is stated because May and June 2026 GSTR-3B genuinely are consecutive and unfiled. The seed refuses to emit if that stops being true, and also refuses if it becomes true and goes unstated.
+**Why:** D-45 requires statutory claims to be real. A one-directional gate would let the claim quietly become false after a date change. Both overdue rows name each other, so neither over-claims alone.
+**Status:** Locked.
+
+### D-50 — Bulbul TTS wired; the speaker button was dead
+**Decision:** `POST /api/speak` calls `textToSpeech.convert` and returns base64 WAV. Measured at 874 ms.
+**Why:** the button rendered, was keyboard reachable, and did nothing. A dead control is worse than an absent one. It adds no rubric points, since only one Sarvam capability is scored, but a visibly broken affordance costs credibility.
+**Status:** Integrated.
+
+### D-51 — The CBIC rate schedule is the only real dataset in the project
+**Decision:** `Goods.csv` and `Services.csv` compiled to 1,035 HSN codes, 865 carrying a single rate and 170 genuinely ambiguous. `checkRate` returns match, mismatch, ambiguous or unknown.
+**Data problems found and handled:** the rate column mixes fractions (0.18) and whole percents (18), producing 1800% if scaled naively; multi-code cells concatenate into nonsense like `6165016505` unless split; two-digit chapter codes collide, so `6006` matched a chapter row describing vegetable products. Minimum code length is now four digits, and anything shorter is not matched at all.
+**The invariant carries over:** where a code has several lawful rates depending on sale value, the check **refuses to assert** rather than accusing a supplier of billing wrongly. Same rule as the notice pipeline, applied to a new domain.
+**Why it matters:** everything else in the seed is invented. This is real government data, and it is what lets the product predict a notice from a wrong rate on a purchase bill months before the notice exists.
+**Status:** Library and tests done. Not yet surfaced in the UI.
+
+### D-52 — A tool-calling agent whose tools cannot lie
+**Decision:** `POST /api/ask` runs a Sarvam tool-calling loop (verified: `finish_reason: tool_calls`, correct arguments, ~830 ms per round) over five functions: `list_obligations`, `get_document`, `check_invoice_rate`, `build_reply_evidence`, `filing_status`.
+**Why this is more than a chat box:** every tool is a function that already refuses. `checkRate` returns "ambiguous" or "unknown" rather than guessing; `assembleEvidence` filters by `doc_date`; `build_reply_evidence` returns the blocker reasons instead of a draft when a notice is refused. The model is told it knows nothing except what the tools return and may not state a figure that did not come from one.
+**Result, observed:** asked whether a supplier billing HSN 0402 at 5% was wrong, it answered *"we cannot say the 5% charge is wrong without knowing those details"*. The refusal invariant propagated from the function into the agent's speech, unprompted. That is the property worth demonstrating: an agent that cannot hallucinate about money because the only route to a number is a gated function.
+**Trace is returned** with every answer so the UI can show which tools ran.
+**Status:** Working. No UI surface yet.
+
+### D-53 — The agent had no idea what day it was
+**Finding:** asked "what do I owe in the next month", it answered about September 2025 and reported nothing due. It was reasoning about "next month" against an invented present.
+**Fix:** today's date is injected into the system prompt with an instruction to compute every relative date against it.
+**Why recorded:** the tools returned correct absolute dates throughout. The model had every figure it needed and still produced a wrong answer, because the question was relative and the anchor was missing. Nothing in the tool layer could have caught this.
+**Status:** Fixed and verified: four obligations, correct amounts, correct dates.
+
+### D-54 — Google auth added, and it fails open by design *(reverses a non-goal)*
+**Decision:** Auth.js v5 with the Google provider. `auth.ts`, a catch-all route handler, `middleware.ts` protecting everything except `/sign-in` and `/api/auth`, and a sign-in page in the existing design vocabulary.
+**Why it was a non-goal:** D-21 and the PRD both excluded it. It scores nothing on the rubric, and the handbook names production auth as a build-window trap. The user asked for it directly, so it is built; the reasoning is recorded because it was a deliberate reversal, not an oversight.
+**The important property:** `AUTH_ENABLED` is derived from whether `AUTH_GOOGLE_ID` and `AUTH_GOOGLE_SECRET` are both present. When they are absent the middleware passes everything through and `/sign-in` redirects to the file. So the demo cannot be bricked by a missing or expired OAuth credential on the day, and a laptop without the secrets still runs the whole product.
+**Why that matters more than the auth:** a login screen that cannot be got past is the single most avoidable way to lose a live demo. Failing open costs nothing here because there is one hardcoded business and no private data behind the gate.
+**Still hardcoded:** `BUSINESS` in `components/lib/identity.ts`. The session names the signed-in person in the masthead; it does not yet select whose file is opened. Multi-tenant selection is the CA-dashboard wedge (D-23) and is not built.
+**Status:** Built. Inert until credentials are supplied.
+
+---
+
+## 2026-07-26 — The design arrives
+
+### D-55 — The Industry design system supersedes the invented direction
+**Decision:** the frontend follows `design/industry/styles.css` and the designed screens in `design/namma-msme.design.html`, both now vendored into the repo. `DESIGN.md` is rewritten to point at them.
+**What is discarded:** the entire "registry" direction — warm paper ground, stamp red as the consequence accent, system font stack, two-pane master-detail, `Rs` over the `₹` glyph. That was a position taken in the absence of a design, stated explicitly as overrulable. A design now exists, so it is overruled.
+**What replaces it:** a wireframe. Steel `#5980a6` on a light technical ground `#f2f2f3`, Barlow Condensed over Barlow, square corners, hairline borders, `+` registration marks at card corners, cards as transparent line drawings, one solid accent button per view.
+**Structural change, not just visual:** the designed inbox is a **single scrolling page** with a three-cell headline row, a returns row, a document table and a scoreboard. Not a rail plus detail pane. The master-detail work is superseded.
+**Status:** Locked. The stylesheet is the source of truth; where this log or DESIGN.md disagrees with it, the CSS wins.
+
+### D-56 — Currency reverts to the `₹` glyph *(reverses the copy gate)*
+**Decision:** `₹`, not `Rs`.
+**Why:** the designed screens use the glyph throughout. The earlier rule came from a UI agent's reasonable call when the product was Hindi and the app had to match the documents beside it; the design overrides it.
+**Constrains:** the seed's copy gate currently **rejects** the `₹` glyph and must be inverted, or every seed string will fail validation against the new design.
+**Status:** Locked. Gate not yet updated.
+
+### D-57 — The design includes the eval harness I had not built
+**Finding:** the designed inbox ends in a scoreboard — processed, filed, refused, **wrong** — with the line "Counted live in this session. Not a claim."
+**Why it matters:** this is D-18, open since the beginning and repeatedly deferred. The design treats measured accuracy, including a wrong count and an explicit disclaimer that it is a session count rather than a benchmark, as a first-class part of the product rather than an extra.
+**Status:** Now in scope, because the design puts it there.
+
+### D-58 — The rate mismatch is charged 12% against a lawful 5%
+**Decision:** HSN 5208, woven cotton fabric, Dhawan Textile Agency, invoice DTA/2526/0271.
+**Why not the 18% case I asked for:** no invoice in the seed charges 18%; the fourteen are twelve at 12% and two at 5%. Raising a rate to 18 would change `gst` and therefore `amount`, which was forbidden. The two constraints could not both hold, so the pair was inverted. Charged still exceeds lawful, so the over-claim is real: Rs 1,29,000 claimed where Rs 53,750 was chargeable, a Rs 75,250 excess sitting on a row the department cannot see.
+**Also changed:** eleven `obligation` strings had their goods noun moved to match the HSN, because chapters 60 and 61 are largely absent or ambiguous in the compiled schedule and a row describing T-shirts while coded as yarn would be a D-42 in miniature — every gate passing while the record says two different things.
+**Status:** Locked, gated at 13 matches and exactly 1 mismatch on an unmatched row.
+
+### D-59 — The design is the frontend, not a reference *(sharpens D-55)*
+**Decision:** `design/namma-msme.design.html` is ported directly. Its markup and structure are the frontend; existing components without a counterpart in it are deleted, not reshaped.
+**What this changes from D-55:** D-55 adopted the design's tokens and direction while leaving our component structure in place. That was too weak a reading. The two-pane shell, the rail and its rows, the exposure panel and the trace layout's column split all exist to serve a master-detail layout the design does not have, and adapting them would have produced a hybrid answering to neither.
+**What survives:** only data wiring and behaviour. The fetch and derivation helpers, and the capabilities that must keep working once rebound into the design's structure: provenance highlighting, the refusal gate, evidence assembly with the rate check, Ask with its trace, filing, and the upload hop log.
+**What stays ours despite the design showing otherwise:** the business is Gupta Hosiery Mills with its real GSTIN, and every figure comes from the arithmetically gated seed. The design's placeholder names and numbers are content, not design.
+**Rule for conflicts:** the design wins over anything I specified earlier.
+**Status:** In progress.
