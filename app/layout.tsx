@@ -1,43 +1,29 @@
 import type { Metadata, Viewport } from "next";
-import { Geist_Mono, Noto_Sans_Devanagari } from "next/font/google";
 import "./globals.css";
 
-/** Every trader-facing string is Devanagari, so this is the text face. */
-const devanagari = Noto_Sans_Devanagari({
-  variable: "--font-deva",
-  subsets: ["devanagari", "latin"],
-  display: "swap",
-});
-
-/** Second face, one job only: Latin stamps on the paper — GST, BILL, LIC. */
-const stamp = Geist_Mono({
-  variable: "--font-stamp",
-  subsets: ["latin"],
-  weight: ["600"],
-  display: "swap",
-});
-
+/**
+ * No webfont. The UI face is the system sans and the data face is the system
+ * mono (DESIGN.md, "Typography"): two functional families, nothing to
+ * download, and no layout shift on a page whose figures must not move.
+ */
 export const metadata: Metadata = {
-  title: "कागज़ — कितना, कब तक, किसने भेजा",
+  title: "Gupta Hosiery Mills, case file",
   description:
-    "हर नोटिस, बिल और लाइसेंस एक जगह। रक़म, आख़िरी तारीख़ और न करने का नतीजा — साफ़ हिंदी में।",
+    "Every notice, invoice and licence in one place. What it costs, when it is due, and what happens if it is ignored.",
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#f6f2ea",
+  themeColor: "#f7f5f2",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="hi"
-      className={`${devanagari.variable} ${stamp.variable} h-full antialiased`}
-    >
-      <body className="flex min-h-full flex-col">{children}</body>
+    <html lang="en" className="h-full antialiased">
+      <body className="min-h-full">{children}</body>
     </html>
   );
 }

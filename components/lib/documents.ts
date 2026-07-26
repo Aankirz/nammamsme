@@ -1,14 +1,25 @@
 /**
  * Server-side reader for `GET /api/documents`.
  *
- * The route is owned by another workstream and may not exist yet. Every
- * failure path here returns an empty list rather than throwing — an inbox that
- * renders "no documents" is recoverable on stage; a 500 is not.
+ * The route is owned by another workstream. Every failure path here returns an
+ * empty list rather than throwing: a rail that renders "no documents" is
+ * recoverable on stage, a 500 is not.
  */
 
 import { headers } from "next/headers";
 import type { Blocker, ObligationRow } from "@/lib/types";
 import { deadlineSortKey } from "./dates";
+import { toDocumentSource, type DocumentSource } from "./source";
+
+/**
+ * A row plus the page it was read off.
+ *
+ * `source` is carried by the seed alongside the ten shared columns rather than
+ * inside them, so it is narrowed here instead of in the shared contract.
+ */
+export interface DocumentRow extends ObligationRow {
+  source: DocumentSource | null;
+}
 
 const DOCUMENTS_PATH = "/api/documents";
 
@@ -42,18 +53,19 @@ function isBlocker(value: unknown): value is Blocker {
 }
 
 /** Trusts the contract but survives a partially-built API. */
-function toObligationRow(value: unknown): ObligationRow | null {
+function toDocumentRow(value: unknown): DocumentRow | null {
   if (typeof value !== "object" || value === null) {
     return null;
   }
 
-  const candidate = value as ObligationRow;
+  const candidate = value as ObligationRow & { source?: unknown };
   if (typeof candidate.id !== "string" || candidate.id.length === 0) {
     return null;
   }
 
   return {
     ...candidate,
+    source: toDocumentSource(candidate.source),
     counterparty: candidate.counterparty ?? "",
     obligation: candidate.obligation ?? "",
     consequence: candidate.consequence ?? "",
@@ -63,7 +75,7 @@ function toObligationRow(value: unknown): ObligationRow | null {
   };
 }
 
-function toObligationRows(payload: unknown): ObligationRow[] {
+function toDocumentRows(payload: unknown): DocumentRow[] {
   const list = Array.isArray(payload)
     ? payload
     : Array.isArray((payload as { data?: unknown })?.data)
@@ -71,11 +83,11 @@ function toObligationRows(payload: unknown): ObligationRow[] {
       : [];
 
   return list
-    .map(toObligationRow)
-    .filter((row): row is ObligationRow => row !== null);
+    .map(toDocumentRow)
+    .filter((row): row is DocumentRow => row !== null);
 }
 
-export async function fetchDocuments(): Promise<ObligationRow[]> {
+export async function fetchDocuments(): Promise<DocumentRow[]> {
   try {
     const baseUrl = await resolveBaseUrl();
     if (!baseUrl) {
@@ -91,14 +103,14 @@ export async function fetchDocuments(): Promise<ObligationRow[]> {
       return [];
     }
 
-    return toObligationRows(await response.json());
+    return toDocumentRows(await response.json());
   } catch {
     return [];
   }
 }
 
 /** Most urgent first. Undated rows sink to the bottom, newest of those first. */
-export function sortByDeadline(rows: readonly ObligationRow[]): ObligationRow[] {
+export function sortByDeadline(rows: readonly DocumentRow[]): DocumentRow[] {
   return [...rows].sort((a, b) => {
     const keyA = deadlineSortKey(a.deadline);
     const keyB = deadlineSortKey(b.deadline);
@@ -113,8 +125,8 @@ export function sortByDeadline(rows: readonly ObligationRow[]): ObligationRow[] 
 }
 
 export function findDocument(
-  rows: readonly ObligationRow[],
+  rows: readonly DocumentRow[],
   id: string,
-): ObligationRow | null {
+): DocumentRow | null {
   return rows.find((row) => row.id === id) ?? null;
 }

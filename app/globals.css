@@ -1,56 +1,57 @@
 @import "tailwindcss";
 
 /* ==========================================================================
-   Namma MSME — design tokens
-   Direction: "ledger paper". A trader's account book, not a SaaS dashboard.
-   Warm paper ground, ink-black text, one officialdom vermillion for danger,
-   one deep green for money coming in. Committed to light: the user is on a
-   mid-range Android in a Ludhiana shop with daylight glare.
+   Namma MSME design tokens
+   Direction: "Registry". A case file on a well-organised desk, not an app.
+   Light, desktop-first, minimum 1280px. Structure and legibility do the work;
+   ornament does none of it. See DESIGN.md.
    ========================================================================== */
 
 :root {
   color-scheme: light;
 
-  /* --- Surfaces ---------------------------------------------------------- */
-  --paper: #f6f2ea;
-  --paper-raised: #fffdf8;
-  --paper-sunk: #ece5d8;
-  --rule: #ddd3c2;
-  --rule-strong: #c6b8a1;
+  /* --- Surfaces. Everything tinted toward the ink hue. ------------------- */
+  --paper: oklch(97.5% 0.004 60);
+  --paper-raised: oklch(99% 0.003 60);
+  --paper-sunk: oklch(95% 0.005 60);
+  --rule: oklch(88% 0.006 60);
+  --rule-strong: oklch(78% 0.008 60);
 
   /* --- Ink --------------------------------------------------------------- */
-  --ink: #191512;
-  --ink-soft: #4c4238;
-  --ink-faint: #6f6455;
-  --ink-invert: #fdfaf4;
+  --ink: oklch(24% 0.012 60);
+  --ink-muted: oklch(48% 0.01 60);
+  --ink-faint: oklch(62% 0.008 60);
+  /* Text on an --ink fill. Not in DESIGN.md's list; a filled primary button
+     needs a legible foreground and it must not be pure white. */
+  --ink-invert: oklch(98% 0.003 60);
 
-  /* --- Semantic: money going out, urgently ------------------------------- */
-  --danger: #a8201a;
-  --danger-bright: #cf3225;
-  --danger-wash: #fbeae7;
-  --danger-rule: #edc0b8;
-  --danger-page: #fdf3f1;
+  /* --- Semantic ----------------------------------------------------------
+     --stamp is official red ink on Indian government paper. Reserved for
+     consequence: overdue, blocked, refused, demanded. Never a brand flourish,
+     never a hover state, never a primary button fill. */
+  --stamp: oklch(48% 0.175 27);
+  --stamp-tint: oklch(94% 0.03 27);
+  /* Border weight between --stamp-tint and --stamp, so a refusal panel can be
+     bounded without a red fill. Derived from --stamp, not a new colour. */
+  --stamp-rule: oklch(80% 0.09 27);
 
-  /* --- Semantic: money going out, soon ----------------------------------- */
-  --warn: #8a5100;
-  --warn-wash: #fcf1dc;
-  --warn-rule: #e7d0a2;
-
-  /* --- Semantic: money coming in ----------------------------------------- */
-  --credit: #0d6146;
-  --credit-wash: #e6f1ec;
-  --credit-rule: #b7d6c8;
-
-  /* --- Interaction -------------------------------------------------------- */
-  --focus: #14509e;
+  --settled: oklch(45% 0.095 155);
+  --pending: oklch(58% 0.12 75);
 
   /* --- Motion ------------------------------------------------------------- */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --duration-fast: 140ms;
-  --duration-normal: 380ms;
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-slow: 250ms;
 
-  /* --- Touch -------------------------------------------------------------- */
-  --tap-min: 2.75rem; /* 44px — never go below this on any control */
+  /* --- Layout ------------------------------------------------------------- */
+  --rail-width: 360px;
+  --content-max: 1100px;
+  --identity-height: 3.25rem;
+
+  /* One sheet of paper lying on a desk. The only elevation in the product. */
+  --shadow-sheet: 0 1px 2px oklch(24% 0.012 60 / 0.07),
+    0 10px 28px -20px oklch(24% 0.012 60 / 0.5);
 }
 
 @theme inline {
@@ -61,71 +62,45 @@
   --color-rule-strong: var(--rule-strong);
 
   --color-ink: var(--ink);
-  --color-ink-soft: var(--ink-soft);
+  --color-ink-muted: var(--ink-muted);
   --color-ink-faint: var(--ink-faint);
   --color-ink-invert: var(--ink-invert);
 
-  --color-danger: var(--danger);
-  --color-danger-bright: var(--danger-bright);
-  --color-danger-wash: var(--danger-wash);
-  --color-danger-rule: var(--danger-rule);
-  --color-danger-page: var(--danger-page);
+  --color-stamp: var(--stamp);
+  --color-stamp-tint: var(--stamp-tint);
+  --color-stamp-rule: var(--stamp-rule);
+  --color-settled: var(--settled);
+  --color-pending: var(--pending);
 
-  --color-warn: var(--warn);
-  --color-warn-wash: var(--warn-wash);
-  --color-warn-rule: var(--warn-rule);
+  /* Two families, both functional. Mono carries every figure: amounts, dates,
+     reference numbers, GSTIN, ARN. */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
-  --color-credit: var(--credit);
-  --color-credit-wash: var(--credit-wash);
-  --color-credit-rule: var(--credit-rule);
+  /* Fixed rem scale, ratio ~1.2. No fluid clamps: the user is at a desk on a
+     consistent DPI, and money must never change size between screens. */
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.45;
+  --text-sm: 0.8125rem;
+  --text-sm--line-height: 1.5;
+  --text-base: 0.9375rem;
+  --text-base--line-height: 1.6;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.35;
+  --text-xl: 1.5rem;
+  --text-xl--line-height: 1.25;
+  --text-2xl: 2rem;
+  --text-2xl--line-height: 1.1;
+  --text-hero: 3rem;
+  --text-hero--line-height: 1;
 
-  --color-focus: var(--focus);
+  /* This is a document, not a toy. */
+  --radius-sm: 4px;
+  --radius-md: 6px;
 
-  /* Devanagari carries matras above and below the baseline, so every
-     line-height here is set deliberately looser than a Latin equivalent. */
-  --font-sans: var(--font-deva), "Noto Sans Devanagari", ui-sans-serif, system-ui,
-    sans-serif;
-  --font-mono: var(--font-stamp), ui-monospace, "SFMono-Regular", monospace;
+  --shadow-sheet: var(--shadow-sheet);
 
-  --text-tag: 0.6875rem;
-  --text-tag--line-height: 1;
-  --text-tag--letter-spacing: 0.14em;
-
-  --text-micro: 0.8125rem;
-  --text-micro--line-height: 1.5;
-
-  --text-label: 0.9375rem;
-  --text-label--line-height: 1.65;
-
-  --text-body: 1.125rem;
-  --text-body--line-height: 1.8;
-
-  --text-lead: 1.3125rem;
-  --text-lead--line-height: 1.7;
-
-  --text-title: 1.5rem;
-  --text-title--line-height: 1.5;
-
-  --text-display: 1.875rem;
-  --text-display--line-height: 1.4;
-
-  /* Money is the hero. Three steps, all clamped so nothing wraps at 320px. */
-  --text-money-sm: clamp(1.5rem, 5.6vw, 1.875rem);
-  --text-money-sm--line-height: 1.1;
-
-  --text-money: clamp(2rem, 8.4vw, 2.75rem);
-  --text-money--line-height: 1.05;
-
-  --text-money-hero: clamp(2.75rem, 12vw, 4rem);
-  --text-money-hero--line-height: 1;
-
-  --radius-tag: 3px;
-  --radius-card: 14px;
-  --radius-panel: 18px;
-  --radius-chip: 999px;
-
-  --shadow-card: 0 1px 0 0 var(--rule), 0 2px 10px -6px rgb(25 21 18 / 0.22);
-  --shadow-lift: 0 10px 30px -14px rgb(25 21 18 / 0.45);
+  --ease-out: var(--ease-out);
 }
 
 /* ==========================================================================
@@ -137,72 +112,86 @@ html {
 }
 
 body {
-  color: var(--ink);
   background-color: var(--paper);
-  /* Faint ledger ruling + a wash of vermillion bleeding in from the corner. */
-  background-image: radial-gradient(
-      120% 60% at 8% -8%,
-      rgb(168 32 26 / 0.06),
-      transparent 62%
-    ),
-    repeating-linear-gradient(
-      180deg,
-      transparent 0 27px,
-      rgb(25 21 18 / 0.022) 27px 28px
-    );
-  background-attachment: fixed;
-  font-family: var(--font-deva), "Noto Sans Devanagari", ui-sans-serif, system-ui,
-    sans-serif;
-  font-synthesis-weight: none;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.6;
   text-rendering: optimizeLegibility;
-  overflow-x: hidden;
 }
 
-/* Numerals never wrap and never jitter between renders. */
+/* Figures never jitter and money never wraps. */
 .numerals {
   font-variant-numeric: tabular-nums lining-nums;
   font-feature-settings: "tnum" 1, "lnum" 1;
   white-space: nowrap;
 }
 
-:where(a, button, [tabindex]):focus-visible {
-  outline: 3px solid var(--focus);
-  outline-offset: 3px;
-  border-radius: 8px;
+/* Visible, not a subtle glow. */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+/* An eyebrow, not a heading. Latin only, so tracking is safe. */
+.eyebrow {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
 }
 
 /* ==========================================================================
-   Textures — used sparingly, only where meaning depends on them
+   Ground change. When the system declines to act the whole detail pane
+   changes surface, so the state is unmistakable before a word is read.
    ========================================================================== */
 
-/* Official-stamp hatching. Marks the refusal panel as a deliberate state
-   rather than a red error box. */
-.hatch-danger {
-  background-image: repeating-linear-gradient(
-    135deg,
-    transparent 0 9px,
-    rgb(168 32 26 / 0.055) 9px 18px
-  );
-}
-
-/* The whole detail page changes ground when the system declines to act. */
-.doc-shell[data-state="refused"] {
-  background-color: var(--danger-page);
-  background-image: repeating-linear-gradient(
-    135deg,
-    transparent 0 11px,
-    rgb(168 32 26 / 0.035) 11px 22px
-  );
+[data-ground="refused"] {
+  background-color: var(--stamp-tint);
 }
 
 /* ==========================================================================
-   Motion — transform and opacity only
+   Source facsimile
+
+   The page is reproduced from text blocks positioned by their bounding box.
+   `container-type: inline-size` lets every block size its type in `cqw`, so
+   the reproduction holds its proportions at any pane width.
    ========================================================================== */
 
-@keyframes rise {
+.facsimile {
+  container-type: inline-size;
+  background-color: var(--paper-raised);
+}
+
+.facsimile-block {
+  position: absolute;
+  white-space: pre-wrap;
+  font-family: var(--font-mono);
+  line-height: 1.25;
+  color: var(--ink-muted);
+  border-radius: 2px;
+  padding: 0 0.15em;
+  margin: -0.1em -0.15em;
+  transition:
+    background-color var(--duration-normal) var(--ease-out),
+    color var(--duration-normal) var(--ease-out);
+}
+
+.facsimile-block[data-active="true"] {
+  color: var(--ink);
+  background-color: var(--stamp-tint);
+  box-shadow: 0 0 0 2px var(--stamp);
+}
+
+/* ==========================================================================
+   Motion. transform and opacity only, 150 to 250ms
+   ========================================================================== */
+
+@keyframes ledger-in {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -210,19 +199,10 @@ body {
   }
 }
 
-.rise {
-  animation: rise var(--duration-normal) var(--ease-out) both;
-}
-
-@keyframes press {
-  50% {
-    transform: scale(0.94);
-  }
-}
-
-.press-on-tap:active {
-  transform: scale(0.97);
-  transition: transform var(--duration-fast) var(--ease-out);
+/* The one deliberate animation: the supporting invoices arriving as the reply
+   assembles. That is the product's argument made visible. */
+.ledger-in {
+  animation: ledger-in var(--duration-slow) var(--ease-out) both;
 }
 
 @media (prefers-reduced-motion: reduce) {

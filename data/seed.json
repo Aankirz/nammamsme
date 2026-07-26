@@ -3,16 +3,25 @@
     "id": "doc_notice_drc01",
     "role": "obligation",
     "doc_type": "gst_notice",
-    "obligation": "जीएसटी अधिनियम की धारा 73 के अंतर्गत कारण बताओ नोटिस (फ़ॉर्म DRC-01) — इनपुट टैक्स क्रेडिट बेमेल। सूचना संख्या ZD0307260041823। अवधि 01-04-2025 से 30-06-2025। आपके द्वारा दावाकृत आईटीसी ₹18,00,000, विभाग के GSTR-2B में दिखाई देने वाला ₹14,00,000, बेमेल राशि ₹4,00,000। माँग: कर ₹4,00,000 + ब्याज ₹72,000 + जुर्माना ₹40,000 = कुल ₹5,12,000। फ़ॉर्म DRC-06 में 14-08-2026 तक उत्तर दाखिल करें।",
+    "obligation": "GST show cause notice, form DRC-01. Reference ZD030726001234. Period April 2025 to June 2025. You claimed input tax credit of Rs 18,00,000. The department can see Rs 14,00,000. Rs 4,00,000 does not match. Demand: tax Rs 4,00,000 plus interest Rs 72,000 plus penalty Rs 40,000, Rs 5,12,000 in all. Reply in form DRC-06 by 14 August 2026.",
     "amount": 512000,
     "doc_date": "2026-07-12",
     "deadline": "2026-08-14",
-    "counterparty": "वाणिज्य कर विभाग, लुधियाना",
-    "consequence": "14-08-2026 तक उत्तर दाखिल न करने पर विभाग एकतरफा आदेश पारित कर देगा। ₹5,12,000 की माँग वसूली योग्य हो जाएगी, ब्याज चलता रहेगा, बैंक खाता कुर्क किया जा सकता है और आगे का इनपुट टैक्स क्रेडिट रोका जा सकता है।",
+    "counterparty": "Commercial Taxes Department, Ludhiana",
+    "consequence": "14 August 2026: your window to reply closes\nSeptember 2026: order passed without hearing you\nDecember 2026: appeal window shuts, needs Rs 51,200 deposit first\nAfter that: recovery. Bank account can be attached.",
     "direction": "owing",
     "status": "seeded",
     "blockers": [],
-    "source_ref": null,
+    "source_ref": {
+      "page": 1,
+      "block": 5,
+      "bbox": [
+        62,
+        920,
+        775,
+        1137
+      ]
+    },
     "file_url": null,
     "created_at": "2026-07-26T04:30:00.000Z",
     "notice": {
@@ -26,18 +35,262 @@
       "unmatched_itc": 400000,
       "period_start": "2025-04-01",
       "period_end": "2025-06-30"
+    },
+    "source": {
+      "pageWidth": 2550,
+      "pageHeight": 3300,
+      "blocks": [
+        {
+          "page": 1,
+          "block": 0,
+          "text": "FORM GST DRC-01\nSummary of Show Cause Notice\nReference No: ZD030726001234\nDate: 12/07/2026",
+          "bbox": [
+            60,
+            71,
+            921,
+            284
+          ]
+        },
+        {
+          "page": 1,
+          "block": 1,
+          "text": "To: M/s Gupta Hosiery Mills, Ludhiana\nGSTIN: 03AABCG1234H1Z5",
+          "bbox": [
+            62,
+            318,
+            1187,
+            437
+          ]
+        },
+        {
+          "page": 1,
+          "block": 2,
+          "text": "Tax Period: April 2025 to June 2025\nSection: 73 of the CGST Act, 2017",
+          "bbox": [
+            60,
+            467,
+            1130,
+            587
+          ]
+        },
+        {
+          "page": 1,
+          "block": 3,
+          "text": "It is observed that Input Tax Credit of Rs. 18,00,000 was claimed\nin GSTR-3B, whereas credit of only Rs. 14,00,000 is reflected in\nGSTR-2B as reported by your suppliers.",
+          "bbox": [
+            62,
+            618,
+            2026,
+            789
+          ]
+        },
+        {
+          "page": 1,
+          "block": 4,
+          "text": "The unmatched Input Tax Credit is Rs. 4,00,000.",
+          "bbox": [
+            63,
+            818,
+            1479,
+            888
+          ]
+        },
+        {
+          "page": 1,
+          "block": 5,
+          "text": "Tax: Rs. 4,00,000\nInterest: Rs. 72,000\nPenalty: Rs. 40,000\nTotal: Rs. 5,12,000",
+          "bbox": [
+            62,
+            920,
+            775,
+            1137
+          ]
+        },
+        {
+          "page": 1,
+          "block": 6,
+          "text": "You are hereby required to show cause and file a reply in FORM GST\nDRC-06 on or before 14/08/2026, failing which the matter will be\ndecided ex-parte on the basis of records available.",
+          "bbox": [
+            57,
+            1169,
+            2060,
+            1340
+          ]
+        },
+        {
+          "page": 1,
+          "block": 7,
+          "text": "The unmatched invoices are: MKF/25-26/0092 Rs. 1,86,000;\nDTA/2526/0271 Rs. 1,29,000; VYS/25-26/0134 Rs. 85,000.",
+          "bbox": [
+            58,
+            1369,
+            1754,
+            1488
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "doc_notice_drc01_refused",
+    "role": "obligation",
+    "doc_type": "gst_notice",
+    "obligation": "GST show cause notice, form DRC-01. Reference ZD030726002891. Period April 2025 to June 2025. The page puts the demand at Rs 5,12,000. We cannot stand behind that figure. One page it refers to is missing, and the interest is stated twice with two different numbers. Reply in form DRC-06 by 7 August 2026. We will not file until the figures are settled.",
+    "amount": 512000,
+    "doc_date": "2026-07-05",
+    "deadline": "2026-08-07",
+    "counterparty": "Commercial Taxes Department, Ludhiana",
+    "consequence": "7 August 2026: your window to reply closes\nSeptember 2026: order passed without hearing you\nDecember 2026: appeal window shuts, needs a deposit of 10 percent of whatever the order confirms\nAfter that: recovery. Bank account can be attached.",
+    "direction": "owing",
+    "status": "refused",
+    "blockers": [
+      {
+        "kind": "missing_annexure",
+        "detail": "This notice refers to Annexure-A. That page was not in what you uploaded. The amount may be incomplete.",
+        "sourceRef": {
+          "page": 1,
+          "block": 7,
+          "bbox": [
+            58,
+            1369,
+            1754,
+            1488
+          ]
+        }
+      },
+      {
+        "kind": "amount_disagreement",
+        "field": "interest",
+        "detail": "We read two different interest figures from this page and cannot tell which is correct.",
+        "sourceRef": {
+          "page": 1,
+          "block": 5,
+          "bbox": [
+            62,
+            920,
+            775,
+            1137
+          ]
+        }
+      }
+    ],
+    "source_ref": {
+      "page": 1,
+      "block": 5,
+      "bbox": [
+        62,
+        920,
+        775,
+        1137
+      ]
+    },
+    "file_url": null,
+    "created_at": "2026-07-26T04:30:00.000Z",
+    "source": {
+      "pageWidth": 2550,
+      "pageHeight": 3300,
+      "blocks": [
+        {
+          "page": 1,
+          "block": 0,
+          "text": "FORM GST DRC-01\nSummary of Show Cause Notice\nReference No: ZD030726002891\nDate: 12/07/2026",
+          "bbox": [
+            60,
+            71,
+            921,
+            284
+          ]
+        },
+        {
+          "page": 1,
+          "block": 1,
+          "text": "To: M/s Gupta Hosiery Mills, Ludhiana\nGSTIN: 03AABCG1234H1Z5",
+          "bbox": [
+            62,
+            318,
+            1187,
+            437
+          ]
+        },
+        {
+          "page": 1,
+          "block": 2,
+          "text": "Tax Period: April 2025 to June 2025\nSection: 73 of the CGST Act, 2017",
+          "bbox": [
+            60,
+            467,
+            1130,
+            587
+          ]
+        },
+        {
+          "page": 1,
+          "block": 3,
+          "text": "It is observed that Input Tax Credit of Rs. 18,00,000 was claimed\nin GSTR-3B, whereas credit of only Rs. 14,00,000 is reflected in\nGSTR-2B as reported by your suppliers.",
+          "bbox": [
+            62,
+            618,
+            2026,
+            789
+          ]
+        },
+        {
+          "page": 1,
+          "block": 4,
+          "text": "The unmatched Input Tax Credit is Rs. 4,00,000.",
+          "bbox": [
+            63,
+            818,
+            1479,
+            888
+          ]
+        },
+        {
+          "page": 1,
+          "block": 5,
+          "text": "Tax: Rs. 4,00,000\nInterest: Rs. 72,000\nInterest (recomputed): Rs. 84,000\nPenalty: Rs. 40,000\nTotal: Rs. 5,12,000",
+          "bbox": [
+            62,
+            920,
+            775,
+            1137
+          ]
+        },
+        {
+          "page": 1,
+          "block": 6,
+          "text": "You are hereby required to show cause and file a reply in FORM GST\nDRC-06 on or before 14/08/2026, failing which the matter will be\ndecided ex-parte on the basis of records available.",
+          "bbox": [
+            57,
+            1169,
+            2060,
+            1340
+          ]
+        },
+        {
+          "page": 1,
+          "block": 7,
+          "text": "Details of the unmatched invoices are given in Annexure-A.",
+          "bbox": [
+            58,
+            1369,
+            1754,
+            1488
+          ]
+        }
+      ]
     }
   },
   {
     "id": "doc_invoice_01",
     "role": "evidence",
     "doc_type": "supplier_invoice",
-    "obligation": "क्रय चालान KT/2526/0142 — कुमार टेक्सटाइल्स। सूती निटेड फैब्रिक। कर योग्य मूल्य ₹15,00,000 + जीएसटी 12% ₹1,80,000 = कुल ₹16,80,000। चालान दिनांक 08-04-2025, भुगतान देय 08-05-2025 (30 दिन)।",
+    "obligation": "Purchase invoice KT/2526/0142 from Kumar Textiles. Cotton knitted fabric. Taxable value Rs 15,00,000 plus GST at 12 percent Rs 1,80,000, Rs 16,80,000 in all. Invoice dated 8 April 2025. Payment due 8 May 2025 (30 days).",
     "amount": 1680000,
     "doc_date": "2025-04-08",
     "deadline": "2025-05-08",
-    "counterparty": "कुमार टेक्सटाइल्स",
-    "consequence": "08-05-2025 तक भुगतान न करने पर आपूर्तिकर्ता ब्याज लगा सकता है और आगे की आपूर्ति रोक सकता है। चालान दिनांक से 180 दिन के भीतर भुगतान न होने पर सीजीएसटी नियम 37 के अंतर्गत ली गई ₹1,80,000 की आईटीसी ब्याज सहित वापस करनी होगी।",
+    "counterparty": "Kumar Textiles",
+    "consequence": "8 May 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n5 October 2025: 180 days from the invoice date. Pay later than this and the Rs 1,80,000 credit goes back, with interest.",
     "direction": "owing",
     "status": "seeded",
     "blockers": [],
@@ -56,12 +309,12 @@
     "id": "doc_invoice_02",
     "role": "evidence",
     "doc_type": "supplier_invoice",
-    "obligation": "क्रय चालान GHM/25-26/0087 — गुप्ता होज़री मिल्स। होज़री रिब एवं कॉलर। कर योग्य मूल्य ₹14,00,000 + जीएसटी 12% ₹1,68,000 = कुल ₹15,68,000। चालान दिनांक 14-04-2025, भुगतान देय 29-05-2025 (45 दिन)।",
+    "obligation": "Purchase invoice CKM/25-26/0087 from Chadha Knit Mills. Hosiery ribs and collars. Taxable value Rs 14,00,000 plus GST at 12 percent Rs 1,68,000, Rs 15,68,000 in all. Invoice dated 14 April 2025. Payment due 29 May 2025 (45 days).",
     "amount": 1568000,
     "doc_date": "2025-04-14",
     "deadline": "2025-05-29",
-    "counterparty": "गुप्ता होज़री मिल्स",
-    "consequence": "29-05-2025 तक भुगतान न करने पर आपूर्तिकर्ता ब्याज लगा सकता है और आगे की आपूर्ति रोक सकता है। चालान दिनांक से 180 दिन के भीतर भुगतान न होने पर सीजीएसटी नियम 37 के अंतर्गत ली गई ₹1,68,000 की आईटीसी ब्याज सहित वापस करनी होगी।",
+    "counterparty": "Chadha Knit Mills",
+    "consequence": "29 May 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n11 October 2025: 180 days from the invoice date. Pay later than this and the Rs 1,68,000 credit goes back, with interest.",
     "direction": "owing",
     "status": "seeded",
     "blockers": [],
@@ -69,7 +322,7 @@
     "file_url": null,
     "created_at": "2026-07-26T04:30:00.000Z",
     "evidence": {
-      "invoice_ref": "GHM/25-26/0087",
+      "invoice_ref": "CKM/25-26/0087",
       "taxable": 1400000,
       "gst": 168000,
       "gst_rate": 12,
@@ -80,12 +333,12 @@
     "id": "doc_invoice_03",
     "role": "evidence",
     "doc_type": "supplier_invoice",
-    "obligation": "क्रय चालान BYA/2526/0311 — बंसल यार्न एजेंसीज़। कॉटन यार्न 30s। कर योग्य मूल्य ₹17,20,000 + जीएसटी 5% ₹86,000 = कुल ₹18,06,000। चालान दिनांक 19-04-2025, भुगतान देय 19-05-2025 (30 दिन)।",
+    "obligation": "Purchase invoice BYA/2526/0311 from Bansal Yarn Agencies. Cotton yarn 30s. Taxable value Rs 17,20,000 plus GST at 5 percent Rs 86,000, Rs 18,06,000 in all. Invoice dated 19 April 2025. Payment due 19 May 2025 (30 days).",
     "amount": 1806000,
     "doc_date": "2025-04-19",
     "deadline": "2025-05-19",
-    "counterparty": "बंसल यार्न एजेंसीज़",
-    "consequence": "19-05-2025 तक भुगतान न करने पर आपूर्तिकर्ता ब्याज लगा सकता है और आगे की आपूर्ति रोक सकता है। चालान दिनांक से 180 दिन के भीतर भुगतान न होने पर सीजीएसटी नियम 37 के अंतर्गत ली गई ₹86,000 की आईटीसी ब्याज सहित वापस करनी होगी।",
+    "counterparty": "Bansal Yarn Agencies",
+    "consequence": "19 May 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n16 October 2025: 180 days from the invoice date. Pay later than this and the Rs 86,000 credit goes back, with interest.",
     "direction": "owing",
     "status": "seeded",
     "blockers": [],
@@ -104,12 +357,12 @@
     "id": "doc_invoice_04",
     "role": "evidence",
     "doc_type": "supplier_invoice",
-    "obligation": "क्रय चालान SKW/25-26/0064 — सिंगला निटवेयर। तैयार निटवेयर। कर योग्य मूल्य ₹13,00,000 + जीएसटी 12% ₹1,56,000 = कुल ₹14,56,000। चालान दिनांक 25-04-2025, भुगतान देय 09-06-2025 (45 दिन)।",
+    "obligation": "Purchase invoice SKW/25-26/0064 from Singla Knitwear. Finished knitwear. Taxable value Rs 13,00,000 plus GST at 12 percent Rs 1,56,000, Rs 14,56,000 in all. Invoice dated 25 April 2025. Payment due 9 June 2025 (45 days).",
     "amount": 1456000,
     "doc_date": "2025-04-25",
     "deadline": "2025-06-09",
-    "counterparty": "सिंगला निटवेयर",
-    "consequence": "09-06-2025 तक भुगतान न करने पर आपूर्तिकर्ता ब्याज लगा सकता है और आगे की आपूर्ति रोक सकता है। चालान दिनांक से 180 दिन के भीतर भुगतान न होने पर सीजीएसटी नियम 37 के अंतर्गत ली गई ₹1,56,000 की आईटीसी ब्याज सहित वापस करनी होगी।",
+    "counterparty": "Singla Knitwear",
+    "consequence": "9 June 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n22 October 2025: 180 days from the invoice date. Pay later than this and the Rs 1,56,000 credit goes back, with interest.",
     "direction": "owing",
     "status": "seeded",
     "blockers": [],
@@ -128,12 +381,12 @@
     "id": "doc_invoice_05",
     "role": "evidence",
     "doc_type": "supplier_invoice",
-    "obligation": "क्रय चालान AWM/2526/0219 — अरोड़ा वूलन मिल्स। ऊनी मिश्रित फैब्रिक। कर योग्य मूल्य ₹12,00,000 + जीएसटी 12% ₹1,44,000 = कुल ₹13,44,000। चालान दिनांक 02-05-2025, भुगतान देय 01-06-2025 (30 दिन)।",
+    "obligation": "Purchase invoice AWM/2526/0219 from Arora Woollen Mills. Wool blend fabric. Taxable value Rs 12,00,000 plus GST at 12 percent Rs 1,44,000, Rs 13,44,000 in all. Invoice dated 2 May 2025. Payment due 1 June 2025 (30 days).",
     "amount": 1344000,
     "doc_date": "2025-05-02",
     "deadline": "2025-06-01",
-    "counterparty": "अरोड़ा वूलन मिल्स",
-    "consequence": "01-06-2025 तक भुगतान न करने पर आपूर्तिकर्ता ब्याज लगा सकता है और आगे की आपूर्ति रोक सकता है। चालान दिनांक से 180 दिन के भीतर भुगतान न होने पर सीजीएसटी नियम 37 के अंतर्गत ली गई ₹1,44,000 की आईटीसी ब्याज सहित वापस करनी होगी।",
+    "counterparty": "Arora Woollen Mills",
+    "consequence": "1 June 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n29 October 2025: 180 days from the invoice date. Pay later than this and the Rs 1,44,000 credit goes back, with interest.",
     "direction": "owing",
     "status": "seeded",
     "blockers": [],
@@ -152,12 +405,12 @@
     "id": "doc_invoice_06",
     "role": "evidence",
     "doc_type": "supplier_invoice",
-    "obligation": "क्रय चालान JF/25-26/0455 — जिंदल फैब्रिक्स। पॉलिएस्टर फैब्रिक। कर योग्य मूल्य ₹11,00,000 + जीएसटी 12% ₹1,32,000 = कुल ₹12,32,000। चालान दिनांक 09-05-2025, भुगतान देय 23-06-2025 (45 दिन)।",
+    "obligation": "Purchase invoice JF/25-26/0455 from Jindal Fabrics. Polyester fabric. Taxable value Rs 11,00,000 plus GST at 12 percent Rs 1,32,000, Rs 12,32,000 in all. Invoice dated 9 May 2025. Payment due 23 June 2025 (45 days).",
     "amount": 1232000,
     "doc_date": "2025-05-09",
     "deadline": "2025-06-23",
-    "counterparty": "जिंदल फैब्रिक्स",
-    "consequence": "23-06-2025 तक भुगतान न करने पर आपूर्तिकर्ता ब्याज लगा सकता है और आगे की आपूर्ति रोक सकता है। चालान दिनांक से 180 दिन के भीतर भुगतान न होने पर सीजीएसटी नियम 37 के अंतर्गत ली गई ₹1,32,000 की आईटीसी ब्याज सहित वापस करनी होगी।",
+    "counterparty": "Jindal Fabrics",
+    "consequence": "23 June 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n5 November 2025: 180 days from the invoice date. Pay later than this and the Rs 1,32,000 credit goes back, with interest.",
     "direction": "owing",
     "status": "seeded",
     "blockers": [],
@@ -176,12 +429,12 @@
     "id": "doc_invoice_07",
     "role": "evidence",
     "doc_type": "supplier_invoice",
-    "obligation": "क्रय चालान STC/2526/0128 — सोनी थ्रेड कंपनी। सिलाई धागा एवं इलास्टिक। कर योग्य मूल्य ₹10,50,000 + जीएसटी 12% ₹1,26,000 = कुल ₹11,76,000। चालान दिनांक 16-05-2025, भुगतान देय 15-06-2025 (30 दिन)।",
+    "obligation": "Purchase invoice STC/2526/0128 from Soni Thread Company. Sewing thread and elastic. Taxable value Rs 10,50,000 plus GST at 12 percent Rs 1,26,000, Rs 11,76,000 in all. Invoice dated 16 May 2025. Payment due 15 June 2025 (30 days).",
     "amount": 1176000,
     "doc_date": "2025-05-16",
     "deadline": "2025-06-15",
-    "counterparty": "सोनी थ्रेड कंपनी",
-    "consequence": "15-06-2025 तक भुगतान न करने पर आपूर्तिकर्ता ब्याज लगा सकता है और आगे की आपूर्ति रोक सकता है। चालान दिनांक से 180 दिन के भीतर भुगतान न होने पर सीजीएसटी नियम 37 के अंतर्गत ली गई ₹1,26,000 की आईटीसी ब्याज सहित वापस करनी होगी।",
+    "counterparty": "Soni Thread Company",
+    "consequence": "15 June 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n12 November 2025: 180 days from the invoice date. Pay later than this and the Rs 1,26,000 credit goes back, with interest.",
     "direction": "owing",
     "status": "seeded",
     "blockers": [],
@@ -200,12 +453,12 @@
     "id": "doc_invoice_08",
     "role": "evidence",
     "doc_type": "supplier_invoice",
-    "obligation": "क्रय चालान MG/25-26/0073 — मल्होत्रा गारमेंट्स। तैयार टी-शर्ट। कर योग्य मूल्य ₹10,00,000 + जीएसटी 12% ₹1,20,000 = कुल ₹11,20,000। चालान दिनांक 23-05-2025, भुगतान देय 07-07-2025 (45 दिन)।",
+    "obligation": "Purchase invoice MG/25-26/0073 from Malhotra Garments. Finished T-shirts. Taxable value Rs 10,00,000 plus GST at 12 percent Rs 1,20,000, Rs 11,20,000 in all. Invoice dated 23 May 2025. Payment due 7 July 2025 (45 days).",
     "amount": 1120000,
     "doc_date": "2025-05-23",
     "deadline": "2025-07-07",
-    "counterparty": "मल्होत्रा गारमेंट्स",
-    "consequence": "07-07-2025 तक भुगतान न करने पर आपूर्तिकर्ता ब्याज लगा सकता है और आगे की आपूर्ति रोक सकता है। चालान दिनांक से 180 दिन के भीतर भुगतान न होने पर सीजीएसटी नियम 37 के अंतर्गत ली गई ₹1,20,000 की आईटीसी ब्याज सहित वापस करनी होगी।",
+    "counterparty": "Malhotra Garments",
+    "consequence": "7 July 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n19 November 2025: 180 days from the invoice date. Pay later than this and the Rs 1,20,000 credit goes back, with interest.",
     "direction": "owing",
     "status": "seeded",
     "blockers": [],
@@ -224,12 +477,12 @@
     "id": "doc_invoice_09",
     "role": "evidence",
     "doc_type": "supplier_invoice",
-    "obligation": "क्रय चालान CHW/2526/0396 — चावला होज़री वर्क्स। रंगा हुआ निटेड कपड़ा। कर योग्य मूल्य ₹9,00,000 + जीएसटी 12% ₹1,08,000 = कुल ₹10,08,000। चालान दिनांक 30-05-2025, भुगतान देय 29-06-2025 (30 दिन)।",
+    "obligation": "Purchase invoice CHW/2526/0396 from Chawla Hosiery Works. Dyed knitted cloth. Taxable value Rs 9,00,000 plus GST at 12 percent Rs 1,08,000, Rs 10,08,000 in all. Invoice dated 30 May 2025. Payment due 29 June 2025 (30 days).",
     "amount": 1008000,
     "doc_date": "2025-05-30",
     "deadline": "2025-06-29",
-    "counterparty": "चावला होज़री वर्क्स",
-    "consequence": "29-06-2025 तक भुगतान न करने पर आपूर्तिकर्ता ब्याज लगा सकता है और आगे की आपूर्ति रोक सकता है। चालान दिनांक से 180 दिन के भीतर भुगतान न होने पर सीजीएसटी नियम 37 के अंतर्गत ली गई ₹1,08,000 की आईटीसी ब्याज सहित वापस करनी होगी।",
+    "counterparty": "Chawla Hosiery Works",
+    "consequence": "29 June 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n26 November 2025: 180 days from the invoice date. Pay later than this and the Rs 1,08,000 credit goes back, with interest.",
     "direction": "owing",
     "status": "seeded",
     "blockers": [],
@@ -248,12 +501,12 @@
     "id": "doc_invoice_10",
     "role": "evidence",
     "doc_type": "supplier_invoice",
-    "obligation": "क्रय चालान SHT/25-26/0208 — सेठी होज़री ट्रेडर्स। इनरवेयर एवं सॉक्स। कर योग्य मूल्य ₹8,00,000 + जीएसटी 12% ₹96,000 = कुल ₹8,96,000। चालान दिनांक 05-06-2025, भुगतान देय 20-07-2025 (45 दिन)।",
+    "obligation": "Purchase invoice SHT/25-26/0208 from Sethi Hosiery Traders. Innerwear and socks. Taxable value Rs 8,00,000 plus GST at 12 percent Rs 96,000, Rs 8,96,000 in all. Invoice dated 5 June 2025. Payment due 20 July 2025 (45 days).",
     "amount": 896000,
     "doc_date": "2025-06-05",
     "deadline": "2025-07-20",
-    "counterparty": "सेठी होज़री ट्रेडर्स",
-    "consequence": "20-07-2025 तक भुगतान न करने पर आपूर्तिकर्ता ब्याज लगा सकता है और आगे की आपूर्ति रोक सकता है। चालान दिनांक से 180 दिन के भीतर भुगतान न होने पर सीजीएसटी नियम 37 के अंतर्गत ली गई ₹96,000 की आईटीसी ब्याज सहित वापस करनी होगी।",
+    "counterparty": "Sethi Hosiery Traders",
+    "consequence": "20 July 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n2 December 2025: 180 days from the invoice date. Pay later than this and the Rs 96,000 credit goes back, with interest.",
     "direction": "owing",
     "status": "seeded",
     "blockers": [],
@@ -272,12 +525,12 @@
     "id": "doc_invoice_11",
     "role": "evidence",
     "doc_type": "supplier_invoice",
-    "obligation": "क्रय चालान BSM/2526/0517 — बत्रा स्पिनिंग मिल्स। मेलंज यार्न। कर योग्य मूल्य ₹7,00,000 + जीएसटी 12% ₹84,000 = कुल ₹7,84,000। चालान दिनांक 11-06-2025, भुगतान देय 11-07-2025 (30 दिन)।",
+    "obligation": "Purchase invoice BSM/2526/0517 from Batra Spinning Mills. Melange yarn. Taxable value Rs 7,00,000 plus GST at 12 percent Rs 84,000, Rs 7,84,000 in all. Invoice dated 11 June 2025. Payment due 11 July 2025 (30 days).",
     "amount": 784000,
     "doc_date": "2025-06-11",
     "deadline": "2025-07-11",
-    "counterparty": "बत्रा स्पिनिंग मिल्स",
-    "consequence": "11-07-2025 तक भुगतान न करने पर आपूर्तिकर्ता ब्याज लगा सकता है और आगे की आपूर्ति रोक सकता है। चालान दिनांक से 180 दिन के भीतर भुगतान न होने पर सीजीएसटी नियम 37 के अंतर्गत ली गई ₹84,000 की आईटीसी ब्याज सहित वापस करनी होगी।",
+    "counterparty": "Batra Spinning Mills",
+    "consequence": "11 July 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n8 December 2025: 180 days from the invoice date. Pay later than this and the Rs 84,000 credit goes back, with interest.",
     "direction": "owing",
     "status": "seeded",
     "blockers": [],
@@ -296,12 +549,12 @@
     "id": "doc_invoice_12",
     "role": "evidence",
     "doc_type": "supplier_invoice",
-    "obligation": "क्रय चालान MKF/25-26/0092 — मित्तल निट फैब। फ्लीस निटेड फैब्रिक। कर योग्य मूल्य ₹15,50,000 + जीएसटी 12% ₹1,86,000 = कुल ₹17,36,000। चालान दिनांक 17-06-2025, भुगतान देय 01-08-2025 (45 दिन)। विभाग के GSTR-2B में यह चालान दिखाई नहीं दे रहा — आपूर्तिकर्ता ने अपना GSTR-1 दाखिल नहीं किया।",
+    "obligation": "Purchase invoice MKF/25-26/0092 from Mittal Knit Fab. Fleece knitted fabric. Taxable value Rs 15,50,000 plus GST at 12 percent Rs 1,86,000, Rs 17,36,000 in all. Invoice dated 17 June 2025. Payment due 1 August 2025 (45 days). The department cannot see this invoice in GSTR-2B. The supplier has not filed its GSTR-1.",
     "amount": 1736000,
     "doc_date": "2025-06-17",
     "deadline": "2025-08-01",
-    "counterparty": "मित्तल निट फैब",
-    "consequence": "01-08-2025 तक भुगतान न करने पर आपूर्तिकर्ता ब्याज लगा सकता है और आगे की आपूर्ति रोक सकता है। चालान दिनांक से 180 दिन के भीतर भुगतान न होने पर सीजीएसटी नियम 37 के अंतर्गत ली गई ₹1,86,000 की आईटीसी ब्याज सहित वापस करनी होगी। यह उन तीन चालानों में से एक है जिन पर विभाग ने ₹4,00,000 की आईटीसी माँग उठाई है। आपूर्तिकर्ता से GSTR-1 दाखिल कराए बिना यह क्रेडिट सुरक्षित नहीं है।",
+    "counterparty": "Mittal Knit Fab",
+    "consequence": "1 August 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n14 December 2025: 180 days from the invoice date. Pay later than this and the Rs 1,86,000 credit goes back, with interest.\n14 August 2026: the GST reply is due. This is one of the three invoices behind the Rs 4,00,000 demand. Until Mittal Knit Fab files its GSTR-1, this credit is not safe.",
     "direction": "owing",
     "status": "seeded",
     "blockers": [],
@@ -320,12 +573,12 @@
     "id": "doc_invoice_13",
     "role": "evidence",
     "doc_type": "supplier_invoice",
-    "obligation": "क्रय चालान DTA/2526/0271 — धवन टेक्सटाइल एजेंसी। इंटरलॉक फैब्रिक। कर योग्य मूल्य ₹10,75,000 + जीएसटी 12% ₹1,29,000 = कुल ₹12,04,000। चालान दिनांक 23-06-2025, भुगतान देय 23-07-2025 (30 दिन)। विभाग के GSTR-2B में यह चालान दिखाई नहीं दे रहा — आपूर्तिकर्ता ने अपना GSTR-1 दाखिल नहीं किया।",
+    "obligation": "Purchase invoice DTA/2526/0271 from Dhawan Textile Agency. Interlock fabric. Taxable value Rs 10,75,000 plus GST at 12 percent Rs 1,29,000, Rs 12,04,000 in all. Invoice dated 23 June 2025. Payment due 23 July 2025 (30 days). The department cannot see this invoice in GSTR-2B. The supplier has not filed its GSTR-1.",
     "amount": 1204000,
     "doc_date": "2025-06-23",
     "deadline": "2025-07-23",
-    "counterparty": "धवन टेक्सटाइल एजेंसी",
-    "consequence": "23-07-2025 तक भुगतान न करने पर आपूर्तिकर्ता ब्याज लगा सकता है और आगे की आपूर्ति रोक सकता है। चालान दिनांक से 180 दिन के भीतर भुगतान न होने पर सीजीएसटी नियम 37 के अंतर्गत ली गई ₹1,29,000 की आईटीसी ब्याज सहित वापस करनी होगी। यह उन तीन चालानों में से एक है जिन पर विभाग ने ₹4,00,000 की आईटीसी माँग उठाई है। आपूर्तिकर्ता से GSTR-1 दाखिल कराए बिना यह क्रेडिट सुरक्षित नहीं है।",
+    "counterparty": "Dhawan Textile Agency",
+    "consequence": "23 July 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n20 December 2025: 180 days from the invoice date. Pay later than this and the Rs 1,29,000 credit goes back, with interest.\n14 August 2026: the GST reply is due. This is one of the three invoices behind the Rs 4,00,000 demand. Until Dhawan Textile Agency files its GSTR-1, this credit is not safe.",
     "direction": "owing",
     "status": "seeded",
     "blockers": [],
@@ -344,12 +597,12 @@
     "id": "doc_invoice_14",
     "role": "evidence",
     "doc_type": "supplier_invoice",
-    "obligation": "क्रय चालान VYS/25-26/0134 — वर्मा यार्न सप्लायर्स। कॉटन यार्न 40s। कर योग्य मूल्य ₹17,00,000 + जीएसटी 5% ₹85,000 = कुल ₹17,85,000। चालान दिनांक 28-06-2025, भुगतान देय 12-08-2025 (45 दिन)। विभाग के GSTR-2B में यह चालान दिखाई नहीं दे रहा — आपूर्तिकर्ता ने अपना GSTR-1 दाखिल नहीं किया।",
+    "obligation": "Purchase invoice VYS/25-26/0134 from Verma Yarn Suppliers. Cotton yarn 40s. Taxable value Rs 17,00,000 plus GST at 5 percent Rs 85,000, Rs 17,85,000 in all. Invoice dated 28 June 2025. Payment due 12 August 2025 (45 days). The department cannot see this invoice in GSTR-2B. The supplier has not filed its GSTR-1.",
     "amount": 1785000,
     "doc_date": "2025-06-28",
     "deadline": "2025-08-12",
-    "counterparty": "वर्मा यार्न सप्लायर्स",
-    "consequence": "12-08-2025 तक भुगतान न करने पर आपूर्तिकर्ता ब्याज लगा सकता है और आगे की आपूर्ति रोक सकता है। चालान दिनांक से 180 दिन के भीतर भुगतान न होने पर सीजीएसटी नियम 37 के अंतर्गत ली गई ₹85,000 की आईटीसी ब्याज सहित वापस करनी होगी। यह उन तीन चालानों में से एक है जिन पर विभाग ने ₹4,00,000 की आईटीसी माँग उठाई है। आपूर्तिकर्ता से GSTR-1 दाखिल कराए बिना यह क्रेडिट सुरक्षित नहीं है।",
+    "counterparty": "Verma Yarn Suppliers",
+    "consequence": "12 August 2025: payment falls due. After this the supplier can charge interest and hold further supply.\n25 December 2025: 180 days from the invoice date. Pay later than this and the Rs 85,000 credit goes back, with interest.\n14 August 2026: the GST reply is due. This is one of the three invoices behind the Rs 4,00,000 demand. Until Verma Yarn Suppliers files its GSTR-1, this credit is not safe.",
     "direction": "owing",
     "status": "seeded",
     "blockers": [],
@@ -368,12 +621,12 @@
     "id": "doc_receivable_01",
     "role": "obligation",
     "doc_type": "supplier_invoice",
-    "obligation": "विक्रय चालान SGE/2627/0041 — शर्मा डिस्ट्रीब्यूटर्स से ₹6,40,000 प्राप्य। चालान दिनांक 25-04-2026, भुगतान देय 25-05-2026। संदर्भ तिथि 12-07-2026 तक 78 दिन बीत चुके हैं और भुगतान प्राप्त नहीं हुआ।",
+    "obligation": "Sales invoice SGE/2627/0041. Rs 6,40,000 due from Sharma Distributors. Invoice dated 25 April 2026, payment due 25 May 2026. As at 12 July 2026 it is 78 days old and unpaid.",
     "amount": 640000,
     "doc_date": "2026-04-25",
     "deadline": "2026-05-25",
-    "counterparty": "शर्मा डिस्ट्रीब्यूटर्स",
-    "consequence": "भुगतान 45 दिन की वैधानिक सीमा से अधिक विलंबित है। एमएसएमईडी अधिनियम की धारा 15–16 के अंतर्गत आरबीआई की अधिसूचित बैंक दर से तीन गुना चक्रवृद्धि ब्याज माँगा जा सकता है, और समाधान पोर्टल पर शिकायत दर्ज की जा सकती है। यह राशि आपकी कार्यशील पूँजी में फँसी हुई है।",
+    "counterparty": "Sharma Distributors",
+    "consequence": "25 May 2026: payment fell due. Nothing came in.\n9 June 2026: 45 days from the invoice date. Past this you can claim interest at three times the RBI bank rate, compounded monthly.\nAfter that: you can file on the Samadhaan portal. Until it is paid, Rs 6,40,000 of your working capital sits in someone else's account.",
     "direction": "owed",
     "status": "seeded",
     "blockers": [],
@@ -385,12 +638,12 @@
     "id": "doc_licence_01",
     "role": "obligation",
     "doc_type": "licence",
-    "obligation": "एफएसएसएआई पंजीकरण प्रमाणपत्र — फैक्ट्री कैंटीन हेतु। पंजीकरण संख्या 12825998000123। जारी दिनांक 01-08-2025, समाप्ति दिनांक 31-07-2026। समाप्ति से पहले नवीनीकरण आवेदन करना आवश्यक है।",
+    "obligation": "FSSAI registration certificate for the factory canteen. Registration number 12825998000123. Issued 1 August 2025. Expires 31 July 2026. Apply for renewal before it expires.",
     "amount": null,
     "doc_date": "2025-08-01",
     "deadline": "2026-07-31",
-    "counterparty": "भारतीय खाद्य सुरक्षा एवं मानक प्राधिकरण (FSSAI)",
-    "consequence": "31-07-2026 के बाद पंजीकरण निष्प्रभावी हो जाएगा। बिना वैध पंजीकरण के कैंटीन संचालन पर खाद्य सुरक्षा एवं मानक अधिनियम की धारा 63 के अंतर्गत ₹5,00,000 तक जुर्माना और छह माह तक कारावास हो सकता है, तथा परिसर सील किया जा सकता है। समाप्ति के बाद विलंब शुल्क ₹100 प्रति दिन लगेगा।",
+    "counterparty": "Food Safety and Standards Authority of India",
+    "consequence": "31 July 2026: the registration stops being valid.\n1 August 2026: late renewal starts costing Rs 100 a day.\nAfter that: running the canteen without a valid registration carries a fine up to Rs 5,00,000 and up to six months in jail. The premises can be sealed.",
     "direction": "owing",
     "status": "seeded",
     "blockers": [],

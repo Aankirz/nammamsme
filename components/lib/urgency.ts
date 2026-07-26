@@ -1,92 +1,94 @@
 /**
- * Urgency is a colour and a shape, not a number. A trader should be able to
- * scan the inbox with the numbers blurred and still know what is on fire.
+ * Urgency is a colour and a rule, not a sentence. The owner should be able to
+ * scan the rail with the words blurred and still know what is on fire.
+ *
+ * DESIGN.md: a small mono day-count plus a 2px top rule in the state colour.
+ * Never a coloured left edge.
  */
 
 import type { ObligationRow } from "@/lib/types";
-import { agePhrase, deadlinePhrase, expiryPhrase } from "./hindi";
+import { agePhrase, dayCountPhrase, deadlinePhrase, expiryPhrase } from "./copy";
 import { daysSince, daysUntil } from "./dates";
 
-/** Days at which an obligation turns red. */
+/** Days at which an obligation turns to stamp red. */
 export const CRITICAL_DAYS = 7;
 /** Days inside which an obligation counts towards the headline exposure. */
 export const HORIZON_DAYS = 30;
-/** MSMED §15 — a receivable older than this is a statutory claim. */
+/** MSMED section 15. A receivable older than this is a statutory claim. */
 export const RECEIVABLE_OVERDUE_DAYS = 45;
 
-export type Tone = "danger" | "warn" | "credit" | "calm" | "unknown";
+/** Maps onto the semantic tokens: stamp, pending, settled, and plain rule. */
+export type Tone = "stamp" | "pending" | "settled" | "quiet" | "unknown";
 
-export interface UrgencyChipModel {
+export interface Urgency {
   tone: Tone;
-  text: string;
-  /** 0–3. Drives the bar meter, so urgency reads before the words do. */
-  level: number;
+  /** Full sentence. "19 days left" / "92 days unpaid" */
+  phrase: string;
+  /** Rail-width form. "19d left" */
+  count: string;
+  /** Days to the deadline, negative once passed. Null when there is no date. */
+  days: number | null;
 }
 
 function toneForDaysLeft(days: number | null): Tone {
   if (days === null) return "unknown";
-  if (days <= CRITICAL_DAYS) return "danger";
-  if (days <= HORIZON_DAYS) return "warn";
-  return "calm";
-}
-
-function levelForTone(tone: Tone): number {
-  if (tone === "danger") return 3;
-  if (tone === "warn") return 2;
-  if (tone === "credit") return 2;
-  if (tone === "calm") return 1;
-  return 0;
+  if (days <= CRITICAL_DAYS) return "stamp";
+  if (days <= HORIZON_DAYS) return "pending";
+  return "quiet";
 }
 
 /**
  * The single deadline signal for a row.
  *
- * Payables and licences count down. Receivables count up — what matters is
- * how long the money has been sitting with somebody else.
+ * Payables and licences count down. A receivable counts up, because what
+ * matters is how long the owner's money has been sitting with somebody else.
  */
-export function chipForRow(row: ObligationRow, now: Date): UrgencyChipModel {
+export function urgencyFor(row: ObligationRow, now: Date): Urgency {
   if (row.direction === "owed") {
     const age = daysSince(row.doc_date ?? row.deadline, now);
 
-    if (age !== null && age > RECEIVABLE_OVERDUE_DAYS) {
-      return { tone: "danger", text: agePhrase(age), level: 3 };
-    }
-    if (age !== null && age >= 0) {
-      return { tone: "credit", text: agePhrase(age), level: 1 };
+    if (age === null) {
+      return {
+        tone: "unknown",
+        phrase: deadlinePhrase(null),
+        count: "no date",
+        days: null,
+      };
     }
 
-    return { tone: "unknown", text: deadlinePhrase(null), level: 0 };
+    return {
+      tone: age > RECEIVABLE_OVERDUE_DAYS ? "stamp" : "settled",
+      phrase: agePhrase(age),
+      count: `${age}d unpaid`,
+      days: -age,
+    };
   }
 
   const left = daysUntil(row.deadline, now);
-  const tone = toneForDaysLeft(left);
-  const text =
-    row.doc_type === "licence" ? expiryPhrase(left) : deadlinePhrase(left);
+  const isLicence = row.doc_type === "licence";
 
-  return { tone, text, level: levelForTone(tone) };
+  return {
+    tone: toneForDaysLeft(left),
+    phrase: isLicence ? expiryPhrase(left) : deadlinePhrase(left),
+    count: dayCountPhrase(left, isLicence),
+    days: left,
+  };
 }
 
-/** Tailwind classes per tone, kept in one place so tones cannot drift. */
-export const CHIP_CLASSES: Record<Tone, string> = {
-  danger: "bg-danger-wash text-danger border-danger-rule",
-  warn: "bg-warn-wash text-warn border-warn-rule",
-  credit: "bg-credit-wash text-credit border-credit-rule",
-  calm: "bg-paper-sunk text-ink-soft border-rule",
-  unknown: "bg-paper-sunk text-ink-faint border-rule",
-};
-
-export const STRIPE_CLASSES: Record<Tone, string> = {
-  danger: "bg-danger",
-  warn: "bg-warn",
-  credit: "bg-credit",
-  calm: "bg-rule-strong",
+/** The 2px state rule that sits on top of a row or panel. */
+export const TONE_RULE_CLASSES: Record<Tone, string> = {
+  stamp: "bg-stamp",
+  pending: "bg-pending",
+  settled: "bg-settled",
+  quiet: "bg-rule-strong",
   unknown: "bg-rule",
 };
 
+/** Text colour for the day-count itself. */
 export const TONE_TEXT_CLASSES: Record<Tone, string> = {
-  danger: "text-danger",
-  warn: "text-warn",
-  credit: "text-credit",
-  calm: "text-ink",
+  stamp: "text-stamp",
+  pending: "text-pending",
+  settled: "text-settled",
+  quiet: "text-ink-muted",
   unknown: "text-ink-faint",
 };

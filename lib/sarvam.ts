@@ -143,8 +143,12 @@ Schema keys, all required:
 "claimed_itc":str|null,"matched_itc":str|null,"deadline":str|null,
 "doc_date":str|null,"section":str|null,"counterparty":str|null,
 "references_annexure":str|null}
-"amount" is the grand total demanded. "references_annexure" is the annexure or
-schedule identifier the document refers to, or null.`;
+"amount" is the grand total demanded.
+"counterparty" is who ISSUED or SENT this document: the tax authority, the
+supplier, the licensing body. It is NEVER the addressee or recipient. If the
+document is addressed "To: X" and issued by Y, counterparty is Y.
+"references_annexure" is the annexure or schedule identifier the document refers
+to, or null.`;
 
 export async function extractFields(
   ocrText: string,

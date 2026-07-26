@@ -1,11 +1,13 @@
 import { formatRupees } from "@/components/lib/money";
 
-type MoneySize = "sm" | "md" | "hero";
+type MoneySize = "sm" | "md" | "lg" | "hero";
 
+/** Fixed steps. Money never uses a fluid size and never wraps. */
 const SIZE_CLASSES: Record<MoneySize, string> = {
-  sm: "text-money-sm",
-  md: "text-money",
-  hero: "text-money-hero",
+  sm: "text-base",
+  md: "text-lg",
+  lg: "text-2xl",
+  hero: "text-hero",
 };
 
 interface MoneyProps {
@@ -18,7 +20,7 @@ interface MoneyProps {
 export function Money({ amount, size = "md", className = "" }: MoneyProps) {
   return (
     <span
-      className={`numerals block font-semibold tracking-[-0.02em] ${SIZE_CLASSES[size]} ${className}`}
+      className={`numerals font-mono font-semibold tracking-[-0.02em] ${SIZE_CLASSES[size]} ${className}`}
     >
       {formatRupees(amount)}
     </span>

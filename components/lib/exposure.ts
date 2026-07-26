@@ -1,56 +1,59 @@
 /**
- * The inbox headline, computed from the rows every time. Two filters over one
- * table (PRD "Surfaces") — never a stored aggregate.
+ * The rail headline, computed from the rows every time. Two filters over one
+ * table (PRD, "Surfaces"). Never a stored aggregate.
  */
 
 import type { ObligationRow } from "@/lib/types";
-import { daysSince, daysUntil } from "./dates";
-import {
-  agePhrase,
-  deadlinePhrase,
-  expiryPhrase,
-  shortName,
-} from "./hindi";
+import { shortName } from "./copy";
+import { daysSince } from "./dates";
 import { hasAmount } from "./money";
-import { HORIZON_DAYS, RECEIVABLE_OVERDUE_DAYS, type Tone } from "./urgency";
+import { urgencyFor, HORIZON_DAYS, RECEIVABLE_OVERDUE_DAYS, type Tone } from "./urgency";
 
-export interface ExposureHighlight {
+export interface ExposureLine {
   id: string;
-  /** null for a licence, which has a date but no price. */
-  amount: number | null;
-  /** What it is, in Hindi. "जीएसटी" / "शर्मा डिस्ट्रीब्यूटर्स से आना है" */
+  /** "GST demand" / "Sharma Distributors" / "FSSAI licence" */
   label: string;
-  /** When it bites. "11 दिन बाकी" */
-  timing: string;
+  /** Null for a licence, which has a date but no price. */
+  amount: number | null;
+  /** "19d left" */
+  count: string;
   tone: Tone;
-  /** Ordering key — smaller is more urgent. */
-  rank: number;
+}
+
+export interface Collection {
+  amount: number;
+  days: number;
+  counterparty: string;
+  /** Whether collecting it clears the whole 30-day exposure. */
+  coversAll: boolean;
 }
 
 export interface Exposure {
-  /** Rupees due out inside the next 30 days, overdue included. */
-  owingWithin30: number;
-  owingWithin30Count: number;
-  /** Rupees due in, sitting unpaid beyond 45 days. */
-  owedOverdue: number;
-  owedOverdueCount: number;
-  highlights: ExposureHighlight[];
+  /** Rupees leaving the account inside the next 30 days, overdue included. */
+  movingWithin30: number;
+  documentCount: number;
+  lines: ExposureLine[];
+  collection: Collection | null;
 }
 
-const MAX_PAYABLE_HIGHLIGHTS = 2;
 const EMPTY_EXPOSURE: Exposure = {
-  owingWithin30: 0,
-  owingWithin30Count: 0,
-  owedOverdue: 0,
-  owedOverdueCount: 0,
-  highlights: [],
+  movingWithin30: 0,
+  documentCount: 0,
+  lines: [],
+  collection: null,
 };
 
-function isPayableInHorizon(row: ObligationRow, now: Date): boolean {
+function labelFor(row: ObligationRow): string {
+  if (row.doc_type === "gst_notice") return "GST demand";
+  if (row.doc_type === "licence") return `${shortName(row.counterparty)} licence`;
+  return shortName(row.counterparty);
+}
+
+function isMovingSoon(row: ObligationRow, now: Date): boolean {
   if (row.direction !== "owing") return false;
 
-  const left = daysUntil(row.deadline, now);
-  return left !== null && left <= HORIZON_DAYS;
+  const { days } = urgencyFor(row, now);
+  return days !== null && days <= HORIZON_DAYS;
 }
 
 function isOverdueReceivable(row: ObligationRow, now: Date): boolean {
@@ -60,120 +63,59 @@ function isOverdueReceivable(row: ObligationRow, now: Date): boolean {
   return age !== null && age > RECEIVABLE_OVERDUE_DAYS;
 }
 
-function sumAmounts(rows: readonly ObligationRow[]): number {
-  return rows.reduce(
-    (total, row) => (hasAmount(row.amount) ? total + row.amount : total),
-    0,
-  );
-}
-
-function byAmountDesc(a: ObligationRow, b: ObligationRow): number {
-  return (b.amount ?? 0) - (a.amount ?? 0);
-}
-
-function payableHighlight(row: ObligationRow, now: Date): ExposureHighlight {
-  const left = daysUntil(row.deadline, now);
-  const label =
-    row.doc_type === "gst_notice"
-      ? "जीएसटी"
-      : `${shortName(row.counterparty)} को देना है`;
+function toLine(row: ObligationRow, now: Date): ExposureLine {
+  const urgency = urgencyFor(row, now);
 
   return {
     id: row.id,
-    amount: row.amount,
-    label,
-    timing: deadlinePhrase(left),
-    tone: left !== null && left <= 7 ? "danger" : "warn",
-    rank: left ?? HORIZON_DAYS,
-  };
-}
-
-function receivableHighlight(row: ObligationRow, now: Date): ExposureHighlight {
-  const age = daysSince(row.doc_date ?? row.deadline, now) ?? 0;
-
-  return {
-    id: row.id,
-    amount: row.amount,
-    label: `${shortName(row.counterparty)} से आना है`,
-    timing: agePhrase(age),
-    tone: "danger",
-    rank: HORIZON_DAYS + 1,
-  };
-}
-
-function licenceHighlight(row: ObligationRow, now: Date): ExposureHighlight {
-  const left = daysUntil(row.deadline, now);
-
-  return {
-    id: row.id,
-    amount: null,
-    label: `${shortName(row.counterparty)} लाइसेंस`,
-    timing: expiryPhrase(left),
-    tone: left !== null && left <= 7 ? "danger" : "warn",
-    rank: left ?? HORIZON_DAYS,
+    label: labelFor(row),
+    amount: hasAmount(row.amount) ? row.amount : null,
+    count: urgency.count,
+    tone: urgency.tone,
   };
 }
 
 /**
- * Picks the few lines worth naming under the big number: the largest payables
- * falling due, the worst overdue receivable, and the nearest licence expiry.
+ * The largest receivable sitting past the statutory 45 days. Named under the
+ * exposure so the owner can see that money he is already owed would cover what
+ * is about to leave (PRD user story 5).
  */
-function pickHighlights(
+function pickCollection(
   rows: readonly ObligationRow[],
   now: Date,
-): ExposureHighlight[] {
-  const payables = rows
-    .filter(
-      (row) =>
-        row.doc_type !== "licence" &&
-        isPayableInHorizon(row, now) &&
-        hasAmount(row.amount),
-    )
-    .sort(byAmountDesc)
-    .slice(0, MAX_PAYABLE_HIGHLIGHTS)
-    .map((row) => payableHighlight(row, now));
-
-  const receivable = rows
+  movingWithin30: number,
+): Collection | null {
+  const candidates = rows
     .filter((row) => isOverdueReceivable(row, now) && hasAmount(row.amount))
-    .sort(byAmountDesc)
-    .slice(0, 1)
-    .map((row) => receivableHighlight(row, now));
+    .sort((a, b) => (b.amount ?? 0) - (a.amount ?? 0));
 
-  const licence = rows
-    .filter(
-      (row) =>
-        row.doc_type === "licence" &&
-        (daysUntil(row.deadline, now) ?? Number.POSITIVE_INFINITY) <=
-          HORIZON_DAYS * 3,
-    )
-    .sort(
-      (a, b) =>
-        (daysUntil(a.deadline, now) ?? 0) - (daysUntil(b.deadline, now) ?? 0),
-    )
-    .slice(0, 1)
-    .map((row) => licenceHighlight(row, now));
-
-  return [...payables, ...receivable, ...licence].sort(
-    (a, b) => a.rank - b.rank,
-  );
-}
-
-export function computeExposure(
-  rows: readonly ObligationRow[],
-  now: Date,
-): Exposure {
-  if (rows.length === 0) {
-    return EMPTY_EXPOSURE;
-  }
-
-  const payables = rows.filter((row) => isPayableInHorizon(row, now));
-  const receivables = rows.filter((row) => isOverdueReceivable(row, now));
+  const best = candidates[0];
+  if (!best || !hasAmount(best.amount)) return null;
 
   return {
-    owingWithin30: sumAmounts(payables),
-    owingWithin30Count: payables.length,
-    owedOverdue: sumAmounts(receivables),
-    owedOverdueCount: receivables.length,
-    highlights: pickHighlights(rows, now),
+    amount: best.amount,
+    days: daysSince(best.doc_date ?? best.deadline, now) ?? 0,
+    counterparty: shortName(best.counterparty),
+    coversAll: best.amount >= movingWithin30,
+  };
+}
+
+export function computeExposure(rows: readonly ObligationRow[], now: Date): Exposure {
+  if (rows.length === 0) return EMPTY_EXPOSURE;
+
+  const moving = rows.filter((row) => isMovingSoon(row, now));
+  const movingWithin30 = moving.reduce(
+    (total, row) => (hasAmount(row.amount) ? total + row.amount : total),
+    0,
+  );
+
+  return {
+    movingWithin30,
+    documentCount: moving.length,
+    lines: moving
+      .slice()
+      .sort((a, b) => (urgencyFor(a, now).days ?? 0) - (urgencyFor(b, now).days ?? 0))
+      .map((row) => toLine(row, now)),
+    collection: pickCollection(rows, now, movingWithin30),
   };
 }

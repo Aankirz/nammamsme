@@ -1,20 +1,17 @@
 import type { DocType } from "@/lib/types";
-import { DOC_TYPE_LABEL, DOC_TYPE_STAMP } from "@/components/lib/hindi";
+import { DOC_TYPE_LABEL, DOC_TYPE_STAMP } from "@/components/lib/copy";
 
 interface DocTypeStampProps {
   docType: DocType;
   className?: string;
 }
 
-/**
- * The mark stamped on the paper itself. Latin on purpose — a trader reads
- * "GST" on the envelope, and the Hindi name sits next to it in the row.
- */
+/** The mark stamped on the paper itself, in the corner of a row or a header. */
 export function DocTypeStamp({ docType, className = "" }: DocTypeStampProps) {
   return (
     <span
-      className={`inline-flex items-center rounded-tag border border-rule-strong px-1.5 py-1 font-mono text-tag font-semibold uppercase text-ink-faint ${className}`}
-      aria-label={DOC_TYPE_LABEL[docType]}
+      className={`numerals inline-flex items-center rounded-sm border border-rule-strong px-1.5 py-px font-mono text-xs font-semibold tracking-[0.08em] text-ink-muted ${className}`}
+      title={DOC_TYPE_LABEL[docType]}
     >
       {DOC_TYPE_STAMP[docType]}
     </span>

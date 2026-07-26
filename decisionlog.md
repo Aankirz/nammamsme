@@ -272,3 +272,32 @@ Records: 14 invoices, ₹18,00,000 ITC claimed; 11 matched (₹14,00,000); 3 unm
 **Decision:** seed data includes a second GST notice with populated `blockers`, alongside the cleanly-fileable hero notice.
 **Why:** the refusal state is the product's single most important screen and its entire trust claim, but until now it could only be reached by processing a broken document live. Seeding it makes it demonstrable without the pipeline, reviewable during design, and independent of API availability on stage.
 **Status:** Locked.
+
+---
+
+## 2026-07-26 — End-to-end close
+
+### D-39 — The golden path runs. Measured, live.
+**Result:** a real PDF posted to `POST /api/process` completes the full chain: Digitise, language-model extraction, verification, row written.
+**Hero notice:** amount 512000, deadline 2026-08-14, classified `gst_notice`, 8 source blocks, 0 blockers, `canFile: true`.
+**Refusal document:** processed live, missing Annexure-A detected, `status: "refused"`, `canFile: false`. The refusal is produced by the pipeline, not seeded.
+**Latency is highly variable: 13.4 s to 73.5 s** across runs on the same one-page PDF, driven almost entirely by the extraction call. This is a live-demo risk. Mitigation is the visible hop log plus honest copy ("fifteen to seventy seconds"). If a run stalls on stage, narrate the refusal case instead, which is the more interesting artifact anyway.
+**Status:** V1 closed.
+
+### D-40 — `counterparty` means the issuer, never the addressee
+**Finding:** the first live run returned `counterparty: "M/s Gupta Hosiery Mills, Ludhiana"` — the trader himself, because the document is addressed to him. Every notice would have been filed against its own recipient.
+**Fix:** the extraction prompt now states that counterparty is whoever issued or sent the document, never the addressee.
+**Second finding:** with the prompt corrected, a test notice that names no issuing authority returned `null`, which surfaced as "Unknown". That is correct behaviour, not a regression: the model declined to infer rather than guessing. The fixture was deficient. Real notices name the issuing office, so the test documents were regenerated with one.
+**Status:** Fixed and verified live.
+
+### D-41 — `/api/reply` refuses as a designed 200, not a 422
+**Finding:** the refused notice carries no verified `notice` figures, correctly, since we cannot stand behind them. The endpoint returned 422 `NOTICE_FIGURES_MISSING`, making the product's central behaviour look like a server error.
+**Decision:** blockers are checked before figures. A blocked document returns 200 with `canFile: false` and the reasons. Refusal is a designed response and must never render as a fault.
+**Status:** Fixed.
+
+### D-42 — Twin notices double-counted the exposure headline *(found by looking at it)*
+**Finding:** the refused notice was seeded as a copy of the hero, so the rail showed two identical Rs 5,12,000 GST demands and the exposure headline read Rs 10,24,000: the same demand twice. The headline is the first thing anyone reads.
+**Cause:** mine. Asking for a duplicate row to make the refusal state visible without considering what a duplicate does to a cross-document total.
+**Fix:** the refused notice becomes a genuinely different demand, period Oct-Dec 2024, Rs 2,04,800, with source blocks rewritten to match its own figures so the facsimile cannot contradict the row.
+**Worth recording:** every arithmetic gate passed throughout. The bug was in what the numbers *meant* across rows, which no unit test was positioned to catch and which one look at the rendered page made obvious.
+**Status:** In progress.
