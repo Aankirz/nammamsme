@@ -71,6 +71,9 @@ export async function POST(request: Request): Promise<NextResponse> {
     const { fields } = verdict;
     const counterparty = fields.counterparty ?? null;
 
+    const hasFilingPath = docType === "gst_notice";
+    const blocks = hasFilingPath && verdict.blockers.length > 0;
+
     const row: StoredRow = {
       id: `doc_live_${started}`,
       role: "obligation",
@@ -82,8 +85,8 @@ export async function POST(request: Request): Promise<NextResponse> {
       counterparty: counterparty ?? "Unknown",
       consequence: "",
       direction: directionFor(docType),
-      status: verdict.canFile ? "extracted" : "refused",
-      blockers: verdict.blockers,
+      status: blocks ? "refused" : "extracted",
+      blockers: hasFilingPath ? verdict.blockers : [],
       source_ref: fields.amount === null ? null : findSource(ocr, String(fields.amount)),
       file_url: null,
       created_at: new Date(started).toISOString(),
@@ -105,7 +108,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       document: saved,
       hops,
       flags: verdict.flags,
-      canFile: verdict.canFile,
+      canFile: hasFilingPath ? verdict.canFile : false,
       totalMs: Date.now() - started,
     });
   } catch (error: unknown) {

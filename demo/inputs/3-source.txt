@@ -1,0 +1,23 @@
+TAX INVOICE
+
+Dhawan Textile Agency
+Gill Road, Ludhiana, Punjab 141003
+GSTIN: 03AACFD7712M1ZP
+
+Invoice No: DTA/2526/0271          Date: 23/06/2025
+
+Billed to:
+M/s Gupta Hosiery Mills, Ludhiana
+GSTIN: 03AABCG1234H1Z5
+
+Sr  Description of Goods        HSN     Qty      Rate        Amount
+1   Woven cotton fabric,        5208    4300 m   Rs 250.00   Rs 10,75,000
+    grey, 44 inch
+
+                                  Taxable Value:  Rs 10,75,000
+                                  CGST @ 6%:      Rs    64,500
+                                  SGST @ 6%:      Rs    64,500
+                                  Total GST @12%: Rs  1,29,000
+                                  Invoice Total:  Rs 12,04,000
+
+Payment due within 30 days of invoice date.

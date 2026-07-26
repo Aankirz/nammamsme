@@ -143,7 +143,10 @@ Schema keys, all required:
 "claimed_itc":str|null,"matched_itc":str|null,"deadline":str|null,
 "doc_date":str|null,"section":str|null,"counterparty":str|null,
 "references_annexure":str|null}
-"amount" is the grand total demanded.
+"amount" is the grand total demanded, or the invoice total.
+"deadline" is the date the reader must act by, whatever the document calls it:
+a reply-by date on a notice, a payment due date on an invoice, an expiry or
+"valid until" date on a licence or registration. Copy the printed date.
 "counterparty" is who ISSUED or SENT this document: the tax authority, the
 supplier, the licensing body. It is NEVER the addressee or recipient. If the
 document is addressed "To: X" and issued by Y, counterparty is Y.
